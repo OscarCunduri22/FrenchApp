@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:frenc_app/data/dummy_data.dart';
-import 'package:frenc_app/widgets/student_card.dart'; // Asegúrate de importar el widget correcto
+import 'package:frenc_app/screens/numbers/cards_game_screen.dart';
+import 'package:frenc_app/widgets/student_card.dart';
 
 class StudentList extends StatelessWidget {
-  final String tutorEmail;
-
-  const StudentList({Key? key, required this.tutorEmail}) : super(key: key);
+  const StudentList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // Buscar el tutor correspondiente en dummyTutors
-    final tutor = dummyTutors.firstWhere((tutor) => tutor.email == tutorEmail);
+    final tutor =
+        dummyTutors.firstWhere((tutor) => tutor.email == 'tutor1@fa.com');
 
     return Scaffold(
       appBar: AppBar(
@@ -35,10 +35,19 @@ class StudentList extends StatelessWidget {
                 mainAxisSpacing: 16,
                 crossAxisSpacing: 16,
                 children: tutor.students.map((student) {
-                  return StudentCard(
-                    name: student.name,
-                    age: student.age,
-                    imagePath: student.imageUrl,
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const CardGame()),
+                      );
+                    },
+                    child: StudentCard(
+                      name: student.name,
+                      age: student.age,
+                      imagePath: student.imageUrl,
+                    ),
                   );
                 }).toList(),
               ),
