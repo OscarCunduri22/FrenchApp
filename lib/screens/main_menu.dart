@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frenc_app/screens/family/family_screen.dart';
 import 'package:frenc_app/widgets/game_card.dart';
 
 class MainMenu extends StatelessWidget {
@@ -45,26 +46,71 @@ class MainMenu extends StatelessWidget {
               crossAxisCount: 3,
               crossAxisSpacing: 8,
               children: [
-                const GameCard(
-                  frName: 'Nom en Français',
-                  esName: 'Nombre en Español',
-                  imagePath: 'assets/images/default.png',
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const FamilyGame(),
+                      ),
+                    );
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: FractionallySizedBox(
+                      widthFactor: 0.8, // Porcentaje del ancho disponible
+                      child: GameCard(
+                        frName: 'Nom en Français',
+                        esName: 'Nombre en Español',
+                        imagePath: 'assets/images/default.png',
+                      ),
+                    ),
+                  ),
                 ),
-                const GameCard(
-                  frName: 'Nombres',
-                  esName: 'Numeros',
-                  imagePath: 'assets/images/menu_numeros.png',
+                GestureDetector(
+                  onTap: () {
+                    /*Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const NumbersScreen(), // Aquí reemplaza OtherScreen() con la pantalla a la que deseas navegar
+          ),
+        );*/
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: FractionallySizedBox(
+                      widthFactor: 0.8, // Porcentaje del ancho disponible
+                      child: GameCard(
+                        frName: 'Nombres',
+                        esName: 'Numeros',
+                        imagePath: 'assets/images/menu_numeros.png',
+                      ),
+                    ),
+                  ),
                 ),
-                const GameCard(
-                  frName: 'Nom en Français',
-                  esName: 'Nombre en Español',
-                  imagePath: 'assets/images/default.png',
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const FamilyGame(), // Aquí reemplaza OtherScreen() con la pantalla a la que deseas navegar
+                      ),
+                    );
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: FractionallySizedBox(
+                      widthFactor: 0.8, // Porcentaje del ancho disponible
+                      child: GameCard(
+                        frName: 'Nom en Français',
+                        esName: 'Nombre en Español',
+                        imagePath: 'assets/images/default.png',
+                      ),
+                    ),
+                  ),
                 ),
-              ].map((gameCard) {
-                return Center(
-                  child: gameCard,
-                );
-              }).toList(),
+              ],
             ),
           ],
         ),

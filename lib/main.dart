@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frenc_app/screens/main_menu.dart';
 import 'package:frenc_app/screens/start_screen.dart';
 
 void main() {
@@ -15,7 +14,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      home: MainMenu(),
+      home: StartScreen(),
     );
   }
 }
