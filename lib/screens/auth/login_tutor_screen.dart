@@ -7,16 +7,22 @@ class TutorLoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text('Inicio de Sesión'),
-        backgroundColor: Colors.blue.shade400,
-      ),
+          title: const Text('Inicio de Sesión'),
+          titleTextStyle: const TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+          ),
+          backgroundColor: Colors.black.withOpacity(0.5),
+          iconTheme: const IconThemeData(
+            color: Colors.white,
+          )),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.blue.shade100, Colors.blue.shade200],
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/fondo_bandera.jpg'),
+            fit: BoxFit.cover,
           ),
         ),
         child: Padding(
@@ -25,21 +31,12 @@ class TutorLoginScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text(
-                'Iniciar Sesión',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 48),
               TextFormField(
                 decoration: InputDecoration(
                   labelText: 'Correo Electrónico',
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: Colors.white.withOpacity(0.8),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -51,7 +48,7 @@ class TutorLoginScreen extends StatelessWidget {
                 decoration: InputDecoration(
                   labelText: 'Contraseña',
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: Colors.white.withOpacity(0.8),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -67,7 +64,7 @@ class TutorLoginScreen extends StatelessWidget {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue.shade400,
+                  backgroundColor: Colors.red,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -78,6 +75,7 @@ class TutorLoginScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
               ),

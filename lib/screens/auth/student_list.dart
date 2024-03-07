@@ -12,59 +12,76 @@ class StudentList extends StatelessWidget {
         dummyTutors.firstWhere((tutor) => tutor.email == 'tutor1@fa.com');
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: const Text('Lista de Estudiantes'),
-        backgroundColor: Colors.blue.shade400,
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.blue.shade100, Colors.blue.shade200],
-          ),
+        titleTextStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 24,
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Lista de Estudiantes',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+        backgroundColor: Colors.black.withOpacity(0.5),
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
+      ),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/fondo_bandera.jpg'),
+                fit: BoxFit.cover,
               ),
-              const SizedBox(height: 16),
-              Expanded(
-                child: GridView.count(
-                  crossAxisCount: 3,
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: 16,
-                  children: tutor.students.map((student) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const StudentLogin(),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: GridView.count(
+                      crossAxisCount: 3,
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 16,
+                      children: tutor.students.map((student) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const StudentLogin(),
+                              ),
+                            );
+                          },
+                          child: StudentCard(
+                            name: student.name,
+                            age: student.age,
+                            imagePath: student.imageUrl,
                           ),
                         );
-                      },
-                      child: StudentCard(
-                        name: student.name,
-                        age: student.age,
-                        imagePath: student.imageUrl,
-                      ),
-                    );
-                  }).toList(),
-                ),
+                      }).toList(),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+          Positioned(
+            bottom: 20.0,
+            right: 20.0,
+            child: FloatingActionButton(
+                onPressed: () {
+                  // Agrega aquí la lógica para el botón circular
+                },
+                backgroundColor: Colors.lightGreen,
+                child: const Icon(
+                  Icons.add,
+                  size: 32,
+                  color: Colors.white,
+                )),
+          ),
+        ],
       ),
     );
   }

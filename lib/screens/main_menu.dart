@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frenc_app/screens/family/family_screen.dart';
+import 'package:frenc_app/screens/vocals/linking_vocals_game_screen.dart';
 import 'package:frenc_app/widgets/game_card.dart';
 
 class MainMenu extends StatelessWidget {
@@ -25,16 +26,13 @@ class MainMenu extends StatelessWidget {
         backgroundColor: const Color.fromRGBO(44, 54, 116, 1),
         child: ListView(
           padding: EdgeInsets.zero,
-          children: const <Widget>[
-            // Add your drawer items here
-          ],
+          children: const <Widget>[],
         ),
       ),
       body: Center(
         child: Stack(
           alignment: Alignment.center,
           children: [
-            // Background Image
             Image.asset(
               'assets/images/static_main_menu.png',
               fit: BoxFit.cover,
@@ -51,7 +49,7 @@ class MainMenu extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const FamilyGame(),
+                        builder: (context) => const LinkingVocalsGame(),
                       ),
                     );
                   },

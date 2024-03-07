@@ -22,47 +22,66 @@ class _StartScreenState extends State<StartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0, top: 8.0),
+            child: IconButton(
+              onPressed: () async {
+                if (await AudioManager().isPlaying()) {
+                  AudioManager().pause();
+                } else {
+                  AudioManager().play('sound/start_page.mp3');
+                }
+              },
+              icon: const Icon(Icons.volume_up),
+            ),
+          ),
+        ],
+      ),
       body: Stack(
         children: [
-          LayoutBuilder(
-            builder: (context, constraints) {
-              return const RiveAnimation.asset(
-                'assets/RiveAssets/solofondo.riv',
-                fit: BoxFit.cover,
-              );
-            },
+          // Fondo animado detrás de todo
+          const Positioned.fill(
+            child: RiveAnimation.asset(
+              'assets/RiveAssets/solofondo.riv',
+              fit: BoxFit.cover,
+            ),
           ),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const TutorLoginScreen()),
-                    );
-                  },
-                  child: const Text('Iniciar Sesión'),
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {},
-                  child: const Text('Jugar como Invitado'),
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () async {
-                    if (await AudioManager().isPlaying()) {
-                      AudioManager().pause();
-                    } else {
-                      AudioManager().play('sound/start_page.mp3');
-                    }
-                  },
-                  child: const Text('Pausar Audio'),
-                ),
-              ],
+          SafeArea(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'FrenchApp',
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const TutorLoginScreen()),
+                      );
+                    },
+                    child: const Text('Iniciar Sesión'),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {},
+                    child: const Text('Jugar como Invitado'),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
