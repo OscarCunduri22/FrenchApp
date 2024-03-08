@@ -58,9 +58,9 @@ class MainMenu extends StatelessWidget {
                     child: FractionallySizedBox(
                       widthFactor: 0.8, // Porcentaje del ancho disponible
                       child: GameCard(
-                        frName: 'Nom en Français',
-                        esName: 'Nombre en Español',
-                        imagePath: 'assets/images/default.png',
+                        frName: 'Volleyes',
+                        esName: 'Vocales',
+                        imagePath: 'assets/images/vocales.jpg',
                       ),
                     ),
                   ),
@@ -101,9 +101,9 @@ class MainMenu extends StatelessWidget {
                     child: FractionallySizedBox(
                       widthFactor: 0.8, // Porcentaje del ancho disponible
                       child: GameCard(
-                        frName: 'Nom en Français',
-                        esName: 'Nombre en Español',
-                        imagePath: 'assets/images/default.png',
+                        frName: 'Famille',
+                        esName: 'Familia',
+                        imagePath: 'assets/images/familia.jpg',
                       ),
                     ),
                   ),
