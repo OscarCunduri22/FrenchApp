@@ -1,0 +1,21 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "ludofrench-tesis",
+          "appId": "1:586218161423:android:a737d6fb2d7ede52dc6a7a",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "ludofrench-tesis",
+          "configurations": {
+            "android": "1:586218161423:android:a737d6fb2d7ede52dc6a7a"
+          }
+        }
+      }
+    }
+  }
+}
