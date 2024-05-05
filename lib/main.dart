@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frenc_app/screens/start_screen.dart';
+import 'package:frenc_app/view/start_screen.dart';
 
 void main() {
   runApp(const MyApp());

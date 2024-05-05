@@ -1,4 +1,4 @@
-import 'package:frenc_app/models/user.dart';
+import 'package:frenc_app/model/user.dart';
 
 class Student extends User {
   int age;

@@ -1,5 +1,5 @@
-import 'package:frenc_app/models/student.dart';
-import 'package:frenc_app/models/user.dart';
+import 'package:frenc_app/model/student.dart';
+import 'package:frenc_app/model/user.dart';
 
 class Tutor extends User {
   String email;

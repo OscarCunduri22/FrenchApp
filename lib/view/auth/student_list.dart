@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frenc_app/data/dummy_data.dart';
-import 'package:frenc_app/screens/numbers/cards_game_screen.dart';
-import 'package:frenc_app/widgets/student_card.dart';
+import 'package:frenc_app/view/numbers/cards_game_screen.dart';
+import 'package:frenc_app/templates/student_card.dart';
 
 class StudentList extends StatelessWidget {
   const StudentList({Key? key}) : super(key: key);

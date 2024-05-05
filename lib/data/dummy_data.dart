@@ -1,5 +1,5 @@
-import 'package:frenc_app/models/student.dart';
-import 'package:frenc_app/models/tutor.dart';
+import 'package:frenc_app/model/student.dart';
+import 'package:frenc_app/model/tutor.dart';
 
 export 'dummy_data.dart';
 

@@ -1,7 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
-import 'package:frenc_app/screens/auth/login_tutor_screen.dart';
+import 'package:frenc_app/view/auth/login_tutor_screen.dart';
 import 'package:frenc_app/utils/audio_manager.dart';
 import 'package:rive/rive.dart';
 
