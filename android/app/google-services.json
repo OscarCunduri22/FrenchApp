@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "586218161423",
+    "project_id": "ludofrench-tesis",
+    "storage_bucket": "ludofrench-tesis.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:586218161423:android:a737d6fb2d7ede52dc6a7a",
+        "android_client_info": {
+          "package_name": "com.example.frenc_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "586218161423-9dj9r15nlm3qsiqj8p98vd7f9pk6fa3k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACmlAPPzf3BI4yexvgzgnIE8bAgsqemeo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "586218161423-9dj9r15nlm3qsiqj8p98vd7f9pk6fa3k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

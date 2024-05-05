@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:frenc_app/screens/family/family_screen.dart';
-import 'package:frenc_app/screens/vocals/linking_vocals_game_screen.dart';
-import 'package:frenc_app/widgets/game_card.dart';
+import 'package:frenc_app/view/family/family_screen.dart';
+import 'package:frenc_app/view/vocals/linking_vocals_game_screen.dart';
+import 'package:frenc_app/templates/game_card.dart';
 
 class MainMenu extends StatelessWidget {
   const MainMenu({Key? key}) : super(key: key);

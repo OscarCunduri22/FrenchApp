@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:frenc_app/screens/main_menu.dart';
+import 'package:frenc_app/view/main_menu.dart';
 
 class StudentLogin extends StatefulWidget {
   const StudentLogin({super.key});

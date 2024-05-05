@@ -1,0 +1,1 @@
+/*Uso de GlobalRepo para conectar a la base de datos -> AUTENTICACION*/ 

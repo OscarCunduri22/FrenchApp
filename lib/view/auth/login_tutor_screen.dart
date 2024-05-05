@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frenc_app/screens/auth/student_list.dart';
+import 'package:frenc_app/view/auth/student_list.dart';
 
 class TutorLoginScreen extends StatelessWidget {
   const TutorLoginScreen({Key? key}) : super(key: key);
