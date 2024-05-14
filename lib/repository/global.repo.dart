@@ -1,2 +1,2 @@
-/*conexion a FIREBASE -> BAAS (Backend as a Service)*/
+/*conexion a FIREBASE (Firestore) -> BAAS (Backend as a Service)*/
 
