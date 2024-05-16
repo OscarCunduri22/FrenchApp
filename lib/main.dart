@@ -1,12 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/firebase_options.dart';
+import 'package:frenc_app/view/auth/new_tutor_screen.dart';
 import 'package:frenc_app/view/start_screen.dart';
 import 'package:frenc_app/view/test.view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  FirebaseFirestore.instance.settings =
+      const Settings(persistenceEnabled: false);
   runApp(const MyApp());
 }
 
@@ -19,7 +23,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      home: StartScreen(),
+      home: NewTutorScreen(),
     );
   }
 }
