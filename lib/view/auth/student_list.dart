@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frenc_app/data/dummy_data.dart';
 import 'package:frenc_app/view/numbers/cards_game_screen.dart';
 import 'package:frenc_app/templates/student_card.dart';
 
@@ -8,10 +7,8 @@ class StudentList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tutor =
-        dummyTutors.firstWhere((tutor) => tutor.email == 'tutor1@fa.com');
-
-    return Scaffold(
+    return const Text('Lista de Estudiantes');
+    /*return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: const Text('Lista de Estudiantes'),
@@ -44,7 +41,7 @@ class StudentList extends StatelessWidget {
                       crossAxisCount: 3,
                       mainAxisSpacing: 16,
                       crossAxisSpacing: 16,
-                      children: tutor.students.map((student) {
+                      children: students.map((student) {
                         return GestureDetector(
                           onTap: () {
                             Navigator.push(
@@ -83,6 +80,6 @@ class StudentList extends StatelessWidget {
           ),
         ],
       ),
-    );
+    );*/
   }
 }
