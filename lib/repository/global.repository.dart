@@ -19,11 +19,27 @@ class DatabaseRepository {
     return _tutorRef.snapshots();
   }
 
-  void addTutor(Tutor tutor) async {
-    _tutorRef.add(tutor);
+  Future<bool> addTutor(Tutor tutor) async {
+    try {
+      await _tutorRef.add(tutor);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   void deleteTutor(String id) async {
     _tutorRef.doc(id).delete();
+  }
+
+  Future<Tutor?> loginTutor(String email, String password) async {
+    final tutor = await _tutorRef
+        .where('email', isEqualTo: email)
+        .where('password', isEqualTo: password)
+        .get();
+    if (tutor.docs.isNotEmpty) {
+      return tutor.docs.first.data() as Tutor;
+    }
+    return null;
   }
 }
