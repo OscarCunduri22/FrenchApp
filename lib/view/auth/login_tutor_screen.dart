@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:frenc_app/view/auth/tutor_dashboard.dart';
 import 'package:provider/provider.dart';
 import 'package:frenc_app/model/tutor.dart';
 import 'package:frenc_app/repository/global.repository.dart';
@@ -121,8 +122,11 @@ class _TutorLoginScreenState extends State<TutorLoginScreen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const StudentList(),
-                                  ),
+                                      builder: (context) =>
+                                          TutorDashboardScreen(
+                                            tutorName: tutor.name,
+                                            studentCount: 2,
+                                          )),
                                 );
                               }
                             } else {

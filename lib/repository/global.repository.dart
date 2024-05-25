@@ -42,4 +42,12 @@ class DatabaseRepository {
     }
     return null;
   }
+
+  Future<String?> getTutorId(String email) async {
+    final tutor = await _tutorRef.where('email', isEqualTo: email).get();
+    if (tutor.docs.isNotEmpty) {
+      return tutor.docs.first.id;
+    }
+    return null;
+  }
 }
