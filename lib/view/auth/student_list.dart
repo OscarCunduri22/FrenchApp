@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frenc_app/model/tutor.dart';
 import 'package:frenc_app/utils/user_provider.dart';
-import 'package:frenc_app/view/numbers/cards_game_screen.dart';
-import 'package:frenc_app/templates/student_card.dart';
 import 'package:provider/provider.dart';
 
 class StudentList extends StatelessWidget {

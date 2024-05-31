@@ -1,13 +1,10 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
+import 'package:frenc_app/view/auth/register_tutor.view.dart';
 import 'package:frenc_app/view/auth/tutor_dashboard.dart';
 import 'package:provider/provider.dart';
 import 'package:frenc_app/model/tutor.dart';
 import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/user_provider.dart';
-import 'package:frenc_app/view/auth/register_tutor.view.dart';
-import 'package:frenc_app/view/auth/student_list.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 
 class TutorLoginScreen extends StatefulWidget {
@@ -90,14 +87,22 @@ class _TutorLoginScreenState extends State<TutorLoginScreen> {
                             setState(() {
                               isLoading = true;
                             });
+
+                            String? tutorId = await databaseRepository
+                                .getTutorId(emailController.text);
                             Tutor? tutor = await databaseRepository.loginTutor(
                               emailController.text,
                               passwordController.text,
                             );
-                            setState(() {
-                              isLoading = false;
-                            });
-                            if (tutor != null) {
+
+                            if (tutorId != null && tutor != null) {
+                              int? studentCount = await databaseRepository
+                                  .getStudentsCountByTutorId(tutorId);
+
+                              setState(() {
+                                isLoading = false;
+                              });
+
                               final snackBar = SnackBar(
                                 content: AwesomeSnackbarContent(
                                   title: 'Login Successful',
@@ -114,22 +119,29 @@ class _TutorLoginScreenState extends State<TutorLoginScreen> {
                               ScaffoldMessenger.of(context)
                                 ..hideCurrentMaterialBanner()
                                 ..showSnackBar(snackBar);
+
                               await Future.delayed(const Duration(seconds: 3));
+
                               if (mounted) {
                                 Provider.of<UserProvider>(context,
                                         listen: false)
                                     .setCurrentUser(tutor);
+
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          TutorDashboardScreen(
-                                            tutorName: tutor.name,
-                                            studentCount: 2,
-                                          )),
+                                    builder: (context) => TutorDashboardScreen(
+                                      tutorName: tutor.name,
+                                      studentCount: studentCount ?? 0,
+                                    ),
+                                  ),
                                 );
                               }
                             } else {
+                              setState(() {
+                                isLoading = false;
+                              });
+
                               final snackBar = SnackBar(
                                 content: AwesomeSnackbarContent(
                                   title: 'Login Failed',
@@ -194,8 +206,7 @@ class _TutorLoginScreenState extends State<TutorLoginScreen> {
                     children: [
                       SizedBox(
                         child: ElevatedButton(
-                          onPressed:
-                              _printHello, // Add a valid function or callback here
+                          onPressed: _printHello,
                           child: Text("Hola"),
                         ),
                       ),

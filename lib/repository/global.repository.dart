@@ -50,4 +50,12 @@ class DatabaseRepository {
     }
     return null;
   }
+
+  Future<int?> getStudentsCountByTutorId(String tutorId) async {
+    final students = await _firestore
+        .collection('students')
+        .where('tutorId', isEqualTo: tutorId)
+        .get();
+    return students.docs.length;
+  }
 }

@@ -20,7 +20,7 @@ class TutorDashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     Tutor? currentUser = Provider.of<UserProvider>(context).currentUser;
     if (currentUser == null) {
-      return Scaffold(
+      return const Scaffold(
         body: Center(
           child: Text('No user logged in'),
         ),
@@ -94,7 +94,7 @@ class TutorDashboardScreen extends StatelessWidget {
   }
 
   Widget _buildStudentCard(BuildContext context, String email) {
-    return Container(
+    return SizedBox(
       width: 150,
       height: 150,
       child: Card(
@@ -129,16 +129,23 @@ class TutorDashboardScreen extends StatelessWidget {
               ),
               SizedBox(height: 10),
               ElevatedButton(
-                onPressed: () {
-                  String tutorId =
-                      _databaseRepository.getTutorId(email) as String;
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CreateStudentScreen(
-                          tutorId: tutorId), // pass the actual tutor ID
-                    ),
-                  );
+                onPressed: () async {
+                  String? tutorId = await _databaseRepository.getTutorId(email);
+                  if (tutorId != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CreateStudentScreenHorizontal(
+                            tutorId: tutorId), // pass the actual tutor ID
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Tutor ID not found'),
+                      ),
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.blue,
