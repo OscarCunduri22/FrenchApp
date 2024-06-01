@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:frenc_app/view/numbers/cards_game_screen.dart';
-import 'package:frenc_app/templates/student_card.dart';
+import 'package:frenc_app/model/tutor.dart';
+import 'package:frenc_app/utils/user_provider.dart';
+import 'package:provider/provider.dart';
 
 class StudentList extends StatelessWidget {
   const StudentList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Text('Lista de Estudiantes');
+    Tutor? currentUser = Provider.of<UserProvider>(context).currentUser;
+
+    return Text(
+        'Lista de Estudiantes ${currentUser == null ? 'No hay usuario' : currentUser.name}');
     /*return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
