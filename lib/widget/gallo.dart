@@ -3,7 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:rive/rive.dart';
 
 class GalloComponent extends StatefulWidget {
-  const GalloComponent({Key? key}) : super(key: key);
+  final EdgeInsetsGeometry padding;
+
+  const GalloComponent({Key? key, this.padding = const EdgeInsets.all(0)})
+      : super(key: key);
 
   @override
   State<GalloComponent> createState() => _GalloComponentState();
@@ -33,13 +36,16 @@ class _GalloComponentState extends State<GalloComponent> {
 
   @override
   Widget build(BuildContext context) {
-    return riveArtboard == null
-        ? const SizedBox()
-        : GestureDetector(
-            onTap: () => isDancing?.fire(),
-            child: Rive(
-              artboard: riveArtboard!,
+    return Padding(
+      padding: widget.padding,
+      child: riveArtboard == null
+          ? const SizedBox()
+          : GestureDetector(
+              onTap: () => isDancing?.fire(),
+              child: Rive(
+                artboard: riveArtboard!,
+              ),
             ),
-          );
+    );
   }
 }

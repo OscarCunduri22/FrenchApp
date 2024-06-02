@@ -206,14 +206,11 @@ class _TutorLoginScreenState extends State<TutorLoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(
-                        child: ElevatedButton(
-                          onPressed: _printHello,
-                          child: Text("Hola"),
-                        ),
-                      ),
                       Expanded(
-                        child: GalloComponent(),
+                        child: GalloComponent(
+                          padding: EdgeInsets.only(
+                              top: 180, right: 0, left: 120, bottom: 10),
+                        ),
                       ),
                     ],
                   ),
