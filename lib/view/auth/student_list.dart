@@ -1,89 +1,60 @@
 import 'package:flutter/material.dart';
-import 'package:frenc_app/model/tutor.dart';
-import 'package:frenc_app/utils/user_provider.dart';
+import 'package:frenc_app/templates/student_card.dart';
 import 'package:provider/provider.dart';
+import 'package:frenc_app/model/student.dart';
+import 'package:frenc_app/repository/global.repository.dart';
+import 'dart:math';
 
-class StudentList extends StatelessWidget {
-  const StudentList({Key? key}) : super(key: key);
+class StudentListScreen extends StatelessWidget {
+  final String tutorId;
+
+  StudentListScreen({required this.tutorId});
 
   @override
   Widget build(BuildContext context) {
-    Tutor? currentUser = Provider.of<UserProvider>(context).currentUser;
+    final databaseRepository = DatabaseRepository();
+    final List<Color> colors = [
+      Colors.red,
+      Colors.blue,
+      Colors.green,
+      Colors.orange,
+      Colors.purple,
+      Colors.pink,
+    ];
+    final Random random = Random();
 
-    return Text(
-        'Lista de Estudiantes ${currentUser == null ? 'No hay usuario' : currentUser.name}');
-    /*return Scaffold(
-      extendBodyBehindAppBar: true,
+    return Scaffold(
       appBar: AppBar(
         title: const Text('Lista de Estudiantes'),
-        titleTextStyle: const TextStyle(
-          color: Colors.white,
-          fontSize: 24,
-        ),
-        backgroundColor: Colors.black.withOpacity(0.5),
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
       ),
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/fondo_bandera.jpg'),
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: GridView.count(
-                      crossAxisCount: 3,
-                      mainAxisSpacing: 16,
-                      crossAxisSpacing: 16,
-                      children: students.map((student) {
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const StudentLogin(),
-                              ),
-                            );
-                          },
-                          child: StudentCard(
-                            name: student.name,
-                            age: student.age,
-                            imagePath: student.imageUrl,
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 20.0,
-            right: 20.0,
-            child: FloatingActionButton(
-                onPressed: () {
-                  // Agrega aquí la lógica para el botón circular
+      body: Container(
+        color: Colors.cyan, // Set a vibrant background color
+        child: FutureBuilder<List<Student>?>(
+          future: databaseRepository.getStudentsByTutorId(tutorId),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(child: Text('No hay estudiantes.'));
+            } else {
+              final students = snapshot.data!;
+              return GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 5,
+                ),
+                itemCount: students.length,
+                itemBuilder: (context, index) {
+                  final color = colors[random.nextInt(colors.length)];
+                  return StudentCard(
+                      student: students[index], backgroundColor: color);
                 },
-                backgroundColor: Colors.lightGreen,
-                child: const Icon(
-                  Icons.add,
-                  size: 32,
-                  color: Colors.white,
-                )),
-          ),
-        ],
+              );
+            }
+          },
+        ),
       ),
-    );*/
+    );
   }
 }

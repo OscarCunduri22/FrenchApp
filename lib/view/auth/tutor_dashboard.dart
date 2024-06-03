@@ -1,8 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:frenc_app/model/tutor.dart';
 import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/auth/create_student.dart';
+import 'package:frenc_app/view/auth/student_list.dart';
 import 'package:provider/provider.dart';
 
 class TutorDashboardScreen extends StatelessWidget {
@@ -79,8 +82,14 @@ class TutorDashboardScreen extends StatelessWidget {
                       '',
                       Colors.red,
                       Icons.play_arrow,
-                      onTap: () {
-                        // Navigate to game screen
+                      onTap: () async {
+                        String? tutorId = await _databaseRepository
+                            .getTutorId(currentUser.email);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    StudentListScreen(tutorId: tutorId!)));
                       },
                     ),
                   ],
@@ -135,8 +144,8 @@ class TutorDashboardScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => CreateStudentScreenHorizontal(
-                            tutorId: tutorId), // pass the actual tutor ID
+                        builder: (context) =>
+                            CreateStudentScreenHorizontal(tutorId: tutorId),
                       ),
                     );
                   } else {

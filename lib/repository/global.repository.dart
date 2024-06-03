@@ -1,5 +1,6 @@
 // ignore: constant_identifier_names
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:frenc_app/model/student.dart';
 import 'package:frenc_app/model/tutor.dart';
 
 const String TUTOR_COLLECTION = 'Teachers';
@@ -57,5 +58,16 @@ class DatabaseRepository {
         .where('tutorId', isEqualTo: tutorId)
         .get();
     return students.docs.length;
+  }
+
+  Future<List<Student>?> getStudentsByTutorId(String tutorId) async {
+    final students = await _firestore
+        .collection('students')
+        .where('tutorId', isEqualTo: tutorId)
+        .get();
+    if (students.docs.isNotEmpty) {
+      return students.docs.map((e) => Student.fromJson(e.data())).toList();
+    }
+    return null;
   }
 }

@@ -1,50 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:frenc_app/model/student.dart';
+import 'dart:math';
 
 class StudentCard extends StatelessWidget {
-  final String name;
-  final int age;
-  final String? imagePath;
+  final Student student;
+  final Color backgroundColor;
 
-  const StudentCard({
-    Key? key,
-    required this.name,
-    required this.age,
-    required this.imagePath,
-  }) : super(key: key);
+  const StudentCard(
+      {Key? key, required this.student, required this.backgroundColor})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 4,
+      color: backgroundColor,
+      margin: const EdgeInsets.all(4.0), // Reduced margin
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
+        borderRadius: BorderRadius.circular(10.0), // Adjusted border radius
       ),
-      color: Colors.white,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(4.0), // Reduced padding
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircleAvatar(
-              radius: 50,
-              backgroundImage:
-                  AssetImage(imagePath ?? 'assets/images/default.png'),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              name,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+            ClipOval(
+              child: Image.network(
+                student.imageUrl,
+                width: 60,
+                height: 60,
+                fit: BoxFit.cover,
               ),
             ),
-            const SizedBox(height: 5),
+            const SizedBox(height: 4),
             Text(
-              'Age: $age',
+              student.name,
               style: const TextStyle(
                 fontSize: 16,
-                color: Colors.grey,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              'Grupo: ${student.group}',
+              style: const TextStyle(fontSize: 14, color: Colors.white),
             ),
           ],
         ),
