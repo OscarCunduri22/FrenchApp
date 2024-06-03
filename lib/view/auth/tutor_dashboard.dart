@@ -4,6 +4,7 @@ import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/auth/create_student.dart';
 import 'package:provider/provider.dart';
+import 'dart:ui';
 
 class TutorDashboardScreen extends StatelessWidget {
   final String tutorName;
@@ -32,7 +33,7 @@ class TutorDashboardScreen extends StatelessWidget {
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage(
-                'assets/images/auth/ludofrench_bg.png'), // Replace with your image asset path
+                'assets/images/auth/background.png'), // Reemplaza con la ruta de tu imagen
             fit: BoxFit.cover,
           ),
         ),
@@ -62,25 +63,41 @@ class TutorDashboardScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildStudentCard(context, currentUser.email),
                     _buildCard(
                       context,
-                      'Preferencias',
-                      '',
-                      Colors.green,
+                      'Prof. Oscar',
+                      'Inicial 1',
+                      Colors.white,
                       Icons.settings,
+                      0,
+                      'assets/images/Mattew.png',
                       onTap: () {
-                        // Navigate to preferences screen
+                        // Navegar a la pantalla de preferencias
+                      },
+                    ),
+                    _buildStudentCard(context, currentUser.email, 0.1),
+                    _buildCard(
+                      context,
+                      'Ajustes',
+                      '',
+                      Colors.white,
+                      Icons.settings,
+                      0.1,
+                      null,
+                      onTap: () {
+                        // Navegar a la pantalla de preferencias
                       },
                     ),
                     _buildCard(
                       context,
-                      'Iniciar Juego',
+                      'Juegos',
                       '',
-                      Colors.red,
+                      Colors.white,
                       Icons.play_arrow,
+                      0.1,
+                      null,
                       onTap: () {
-                        // Navigate to game screen
+                        // Navegar a la pantalla del juego
                       },
                     ),
                   ],
@@ -93,70 +110,85 @@ class TutorDashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStudentCard(BuildContext context, String email) {
+  Widget _buildStudentCard(BuildContext context, String email, double opacity) {
     return SizedBox(
       width: 150,
-      height: 150,
+      height: 200,
       child: Card(
-        color: Colors.blue,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.person,
-                size: 40,
-                color: Colors.white,
+        color: Colors.transparent,
+        elevation: 0,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20.0),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(opacity),
+                borderRadius: BorderRadius.circular(20.0),
               ),
-              const SizedBox(height: 10),
-              const Text(
-                'Estudiantes',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                '$studentCount',
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () async {
-                  String? tutorId = await _databaseRepository.getTutorId(email);
-                  if (tutorId != null) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CreateStudentScreenHorizontal(
-                            tutorId: tutorId), // pass the actual tutor ID
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.person,
+                      size: 40,
+                      color: Colors.white,
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Estudiantes',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
                       ),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Tutor ID not found'),
+                    ),
+                    Text(
+                      '$studentCount',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
                       ),
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.blue,
-                  backgroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
+                    ),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () async {
+                        String? tutorId =
+                            await _databaseRepository.getTutorId(email);
+                        if (tutorId != null) {
+                          // ignore: use_build_context_synchronously
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  CreateStudentScreenHorizontal(
+                                      tutorId:
+                                          tutorId), // pasa el ID del tutor real
+                            ),
+                          );
+                        } else {
+                          // ignore: use_build_context_synchronously
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Tutor ID not found'),
+                            ),
+                          );
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.blue,
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                      child: const Text('Nuevo Estudiante'),
+                    ),
+                  ],
                 ),
-                child: const Text('Nuevo Estudiante'),
               ),
-            ],
+            ),
           ),
         ),
       ),
@@ -164,45 +196,62 @@ class TutorDashboardScreen extends StatelessWidget {
   }
 
   Widget _buildCard(BuildContext context, String title, String subtitle,
-      Color color, IconData icon,
+      Color color, IconData icon, double opacity, String? imagePath,
       {Function()? onTap}) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
+      child: SizedBox(
         width: 150,
-        height: 150,
+        height: 200,
         child: Card(
-          color: color,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  icon,
-                  size: 40,
-                  color: Colors.white,
+          color: Colors.transparent,
+          elevation: 0,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20.0),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: color.withOpacity(opacity),
+                  borderRadius: BorderRadius.circular(15.0),
                 ),
-                SizedBox(height: 10),
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (imagePath == null)
+                        Icon(
+                          icon,
+                          size: 40,
+                          color: Colors.white,
+                        )
+                      else
+                        Image.asset(
+                          imagePath,
+                          width: 100,
+                          height: 100,
+                        ),
+                      const SizedBox(height: 10),
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      if (subtitle.isNotEmpty)
+                        Text(
+                          subtitle,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
+                        ),
+                    ],
                   ),
                 ),
-                if (subtitle.isNotEmpty)
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                    ),
-                  ),
-              ],
+              ),
             ),
           ),
         ),
