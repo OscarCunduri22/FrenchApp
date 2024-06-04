@@ -1,9 +1,11 @@
+// ignore_for_file: prefer_const_constructors_in_immutables, use_key_in_widget_constructors
+
 import 'package:flutter/material.dart';
+import 'package:frenc_app/model/fruit.dart';
+import 'package:frenc_app/view/auth/student_login.view.dart';
 import 'package:frenc_app/widgets/student_card.dart';
-import 'package:provider/provider.dart';
 import 'package:frenc_app/model/student.dart';
 import 'package:frenc_app/repository/global.repository.dart';
-import 'dart:math';
 
 class StudentListScreen extends StatelessWidget {
   final String tutorId;
@@ -15,12 +17,10 @@ class StudentListScreen extends StatelessWidget {
     final databaseRepository = DatabaseRepository();
 
     void handleStudentTap(String studentId) {
-      // Navigate to the new view with the student ID
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => PlaceholderScreen(
-              studentId: studentId), // Update with actual screen
+          builder: (context) => FruitGameScreen(studentId: studentId),
         ),
       );
     }
@@ -102,7 +102,7 @@ class PlaceholderScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Student Details'),
+        title: const Text('Student Details'),
       ),
       body: Center(
         child: Text('Student ID: $studentId'),

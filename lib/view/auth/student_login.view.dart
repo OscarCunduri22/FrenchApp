@@ -1,124 +1,91 @@
 import 'package:flutter/material.dart';
+import 'package:frenc_app/model/fruit.dart';
+import 'package:frenc_app/view_model/auth/student_login.dart';
+import 'package:provider/provider.dart';
 
-class ColorMatchingGame extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: GameScreen(),
-    );
-  }
-}
+class FruitGameScreen extends StatelessWidget {
+  final String studentId;
 
-class GameScreen extends StatefulWidget {
-  @override
-  _GameScreenState createState() => _GameScreenState();
-}
+  FruitGameScreen({Key? key, required this.studentId}) : super(key: key);
 
-class _GameScreenState extends State<GameScreen> {
-  final Map<String, bool> score = {};
   final Map<String, Color> fruitColors = {
     'banana': Colors.yellow,
+    'orange': Colors.orange,
     'pear': Colors.green,
     'strawberry': Colors.red,
-    'watermelon': Colors.lightGreen,
-    'orange': Colors.orange,
+    'watermelon': Colors.green[800]!,
   };
 
-  final List<String> fruits = [
-    'banana',
-    'pear',
-    'strawberry',
-    'watermelon',
-    'orange',
-  ];
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Inserta el código'),
-      ),
-      body: Column(
-        children: [
-          SizedBox(height: 40),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: fruits.map((fruit) {
-              return Draggable<String>(
-                data: fruit,
-                child: FruitImage(
-                  fruit: fruit,
-                  score: score,
+    return ChangeNotifierProvider(
+      create: (_) => FruitGameViewModel(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Fruit Drag and Drop Game welcome $studentId'),
+        ),
+        body: Consumer<FruitGameViewModel>(
+          builder: (context, viewModel, child) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                // Drag targets row
+                Expanded(
+                  flex: 1,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: viewModel.fruits.map((fruit) {
+                      return DragTarget<Fruit>(
+                        onAccept: (receivedFruit) {
+                          if (receivedFruit.name == fruit.name) {
+                            viewModel.setCorrectAnswer(fruit.name);
+                          }
+                        },
+                        builder: (context, candidateData, rejectedData) {
+                          final isCorrect =
+                              viewModel.correctAnswers[fruit.name] ?? false;
+                          return Container(
+                            width: 100,
+                            height: 100,
+                            color: isCorrect
+                                ? Colors.green
+                                : fruitColors[fruit.name],
+                            child: Center(
+                              child: isCorrect
+                                  ? Icon(Icons.check, color: Colors.white)
+                                  : null,
+                            ),
+                          );
+                        },
+                      );
+                    }).toList(),
+                  ),
                 ),
-                feedback: FruitImage(
-                  fruit: fruit,
-                  score: score,
-                  isDragging: true,
+                // Draggable fruits row
+                Expanded(
+                  flex: 1,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: viewModel.fruits.map((fruit) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Draggable<Fruit>(
+                          data: fruit,
+                          feedback: Image.asset(fruit.imagePath, width: 80),
+                          childWhenDragging: Opacity(
+                            opacity: 0.5,
+                            child: Image.asset(fruit.imagePath, width: 80),
+                          ),
+                          child: Image.asset(fruit.imagePath, width: 80),
+                        ),
+                      );
+                    }).toList(),
+                  ),
                 ),
-                childWhenDragging: FruitImage(
-                  fruit: fruit,
-                  score: score,
-                  isDragging: false,
-                ),
-              );
-            }).toList(),
-          ),
-          Spacer(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: fruitColors.keys.map((fruit) {
-              return DragTarget<String>(
-                builder: (context, incoming, rejected) {
-                  return Container(
-                    height: 100,
-                    width: 100,
-                    color: fruitColors[fruit]!.withOpacity(0.5),
-                    child: Center(
-                      child: score[fruit] == true
-                          ? Icon(Icons.check, color: Colors.white, size: 50)
-                          : null,
-                    ),
-                  );
-                },
-                onWillAccept: (data) => data == fruit,
-                onAccept: (data) {
-                  setState(() {
-                    score[fruit] = true;
-                  });
-                },
-              );
-            }).toList(),
-          ),
-          SizedBox(height: 40),
-        ],
-      ),
-    );
-  }
-}
-
-class FruitImage extends StatelessWidget {
-  final String fruit;
-  final bool isDragging;
-  final Map<String, bool> score;
-
-  const FruitImage({
-    super.key,
-    required this.fruit,
-    required this.score,
-    this.isDragging = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Opacity(
-      opacity: isDragging ? 0.5 : 1.0,
-      child: Image.asset(
-        'assets/images/auth/$fruit.png',
-        width: 80,
-        height: 80,
-        fit: BoxFit.cover,
-        color: score[fruit] == true ? Colors.grey : null,
-        colorBlendMode: BlendMode.saturation,
+              ],
+            );
+          },
+        ),
       ),
     );
   }
