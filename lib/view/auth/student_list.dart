@@ -28,7 +28,6 @@ class StudentListScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          // Primary Background Image
           Container(
             width: double.infinity,
             height: double.infinity,
