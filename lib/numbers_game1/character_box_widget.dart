@@ -17,51 +17,44 @@ class CharacterBoxWidget extends StatelessWidget {
         // Ensure characterSlots is properly initialized
         viewModel.characterSlots = List<String?>.filled(word.length, null);
 
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          decoration: BoxDecoration(
-            color: Colors.grey[300],
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: List.generate(word.length, (index) {
-              return DragTarget<String>(
-                onWillAccept: (character) {
-                  return character == word[index];
-                },
-                onAccept: (character) {
-                  viewModel.addCharacter(index, character);
-                },
-                builder: (context, candidateData, rejectedData) {
-                  return Container(
-                    width: 40,
-                    height: 40,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Colors.black,
-                          width: 2.0,
-                        ),
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: List.generate(word.length, (index) {
+            return DragTarget<String>(
+              onWillAccept: (character) {
+                return character == word[index];
+              },
+              onAccept: (character) {
+                viewModel.addCharacter(index, character);
+              },
+              builder: (context, candidateData, rejectedData) {
+                return Container(
+                  width: 40,
+                  height: 40,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: Colors.black,
+                        width: 2.0,
                       ),
                     ),
-                    child: viewModel.characterSlots[index] != null
-                        ? Text(
-                            viewModel.characterSlots[index]!,
-                            style: const TextStyle(
-                              fontSize: 32.0,
-                              fontWeight: FontWeight.bold,
-                              fontFamily:
-                                  'Arial', // Use a different font if desired
-                            ),
-                          )
-                        : null,
-                  );
-                },
-              );
-            }),
-          ),
+                  ),
+                  child: viewModel.characterSlots[index] != null
+                      ? Text(
+                          viewModel.characterSlots[index]!,
+                          style: const TextStyle(
+                            fontSize: 32.0,
+                            fontWeight: FontWeight.bold,
+                            fontFamily:
+                                'Arial', // Use a different font if desired
+                          ),
+                        )
+                      : null,
+                );
+              },
+            );
+          }),
         );
       },
     );

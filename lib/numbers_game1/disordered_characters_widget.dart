@@ -14,41 +14,80 @@ class DisorderedCharactersWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<GameViewModel>(context, listen: false);
-    final characters = viewModel.getShuffledCharacters(word);
+    return Consumer<GameViewModel>(
+      builder: (context, viewModel, child) {
+        List<String> characters = viewModel.getShuffledCharacters(word);
 
-    return Container(
-      padding: const EdgeInsets.all(8.0),
-      child: Wrap(
-        spacing: 8.0,
-        children: characters.map((character) {
-          return Draggable<String>(
-            data: character,
-            feedback: _buildCharacter(character),
-            childWhenDragging: Opacity(
-              opacity: 0.5,
-              child: _buildCharacter(character),
-            ),
-            child: _buildCharacter(character),
-          );
-        }).toList(),
-      ),
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(characters.length, (index) {
+            return Draggable<String>(
+              data: characters[index],
+              child: DraggableCharacter(
+                character: characters[index],
+                dragging: false,
+              ),
+              feedback: DraggableCharacter(
+                character: characters[index],
+                dragging: true,
+              ),
+              childWhenDragging: DraggableCharacter(
+                character: characters[index],
+                dragging: false,
+                invisible: true,
+              ),
+              onDragEnd: (details) {
+                if (!details.wasAccepted) {
+                  viewModel
+                      .resetCharacterSlots(); // Reset slots if character was not accepted
+                }
+              },
+            );
+          }),
+        );
+      },
     );
   }
+}
 
-  Widget _buildCharacter(String character) {
+class DraggableCharacter extends StatelessWidget {
+  final String character;
+  final bool dragging;
+  final bool invisible;
+
+  const DraggableCharacter({
+    Key? key,
+    required this.character,
+    required this.dragging,
+    this.invisible = false,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(8.0),
+      width: 50,
+      height: 50,
+      margin: const EdgeInsets.all(4.0),
+      alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: Colors.amber,
+        color: invisible ? Colors.transparent : Colors.blueAccent,
         borderRadius: BorderRadius.circular(8.0),
+        boxShadow: dragging
+            ? [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.5),
+                  offset: Offset(0, 2),
+                  blurRadius: 8.0,
+                )
+              ]
+            : null,
       ),
       child: Text(
         character,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 32.0,
           fontWeight: FontWeight.bold,
-          fontFamily: 'Arial', // Use a different font if desired
+          color: Colors.white,
         ),
       ),
     );

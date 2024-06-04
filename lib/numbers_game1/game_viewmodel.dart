@@ -25,13 +25,14 @@ class GameViewModel extends ChangeNotifier {
     'assets/images/numbers/9.png',
     'assets/images/numbers/10.png',
   ];
+
   int _currentIndex = 0;
-  List<String?> characterSlots;
+  late List<String?> characterSlots;
   bool _currentIndexChanged = false;
 
-  GameViewModel()
-      : characterSlots = List<String?>.filled(
-            3, null); // Initialize with the first word's length
+  GameViewModel() {
+    characterSlots = List<String?>.filled(_numbers[_currentIndex].length, null);
+  }
 
   List<String> get numbers => _numbers;
   List<String> get images => _images;
@@ -75,5 +76,10 @@ class GameViewModel extends ChangeNotifier {
     List<String> characters = word.split('');
     characters.shuffle();
     return characters;
+  }
+
+  void resetCharacterSlots() {
+    characterSlots = List<String?>.filled(_numbers[_currentIndex].length, null);
+    notifyListeners();
   }
 }
