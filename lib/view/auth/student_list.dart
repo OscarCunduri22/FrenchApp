@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frenc_app/templates/student_card.dart';
+import 'package:frenc_app/widgets/student_card.dart';
 import 'package:provider/provider.dart';
 import 'package:frenc_app/model/student.dart';
 import 'package:frenc_app/repository/global.repository.dart';

@@ -22,14 +22,18 @@ class _TutorLoginScreenState extends State<TutorLoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+
     return Scaffold(
       body: Stack(
         children: [
           Container(
+            width: screenSize.width,
+            height: screenSize.height,
             decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('assets/images/auth/login_bg.png'),
-                fit: BoxFit.fitWidth,
+                fit: BoxFit.cover,
               ),
             ),
             child: Row(

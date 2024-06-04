@@ -14,16 +14,16 @@ class GameViewModel extends ChangeNotifier {
     'ten',
   ];
   final List<String> _images = [
-    'assets/images/numbers/1.png',
-    'assets/images/numbers/2.png',
-    'assets/images/numbers/3.png',
-    'assets/images/numbers/4.png',
-    'assets/images/numbers/5.png',
-    'assets/images/numbers/6.png',
-    'assets/images/numbers/7.png',
-    'assets/images/numbers/8.png',
-    'assets/images/numbers/9.png',
-    'assets/images/numbers/10.png',
+    'assets/images/numbers/game1/1.png',
+    'assets/images/numbers/game1/2.png',
+    'assets/images/numbers/game1/3.png',
+    'assets/images/numbers/game1/4.png',
+    'assets/images/numbers/game1/5.png',
+    'assets/images/numbers/game1/6.png',
+    'assets/images/numbers/game1/7.png',
+    'assets/images/numbers/game1/8.png',
+    'assets/images/numbers/game1/9.png',
+    'assets/images/numbers/game1/10.png',
   ];
 
   int _currentIndex = 0;
@@ -51,9 +51,7 @@ class GameViewModel extends ChangeNotifier {
       notifyListeners();
 
       if (characterSlots.every((element) => element != null)) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          nextWord();
-        });
+        onCorrect();
       }
     }
   }
@@ -66,8 +64,10 @@ class GameViewModel extends ChangeNotifier {
   }
 
   void onCorrect() {
-    // Call the next word method after a delay to allow for confetti animation
-    Future.delayed(const Duration(seconds: 1), () {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
+    Future.delayed(const Duration(seconds: 2), () {
       nextWord();
     });
   }

@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/firebase_options.dart';
-import 'package:frenc_app/numbers_game1/game_screen.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/start_screen.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +30,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.teal,
       ),
-      home: const GameScreen(),
+      home: const StartScreen(),
     );
   }
 }

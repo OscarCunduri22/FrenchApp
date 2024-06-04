@@ -1,6 +1,8 @@
+// ignore_for_file: sort_child_properties_last
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:frenc_app/numbers_game1/game_viewmodel.dart';
+import 'package:frenc_app/view_model/numbers/game1/game_viewmodel.dart';
 
 class DisorderedCharactersWidget extends StatelessWidget {
   final String word;
@@ -37,10 +39,7 @@ class DisorderedCharactersWidget extends StatelessWidget {
                 invisible: true,
               ),
               onDragEnd: (details) {
-                if (!details.wasAccepted) {
-                  viewModel
-                      .resetCharacterSlots(); // Reset slots if character was not accepted
-                }
+                // No need to reset characterSlots here, because it will reset all slots
               },
             );
           }),
@@ -76,7 +75,7 @@ class DraggableCharacter extends StatelessWidget {
             ? [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.5),
-                  offset: Offset(0, 2),
+                  offset: const Offset(0, 2),
                   blurRadius: 8.0,
                 )
               ]
@@ -84,7 +83,7 @@ class DraggableCharacter extends StatelessWidget {
       ),
       child: Text(
         character,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 32.0,
           fontWeight: FontWeight.bold,
           color: Colors.white,

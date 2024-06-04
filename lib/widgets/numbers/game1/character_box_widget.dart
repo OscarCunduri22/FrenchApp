@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:frenc_app/numbers_game1/game_viewmodel.dart';
+import 'package:frenc_app/view_model/numbers/game1/game_viewmodel.dart';
 
 class CharacterBoxWidget extends StatelessWidget {
   final String word;
@@ -14,25 +14,31 @@ class CharacterBoxWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<GameViewModel>(
       builder: (context, viewModel, child) {
-        // Ensure characterSlots is properly initialized
-        viewModel.characterSlots = List<String?>.filled(word.length, null);
+        if (viewModel.characterSlots.length != word.length) {
+          viewModel.characterSlots = List<String?>.filled(word.length, null);
+        }
 
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: List.generate(word.length, (index) {
             return DragTarget<String>(
-              onWillAccept: (character) {
-                return character == word[index];
-              },
+              onWillAccept: (character) => true,
               onAccept: (character) {
-                viewModel.addCharacter(index, character);
+                if (character == word[index]) {
+                  viewModel.addCharacter(index, character);
+                }
               },
               builder: (context, candidateData, rejectedData) {
                 return Container(
-                  width: 40,
-                  height: 40,
+                  width: 50,
+                  height: 50,
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image:
+                          AssetImage('assets/images/numbers/game1/bg_box.png'),
+                      fit: BoxFit.cover,
+                    ),
                     border: Border(
                       bottom: BorderSide(
                         color: Colors.black,
