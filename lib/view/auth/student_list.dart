@@ -1,89 +1,112 @@
-import 'package:flutter/material.dart';
-import 'package:frenc_app/model/tutor.dart';
-import 'package:frenc_app/utils/user_provider.dart';
-import 'package:provider/provider.dart';
+// ignore_for_file: prefer_const_constructors_in_immutables, use_key_in_widget_constructors
 
-class StudentList extends StatelessWidget {
-  const StudentList({Key? key}) : super(key: key);
+import 'package:flutter/material.dart';
+import 'package:frenc_app/model/fruit.dart';
+import 'package:frenc_app/view/auth/student_login.view.dart';
+import 'package:frenc_app/widgets/student_card.dart';
+import 'package:frenc_app/model/student.dart';
+import 'package:frenc_app/repository/global.repository.dart';
+
+class StudentListScreen extends StatelessWidget {
+  final String tutorId;
+
+  StudentListScreen({required this.tutorId});
 
   @override
   Widget build(BuildContext context) {
-    Tutor? currentUser = Provider.of<UserProvider>(context).currentUser;
+    final databaseRepository = DatabaseRepository();
 
-    return Text(
-        'Lista de Estudiantes ${currentUser == null ? 'No hay usuario' : currentUser.name}');
-    /*return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        title: const Text('Lista de Estudiantes'),
-        titleTextStyle: const TextStyle(
-          color: Colors.white,
-          fontSize: 24,
+    void handleStudentTap(String studentId) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => FruitGameScreen(studentId: studentId),
         ),
-        backgroundColor: Colors.black.withOpacity(0.5),
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
-      ),
+      );
+    }
+
+    return Scaffold(
       body: Stack(
-        fit: StackFit.expand,
         children: [
+          // Primary Background Image
           Container(
+            width: double.infinity,
+            height: double.infinity,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/fondo_bandera.jpg'),
+                image: AssetImage('assets/images/auth/studentlist_bg.jpg'),
                 fit: BoxFit.cover,
               ),
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: GridView.count(
-                      crossAxisCount: 3,
-                      mainAxisSpacing: 16,
-                      crossAxisSpacing: 16,
-                      children: students.map((student) {
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const StudentLogin(),
-                              ),
-                            );
-                          },
-                          child: StudentCard(
-                            name: student.name,
-                            age: student.age,
-                            imagePath: student.imageUrl,
-                          ),
-                        );
-                      }).toList(),
-                    ),
+          ),
+          // Centered Secondary Background Container with transparency
+          Center(
+            child: FractionallySizedBox(
+              widthFactor: 0.8, // 80% of the screen width
+              heightFactor: 0.8, // 80% of the screen height
+              child: Container(
+                decoration: BoxDecoration(
+                  image: const DecorationImage(
+                    image: AssetImage('assets/images/auth/book.png'),
+                    fit: BoxFit.cover,
                   ),
-                ],
+                  color: Colors.white.withOpacity(0.9), // Add transparency
+                ),
+                child: FutureBuilder<List<Map<String, dynamic>>>(
+                  future: databaseRepository.getStudentsByTutorId(tutorId),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(child: Text('No hay estudiantes.'));
+                    } else {
+                      final studentsDocs = snapshot.data!;
+                      return GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 5,
+                        ),
+                        itemCount: studentsDocs.length,
+                        itemBuilder: (context, index) {
+                          final studentData = studentsDocs[index]['data'];
+                          final studentId = studentsDocs[index]['id'];
+                          final student = Student.fromJson(studentData);
+                          return StudentCard(
+                            student: student,
+                            onTap: handleStudentTap,
+                            studentId: studentId,
+                          );
+                        },
+                      );
+                    }
+                  },
+                ),
               ),
             ),
           ),
-          Positioned(
-            bottom: 20.0,
-            right: 20.0,
-            child: FloatingActionButton(
-                onPressed: () {
-                  // Agrega aquí la lógica para el botón circular
-                },
-                backgroundColor: Colors.lightGreen,
-                child: const Icon(
-                  Icons.add,
-                  size: 32,
-                  color: Colors.white,
-                )),
-          ),
         ],
       ),
-    );*/
+    );
+  }
+}
+
+class PlaceholderScreen extends StatelessWidget {
+  final String studentId;
+
+  const PlaceholderScreen({Key? key, required this.studentId})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Student Details'),
+      ),
+      body: Center(
+        child: Text('Student ID: $studentId'),
+      ),
+    );
   }
 }

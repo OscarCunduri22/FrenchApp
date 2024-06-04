@@ -1,8 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:frenc_app/model/tutor.dart';
 import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/auth/create_student.dart';
+import 'package:frenc_app/view/auth/student_list.dart';
 import 'package:provider/provider.dart';
 import 'dart:ui';
 
@@ -116,8 +119,14 @@ class TutorDashboardScreen extends StatelessWidget {
                       Icons.play_arrow,
                       0.1,
                       null,
-                      onTap: () {
-                        // Navegar a la pantalla del juego
+                      onTap: () async {
+                        String? tutorId = await _databaseRepository
+                            .getTutorId(currentUser.email);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    StudentListScreen(tutorId: tutorId!)));
                       },
                     ),
                   ],
@@ -129,91 +138,76 @@ class TutorDashboardScreen extends StatelessWidget {
       ]),
     );
   }
-
-  // Widget _buildStudentCard(BuildContext context, String email, double opacity) {
-  //   return SizedBox(
-  //     width: 150,
-  //     height: 200,
-  //     child: Card(
-  //       color: Colors.transparent,
-  //       elevation: 0,
-  //       child: ClipRRect(
-  //         borderRadius: BorderRadius.circular(20.0),
-  //         child: BackdropFilter(
-  //           filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-  //           child: Container(
-  //             decoration: BoxDecoration(
-  //               color: Colors.white.withOpacity(opacity),
-  //               borderRadius: BorderRadius.circular(20.0),
-  //             ),
-  //             child: Center(
-  //               child: Column(
-  //                 mainAxisAlignment: MainAxisAlignment.center,
-  //                 children: [
-  //                   const Icon(
-  //                     Icons.person,
-  //                     size: 40,
-  //                     color: Colors.white,
-  //                   ),
-  //                   const SizedBox(height: 10),
-  //                   const Text(
-  //                     'Estudiantes',
-  //                     style: TextStyle(
-  //                       fontSize: 20,
-  //                       color: Colors.white,
-  //                       fontWeight: FontWeight.bold,
-  //                     ),
-  //                   ),
-  //                   Text(
-  //                     '$studentCount',
-  //                     style: const TextStyle(
-  //                       fontSize: 16,
-  //                       color: Colors.white,
-  //                     ),
-  //                   ),
-  //                   const SizedBox(height: 10),
-  //                   ElevatedButton(
-  //                     onPressed: () async {
-  //                       String? tutorId =
-  //                           await _databaseRepository.getTutorId(email);
-  //                       if (tutorId != null) {
-  //                         // ignore: use_build_context_synchronously
-  //                         Navigator.push(
-  //                           context,
-  //                           MaterialPageRoute(
-  //                             builder: (context) =>
-  //                                 CreateStudentScreenHorizontal(
-  //                                     tutorId:
-  //                                         tutorId), // pasa el ID del tutor real
-  //                           ),
-  //                         );
-  //                       } else {
-  //                         // ignore: use_build_context_synchronously
-  //                         ScaffoldMessenger.of(context).showSnackBar(
-  //                           const SnackBar(
-  //                             content: Text('Tutor ID not found'),
-  //                           ),
-  //                         );
-  //                       }
-  //                     },
-  //                     style: ElevatedButton.styleFrom(
-  //                       foregroundColor: Colors.blue,
-  //                       backgroundColor: Colors.white,
-  //                       shape: RoundedRectangleBorder(
-  //                         borderRadius: BorderRadius.circular(8.0),
-  //                       ),
-  //                     ),
-  //                     child: const Text('Nuevo Estudiante'),
-  //                   ),
-  //                 ],
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
+  
+  Widget _buildStudentCard(BuildContext context, String email) {
+    return SizedBox(
+      width: 150,
+      height: 150,
+      child: Card(
+        color: Colors.blue,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.person,
+                size: 40,
+                color: Colors.white,
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'Estudiantes',
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                '$studentCount',
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () async {
+                  String? tutorId = await _databaseRepository.getTutorId(email);
+                  if (tutorId != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            CreateStudentScreenHorizontal(tutorId: tutorId),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Tutor ID not found'),
+                      ),
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.blue,
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+                child: const Text('Nuevo Estudiante'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   Widget _buildCard(BuildContext context, String title, String subtitle,
       Color color, IconData icon, double opacity, String? imagePath,
