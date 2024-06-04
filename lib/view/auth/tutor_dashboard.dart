@@ -7,6 +7,7 @@ import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/auth/create_student.dart';
 import 'package:frenc_app/view/auth/student_list.dart';
 import 'package:provider/provider.dart';
+import 'dart:ui';
 
 class TutorDashboardScreen extends StatelessWidget {
   final String tutorName;
@@ -31,15 +32,23 @@ class TutorDashboardScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(
-                'assets/images/auth/ludofrench_bg.png'), // Replace with your image asset path
-            fit: BoxFit.cover,
+      body: Stack(children: [
+        Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(
+                  'assets/images/auth/background_with_stars.png'), // Reemplaza con la ruta de tu imagen
+              fit: BoxFit.cover,
+            ),
           ),
         ),
-        child: Center(
+        BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
+          child: Container(
+            color: Colors.black.withOpacity(0.1),
+          ),
+        ),
+        Center(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -65,23 +74,51 @@ class TutorDashboardScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildStudentCard(context, currentUser.email),
                     _buildCard(
                       context,
-                      'Preferencias',
-                      '',
-                      Colors.green,
+                      'Prof. Oscar',
+                      'Inicial 1',
+                      Colors.white,
                       Icons.settings,
+                      0,
+                      'assets/images/Mattew.png',
                       onTap: () {
-                        // Navigate to preferences screen
+                        // Navegar a la pantalla de preferencias
+                      },
+                    ),
+                    // _buildStudentCard(context, currentUser.email, 0.1),
+                    _buildCard(
+                      context,
+                      'Estudiantes',
+                      '',
+                      Colors.white,
+                      Icons.person,
+                      0.1,
+                      null,
+                      onTap: () {
+                        // Navegar a la pantalla de preferencias
                       },
                     ),
                     _buildCard(
                       context,
-                      'Iniciar Juego',
+                      'Ajustes',
                       '',
-                      Colors.red,
+                      Colors.white,
+                      Icons.settings,
+                      0.1,
+                      null,
+                      onTap: () {
+                        // Navegar a la pantalla de preferencias
+                      },
+                    ),
+                    _buildCard(
+                      context,
+                      'Juegos',
+                      '',
+                      Colors.white,
                       Icons.play_arrow,
+                      0.1,
+                      null,
                       onTap: () async {
                         String? tutorId = await _databaseRepository
                             .getTutorId(currentUser.email);
@@ -98,10 +135,10 @@ class TutorDashboardScreen extends StatelessWidget {
             ),
           ),
         ),
-      ),
+      ]),
     );
   }
-
+  
   Widget _buildStudentCard(BuildContext context, String email) {
     return SizedBox(
       width: 150,
@@ -173,45 +210,62 @@ class TutorDashboardScreen extends StatelessWidget {
   }
 
   Widget _buildCard(BuildContext context, String title, String subtitle,
-      Color color, IconData icon,
+      Color color, IconData icon, double opacity, String? imagePath,
       {Function()? onTap}) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
+      child: SizedBox(
         width: 150,
-        height: 150,
+        height: 200,
         child: Card(
-          color: color,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  icon,
-                  size: 40,
-                  color: Colors.white,
+          color: Colors.transparent,
+          elevation: 0,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20.0),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: color.withOpacity(opacity),
+                  borderRadius: BorderRadius.circular(15.0),
                 ),
-                SizedBox(height: 10),
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (imagePath == null)
+                        Icon(
+                          icon,
+                          size: 40,
+                          color: Colors.white,
+                        )
+                      else
+                        Image.asset(
+                          imagePath,
+                          width: 100,
+                          height: 100,
+                        ),
+                      const SizedBox(height: 10),
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      if (subtitle.isNotEmpty)
+                        Text(
+                          subtitle,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
+                        ),
+                    ],
                   ),
                 ),
-                if (subtitle.isNotEmpty)
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                    ),
-                  ),
-              ],
+              ),
             ),
           ),
         ),

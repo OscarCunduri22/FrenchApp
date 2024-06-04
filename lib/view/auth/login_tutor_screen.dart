@@ -7,6 +7,8 @@ import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 
+import '../../widget/gallo.dart';
+
 class TutorLoginScreen extends StatefulWidget {
   TutorLoginScreen({Key? key}) : super(key: key);
 
@@ -208,18 +210,10 @@ class _TutorLoginScreenState extends State<TutorLoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(
-                        child: ElevatedButton(
-                          onPressed: _printHello,
-                          child: Text("Hola"),
-                        ),
-                      ),
-                      Text(
-                        'AQUI VA EL GALLO',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
+                      Expanded(
+                        child: GalloComponent(
+                          padding: EdgeInsets.only(
+                              top: 180, right: 0, left: 120, bottom: 10),
                         ),
                       ),
                     ],
