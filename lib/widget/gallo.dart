@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rive/rive.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class GalloComponent extends StatefulWidget {
   final EdgeInsetsGeometry padding;
@@ -15,6 +16,8 @@ class GalloComponent extends StatefulWidget {
 class _GalloComponentState extends State<GalloComponent> {
   Artboard? riveArtboard;
   SMITrigger? isDancing;
+
+  final AudioPlayer audioPlayer = AudioPlayer();
 
   @override
   void initState() {
@@ -35,13 +38,26 @@ class _GalloComponentState extends State<GalloComponent> {
   }
 
   @override
+  void dispose() {
+    audioPlayer.dispose();
+    super.dispose();
+  }
+
+  void _playSound() async {
+    await audioPlayer.play(AssetSource('../assets/sound/speech1.mp3'));
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: widget.padding,
       child: riveArtboard == null
           ? const SizedBox()
           : GestureDetector(
-              onTap: () => isDancing?.fire(),
+              onTap: () {
+                isDancing?.fire();
+                _playSound();
+              },
               child: Rive(
                 artboard: riveArtboard!,
               ),
