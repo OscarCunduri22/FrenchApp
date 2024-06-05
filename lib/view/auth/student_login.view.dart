@@ -1,7 +1,9 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/model/fruit.dart';
 import 'package:frenc_app/view_model/auth/student_login.dart';
 import 'package:provider/provider.dart';
+import 'dart:math';
 
 class FruitGameScreen extends StatelessWidget {
   final String studentId;
@@ -21,71 +23,207 @@ class FruitGameScreen extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => FruitGameViewModel(),
       child: Scaffold(
-        appBar: AppBar(
-          title: Text('Fruit Drag and Drop Game welcome $studentId'),
-        ),
-        body: Consumer<FruitGameViewModel>(
-          builder: (context, viewModel, child) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                // Drag targets row
-                Expanded(
-                  flex: 1,
-                  child: Row(
+        body: Stack(
+          children: [
+            Container(
+              width: double.infinity,
+              height: double.infinity,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/auth/fruitsbg1.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Container(
+                  color: Colors.black.withOpacity(0.1),
+                ),
+              ),
+            ),
+            Consumer<FruitGameViewModel>(
+              builder: (context, viewModel, child) {
+                // Check if all fruits are correctly placed
+                if (viewModel.correctAnswers.length ==
+                        viewModel.fruits.length &&
+                    viewModel.correctAnswers.values
+                        .every((isCorrect) => isCorrect)) {
+                  Future.delayed(Duration.zero, () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              NextScreen()), // Replace with your next screen
+                    );
+                  });
+                }
+
+                // Shuffle the fruits for draggable and drop target areas
+                final draggableFruits = List<Fruit>.from(viewModel.fruits)
+                  ..shuffle(Random());
+                final targetFruits = List<Fruit>.from(viewModel.fruits)
+                  ..shuffle(Random());
+
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: viewModel.fruits.map((fruit) {
-                      return DragTarget<Fruit>(
-                        onAccept: (receivedFruit) {
-                          if (receivedFruit.name == fruit.name) {
-                            viewModel.setCorrectAnswer(fruit.name);
-                          }
-                        },
-                        builder: (context, candidateData, rejectedData) {
-                          final isCorrect =
-                              viewModel.correctAnswers[fruit.name] ?? false;
-                          return Container(
-                            width: 100,
-                            height: 100,
-                            color: isCorrect
-                                ? Colors.green
-                                : fruitColors[fruit.name],
-                            child: Center(
-                              child: isCorrect
-                                  ? Icon(Icons.check, color: Colors.white)
-                                  : null,
-                            ),
-                          );
-                        },
-                      );
-                    }).toList(),
-                  ),
-                ),
-                // Draggable fruits row
-                Expanded(
-                  flex: 1,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: viewModel.fruits.map((fruit) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Draggable<Fruit>(
-                          data: fruit,
-                          feedback: Image.asset(fruit.imagePath, width: 80),
-                          childWhenDragging: Opacity(
-                            opacity: 0.5,
-                            child: Image.asset(fruit.imagePath, width: 80),
-                          ),
-                          child: Image.asset(fruit.imagePath, width: 80),
+                    children: [
+                      Text(
+                        'Place the Fruits in the Correct Baskets',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
-                      );
-                    }).toList(),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: targetFruits.map((fruit) {
+                            return DragTarget<Fruit>(
+                              onAccept: (receivedFruit) {
+                                if (receivedFruit.name == fruit.name) {
+                                  viewModel.setCorrectAnswer(fruit.name);
+                                }
+                              },
+                              builder: (context, candidateData, rejectedData) {
+                                final isCorrect =
+                                    viewModel.correctAnswers[fruit.name] ??
+                                        false;
+                                return Container(
+                                  width: 100,
+                                  height: 100,
+                                  color: isCorrect
+                                      ? Colors.green
+                                      : fruitColors[fruit.name],
+                                  child: Center(
+                                    child: isCorrect
+                                        ? const Icon(Icons.check,
+                                            color: Colors.white)
+                                        : null,
+                                  ),
+                                );
+                              },
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: draggableFruits.map((fruit) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ShakeWidget(
+                                interval: Duration(
+                                    seconds: 2 +
+                                        Random().nextInt(3)), // Random interval
+                                child: Draggable<Fruit>(
+                                  data: fruit,
+                                  feedback:
+                                      Image.asset(fruit.imagePath, width: 80),
+                                  childWhenDragging: Opacity(
+                                    opacity: 0.5,
+                                    child:
+                                        Image.asset(fruit.imagePath, width: 80),
+                                  ),
+                                  child:
+                                      Image.asset(fruit.imagePath, width: 80),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            );
-          },
+                );
+              },
+            ),
+          ],
         ),
+      ),
+    );
+  }
+}
+
+class ShakeWidget extends StatefulWidget {
+  final Widget child;
+  final Duration interval;
+
+  const ShakeWidget({
+    Key? key,
+    required this.child,
+    this.interval = const Duration(seconds: 2),
+  }) : super(key: key);
+
+  @override
+  _ShakeWidgetState createState() => _ShakeWidgetState();
+}
+
+class _ShakeWidgetState extends State<ShakeWidget>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+
+    _animation = Tween<double>(begin: -5.0, end: 5.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.elasticIn),
+    );
+
+    _startShake();
+  }
+
+  void _startShake() {
+    Future.delayed(widget.interval, () {
+      if (mounted) {
+        _controller.forward(from: 0.0).then((_) {
+          _controller.reverse().then((_) {
+            _startShake();
+          });
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animation,
+      child: widget.child,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: Offset(_animation.value, 0),
+          child: child,
+        );
+      },
+    );
+  }
+}
+
+class NextScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Next Screen')),
+      body: Center(
+        child: Text('You have successfully placed all fruits!'),
       ),
     );
   }
