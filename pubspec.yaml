@@ -76,10 +76,10 @@ flutter:
     - assets/sound/
     - assets/images/
     - assets/images/auth/
+    - assets/images/gameSelection/
     - assets/images/numbers/
     - assets/images/numbers/game1/
     - assets/images/numbers/game2/
-    
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
