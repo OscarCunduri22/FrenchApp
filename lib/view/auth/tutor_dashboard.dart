@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, use_key_in_widget_constructors
 
 import 'package:flutter/material.dart';
 import 'package:frenc_app/model/tutor.dart';
@@ -76,8 +76,8 @@ class TutorDashboardScreen extends StatelessWidget {
                   children: [
                     _buildCard(
                       context,
-                      'Prof. Oscar',
-                      'Inicial 1',
+                      'Prof. $tutorName',
+                      'Estudiantes $studentCount',
                       Colors.white,
                       Icons.settings,
                       0,
@@ -138,7 +138,7 @@ class TutorDashboardScreen extends StatelessWidget {
       ]),
     );
   }
-  
+
   Widget _buildStudentCard(BuildContext context, String email) {
     return SizedBox(
       width: 150,

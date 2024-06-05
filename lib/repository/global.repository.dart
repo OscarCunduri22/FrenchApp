@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:frenc_app/model/student.dart';
 import 'package:frenc_app/model/tutor.dart';
 
 const String TUTOR_COLLECTION = 'Teachers';
