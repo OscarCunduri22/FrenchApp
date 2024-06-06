@@ -3,7 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:frenc_app/view/auth/student_login.view.dart';
-import 'package:frenc_app/widgets/student_card.dart';
+import 'package:frenc_app/widgets/auth/student_card.dart';
 import 'package:frenc_app/model/student.dart';
 import 'package:frenc_app/repository/global.repository.dart';
 
@@ -38,86 +38,104 @@ class _StudentListScreenState extends State<StudentListScreen> {
             height: double.infinity,
             decoration: BoxDecoration(
               image: const DecorationImage(
-                image: AssetImage('assets/images/auth/classbg.webp'),
+                image: AssetImage('assets/images/auth/aula.png'),
                 fit: BoxFit.cover,
               ),
               color: Colors.white.withOpacity(0.9),
             ),
           ),
-          Center(
+          Align(
+            alignment: Alignment.topCenter,
             child: FractionallySizedBox(
-              widthFactor: 0.7,
-              heightFactor: 0.7,
-              child: Container(
-                decoration: BoxDecoration(
-                  image: const DecorationImage(
-                      image: AssetImage('assets/images/auth/board1.png'),
-                      fit: BoxFit.fitWidth,
-                      alignment: Alignment.bottomCenter),
-                  color: Colors.white.withOpacity(0.9),
-                ),
-                child: FutureBuilder<List<Map<String, dynamic>>>(
-                  future:
-                      databaseRepository.getStudentsByTutorId(widget.tutorId),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Center(child: Text('No hay estudiantes.'));
-                    } else {
-                      final studentsDocs = snapshot.data!;
-
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              'Student List',
-                              style: TextStyle(
-                                fontFamily: 'LoveDaysLoveFont',
-                                fontSize: 32,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                shadows: [
-                                  Shadow(
-                                    offset: Offset(2.0, 2.0),
-                                    blurRadius: 3.0,
-                                    color: Color.fromARGB(255, 0, 0, 0),
-                                  ),
-                                ],
-                              ),
+              widthFactor: 0.9,
+              heightFactor: 0.8,
+              child: Column(
+                children: [
+                  Container(
+                    width: 600,
+                    height: 300,
+                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/images/auth/pizarra.png'),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(8, 32, 8, 8),
+                          child: Text(
+                            'Student List',
+                            style: TextStyle(
+                              fontFamily: 'LoveDaysLoveFont',
+                              fontSize: 32,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              shadows: [
+                                Shadow(
+                                  offset: Offset(2.0, 2.0),
+                                  blurRadius: 3.0,
+                                  color: Color.fromARGB(255, 0, 0, 0),
+                                ),
+                              ],
                             ),
                           ),
-                          Expanded(
-                            child: ListView.builder(
-                              padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
-                              scrollDirection: Axis.horizontal,
-                              itemCount: studentsDocs.length,
-                              itemBuilder: (context, index) {
-                                final studentData = studentsDocs[index]['data'];
-                                final studentId = studentsDocs[index]['id'];
-                                final student = Student.fromJson(studentData);
-                                return Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: StudentCard(
-                                    student: student,
-                                    onTap: handleStudentTap,
-                                    studentId: studentId,
-                                  ),
-                                );
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 24.0),
+                            child: FutureBuilder<List<Map<String, dynamic>>>(
+                              future: databaseRepository
+                                  .getStudentsByTutorId(widget.tutorId),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                      child: CircularProgressIndicator());
+                                } else if (snapshot.hasError) {
+                                  return Center(
+                                      child: Text('Error: ${snapshot.error}'));
+                                } else if (!snapshot.hasData ||
+                                    snapshot.data!.isEmpty) {
+                                  return const Center(
+                                      child: Text('No hay estudiantes.'));
+                                } else {
+                                  final studentsDocs = snapshot.data!;
+
+                                  return ListView.builder(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        20, 0, 20, 10),
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: studentsDocs.length,
+                                    itemBuilder: (context, index) {
+                                      final studentData =
+                                          studentsDocs[index]['data'];
+                                      final studentId =
+                                          studentsDocs[index]['id'];
+                                      final student =
+                                          Student.fromJson(studentData);
+                                      return Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            24, 0, 8, 0),
+                                        child: StudentCard(
+                                          student: student,
+                                          onTap: handleStudentTap,
+                                          studentId: studentId,
+                                        ),
+                                      );
+                                    },
+                                  );
+                                }
                               },
                             ),
                           ),
-                          const SizedBox(height: 50)
-                        ],
-                      );
-                    }
-                  },
-                ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

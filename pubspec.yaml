@@ -99,4 +99,7 @@ flutter:
     - family: ShortBabyFont
       fonts:
         - asset: assets/fonts/Font2.ttf
+    - family: SuperBrightFont
+      fonts:
+        - asset: assets/fonts/Font3.ttf
 

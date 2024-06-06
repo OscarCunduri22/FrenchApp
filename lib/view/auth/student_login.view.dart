@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/model/fruit.dart';
@@ -31,12 +33,12 @@ class FruitGameScreen extends StatelessWidget {
               height: double.infinity,
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/images/auth/fruitsbg1.jpg'),
+                  image: AssetImage('assets/images/auth/fruitsbg2.jpg'),
                   fit: BoxFit.cover,
                 ),
               ),
               child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
                 child: Container(
                   color: Colors.black.withOpacity(0.1),
                 ),
@@ -69,12 +71,14 @@ class FruitGameScreen extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text(
+                      const SizedBox(height: 32),
+                      const Text(
                         'Place the Fruits in the Correct Baskets',
                         style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          fontSize: 32,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'ShortBabyFont',
+                          color: Colors.brown,
                         ),
                       ),
                       Expanded(

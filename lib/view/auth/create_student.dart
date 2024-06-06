@@ -187,42 +187,55 @@ class _CreateStudentScreenHorizontalState
                               ),
                             ),
                           ),
-                          const SizedBox(height: 16),
-                          ListTile(
-                            title: const Text('Inicial 1',
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold)),
-                            leading: Radio<String>(
-                              value: 'Inicial 1',
-                              groupValue: _selectedGroup,
-                              onChanged: (String? value) {
-                                setState(() {
-                                  _selectedGroup = value;
-                                });
-                              },
-                            ),
+                          const SizedBox(height: 32),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: ListTile(
+                                  title: Text(
+                                    'Inicial 1',
+                                    style: TextStyle(
+                                        color: Colors.black.withOpacity(0.8),
+                                        fontFamily: 'SuperBrightFont',
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  leading: Radio<String>(
+                                    value: 'Inicial 1',
+                                    groupValue: _selectedGroup,
+                                    onChanged: (String? value) {
+                                      setState(() {
+                                        _selectedGroup = value;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: ListTile(
+                                  title: Text(
+                                    'Inicial 2',
+                                    style: TextStyle(
+                                        color: Colors.black.withOpacity(0.8),
+                                        fontFamily: 'SuperBrightFont',
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  leading: Radio<String>(
+                                    value: 'Inicial 2',
+                                    groupValue: _selectedGroup,
+                                    onChanged: (String? value) {
+                                      setState(() {
+                                        _selectedGroup = value;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          ListTile(
-                            title: const Text(
-                              'Inicial 2',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            leading: Radio<String>(
-                              value: 'Inicial 2',
-                              groupValue: _selectedGroup,
-                              onChanged: (String? value) {
-                                setState(() {
-                                  _selectedGroup = value;
-                                });
-                              },
-                            ),
-                          ),
-                          const SizedBox(height: 2),
+                          const SizedBox(height: 32),
                           Center(
                             child: ElevatedButton(
                               onPressed: _createStudent,
