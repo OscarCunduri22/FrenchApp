@@ -80,6 +80,7 @@ flutter:
     - assets/images/numbers/
     - assets/images/numbers/game1/
     - assets/images/numbers/game2/
+    - assets/images/vocals/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -99,4 +100,6 @@ flutter:
     - family: ShortBabyFont
       fonts:
         - asset: assets/fonts/Font2.ttf
-
+    - family: SuperBrightFont
+      fonts:
+        - asset: assets/fonts/Font3.ttf

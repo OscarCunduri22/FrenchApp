@@ -8,14 +8,15 @@ import 'package:frenc_app/view_model/numbers/game1/game_viewmodel.dart';
 import 'package:frenc_app/widgets/numbers/game1/number_image_widget.dart';
 import 'dart:math';
 
-class GameScreen extends StatefulWidget {
-  const GameScreen({Key? key}) : super(key: key);
+class GameOneScreen extends StatefulWidget {
+  const GameOneScreen({Key? key}) : super(key: key);
 
   @override
-  _GameScreenState createState() => _GameScreenState();
+  _GameOneScreenState createState() => _GameOneScreenState();
 }
 
-class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
+class _GameOneScreenState extends State<GameOneScreen>
+    with TickerProviderStateMixin {
   late ConfettiController _confettiController;
   late AnimationController _characterBoxController;
   late AnimationController _disorderedCharactersController;

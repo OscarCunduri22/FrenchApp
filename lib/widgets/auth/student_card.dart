@@ -23,18 +23,19 @@ class StudentCard extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
+        color: Colors.transparent,
         child: Container(
-          width: 120,
-          height: 180,
+          width: 125,
+          height: 210,
           decoration: BoxDecoration(
             image: const DecorationImage(
-              image: AssetImage('assets/images/auth/book.png'),
+              image: AssetImage('assets/images/auth/cardbg1.png'),
               fit: BoxFit.cover,
             ),
             borderRadius: BorderRadius.circular(10.0),
           ),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(4, 0, 4, 12),
+            padding: const EdgeInsets.fromLTRB(4, 0, 4, 2),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -56,13 +57,12 @@ class StudentCard extends StatelessWidget {
                     color: Colors.black,
                   ),
                 ),
-                const SizedBox(height: 2),
                 Text(
                   student.group,
                   style: TextStyle(
                     fontSize: 12,
                     fontFamily: 'LoveDaysLoveFont',
-                    color: Colors.black.withOpacity(0.6),
+                    color: Colors.black.withOpacity(0.8),
                   ),
                 ),
               ],
