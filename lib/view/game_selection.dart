@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frenc_app/widget/button.dart';
+import 'package:frenc_app/widgets/character/button.dart';
 import 'package:frenc_app/view/start_screen.dart';
 
 class GameSelectionScreen extends StatelessWidget {
