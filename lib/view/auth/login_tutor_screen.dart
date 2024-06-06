@@ -7,7 +7,7 @@ import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 
-import '../../widget/gallo.dart';
+import '../../widgets/character/gallo.dart';
 
 class TutorLoginScreen extends StatefulWidget {
   TutorLoginScreen({Key? key}) : super(key: key);

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:frenc_app/view/auth/login_tutor_screen.dart';
 import 'package:frenc_app/utils/audio_manager.dart';
+import 'package:frenc_app/view/game_selection.dart';
 import 'package:rive/rive.dart';
 
 class StartScreen extends StatefulWidget {
@@ -77,7 +78,13 @@ class _StartScreenState extends State<StartScreen> {
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const GameSelectionScreen()),
+                      );
+                    },
                     child: const Text('Jugar como Invitado'),
                   ),
                 ],

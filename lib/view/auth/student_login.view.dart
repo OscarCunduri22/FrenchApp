@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/model/fruit.dart';
+import 'package:frenc_app/view/game_selection.dart';
 import 'package:frenc_app/view_model/auth/student_login.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
@@ -52,8 +53,7 @@ class FruitGameScreen extends StatelessWidget {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              NextScreen()), // Replace with your next screen
+                          builder: (context) => const GameSelectionScreen()),
                     );
                   });
                 }
@@ -213,18 +213,6 @@ class _ShakeWidgetState extends State<ShakeWidget>
           child: child,
         );
       },
-    );
-  }
-}
-
-class NextScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Next Screen')),
-      body: Center(
-        child: Text('You have successfully placed all fruits!'),
-      ),
     );
   }
 }
