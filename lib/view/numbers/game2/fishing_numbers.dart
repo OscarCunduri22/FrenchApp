@@ -1,36 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rive/rive.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'dart:async';
 
-class GalloComponent extends StatefulWidget {
+class PezComponent extends StatefulWidget {
   final EdgeInsetsGeometry padding;
 
-  const GalloComponent({Key? key, this.padding = const EdgeInsets.all(0)})
+  const PezComponent({Key? key, this.padding = const EdgeInsets.all(0)})
       : super(key: key);
 
   @override
-  State<GalloComponent> createState() => _GalloComponentState();
+  State<PezComponent> createState() => _PezComponentState();
 }
 
-class _GalloComponentState extends State<GalloComponent> {
+class _PezComponentState extends State<PezComponent> {
   Artboard? riveArtboard;
   SMITrigger? isDancing;
-
-  final AudioPlayer audioPlayer = AudioPlayer();
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
-    rootBundle.load('assets/RiveAssets/pez2.riv').then(
+    rootBundle.load('assets/RiveAssets/test_pez.riv').then(
       (data) async {
-        final file = await RiveFile.asset('assets/RiveAssets/pez2.riv');
+        final file = await RiveFile.asset('assets/RiveAssets/test_pez.riv');
         final artboard = file.mainArtboard;
         var controller =
             StateMachineController.fromArtboard(artboard, 'State Machine 1');
+        print('PEZ LISTO VAAAAAAAAR');
         if (controller != null) {
           artboard.addController(controller);
-          isDancing = controller.findSMI('pressed');
+          isDancing = controller.findSMI('Trigger 1');
+          print('PEZ LISTO');
+          isDancing?.fire();
+          _timer = Timer.periodic(Duration(seconds: 5), (timer) {
+            isDancing?.fire();
+          });
         }
         setState(() => riveArtboard = artboard);
       },
@@ -39,33 +44,24 @@ class _GalloComponentState extends State<GalloComponent> {
 
   @override
   void dispose() {
-    audioPlayer.dispose();
+    _timer?.cancel();
     super.dispose();
-  }
-
-  void _playSound() async {
-    await audioPlayer.play(AssetSource('../assets/sound/speech1.mp3'));
   }
 
   @override
   Widget build(BuildContext context) {
-    /*return Padding(
+    return Padding(
       padding: widget.padding,
       child: riveArtboard == null
           ? const SizedBox()
           : GestureDetector(
               onTap: () {
                 isDancing?.fire();
-                _playSound();
               },
               child: Rive(
                 artboard: riveArtboard!,
               ),
             ),
-    );
-  }*/
-    return Center(
-      child: Rive(artboard: riveArtboard!),
     );
   }
 }

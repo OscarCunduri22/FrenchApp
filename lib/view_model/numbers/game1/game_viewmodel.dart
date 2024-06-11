@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 
 class GameViewModel extends ChangeNotifier {
   final List<String> _numbers = [
-    'un',
-    'deux',
-    'trois',
-    'quatre',
-    'cinq',
-    'six',
-    'sept',
-    'huit',
-    'neuf',
-    'dix',
+    'UN',
+    'DEUX',
+    'TROIS',
+    'QUATRE',
+    'CINQ',
+    'SIX',
+    'SEPT',
+    'HUIT',
+    'NEUF',
+    'DIX',
   ];
 
   final List<String> _images = [

@@ -3,7 +3,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/firebase_options.dart';
 import 'package:frenc_app/utils/user_provider.dart';
+import 'package:frenc_app/view/auth/test.dart';
+import 'package:frenc_app/view/numbers/game1/game_screen.dart';
+import 'package:frenc_app/view/numbers/game2/fishing_numbers.dart';
 import 'package:frenc_app/view/start_screen.dart';
+import 'package:frenc_app/widgets/character/gallo.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -26,11 +30,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'LudoFrench',
       theme: ThemeData(
         primarySwatch: Colors.teal,
       ),
-      home: const StartScreen(),
+      home: GameOneScreen(),
     );
   }
 }

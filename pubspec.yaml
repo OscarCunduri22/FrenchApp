@@ -102,4 +102,10 @@ flutter:
     - family: SuperBrightFont
       fonts:
         - asset: assets/fonts/Font3.ttf
+    - family: TitanOneFont
+      fonts:
+        - asset: assets/fonts/TitanOne.ttf
+    - family: FuzzyBubblesFont
+      fonts:
+        - asset: assets/fonts/FuzzyBubbles.ttf
 
