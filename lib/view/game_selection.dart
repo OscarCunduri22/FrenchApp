@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frenc_app/view/numbers/game1/game_screen.dart';
+import 'package:frenc_app/view/vocals/tracing.dart';
 import 'package:frenc_app/widgets/character/button.dart';
 import 'package:frenc_app/view/start_screen.dart';
 
@@ -60,21 +61,24 @@ class GameSelectionScreen extends StatelessWidget {
                     const SizedBox(width: 10),
                   ],
                 ),
-                const Expanded(
+                Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       GameOption(
                         title: 'Voyelles',
                         imagePath: 'assets/images/gameSelection/voyelles.jpg',
-                        targetView: StartScreen(),
+                        targetView: TracingGame(
+                            imageAssetPath: 'assets/images/vocals/bee.jpg',
+                            letter: 'A',
+                            imageObjectName: 'Abellie'),
                       ),
-                      GameOption(
+                      const GameOption(
                         title: 'Nombres',
                         imagePath: 'assets/images/gameSelection/nombres.jpg',
                         targetView: GameOneScreen(),
                       ),
-                      GameOption(
+                      const GameOption(
                         title: 'Famille',
                         imagePath: 'assets/images/gameSelection/famille.jpg',
                         targetView: StartScreen(),
