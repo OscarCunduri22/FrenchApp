@@ -3,7 +3,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/firebase_options.dart';
 import 'package:frenc_app/utils/user_provider.dart';
-import 'package:frenc_app/view/auth/test.dart';
 import 'package:frenc_app/view/numbers/game1/game_screen.dart';
 import 'package:frenc_app/view/numbers/game2/fishing_numbers.dart';
 import 'package:frenc_app/view/start_screen.dart';
@@ -34,7 +33,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.teal,
       ),
-      home: GameOneScreen(),
+      home: const StartScreen(),
     );
   }
 }
