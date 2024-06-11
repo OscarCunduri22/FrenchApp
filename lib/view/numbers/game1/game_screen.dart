@@ -96,52 +96,51 @@ class _GameOneScreenState extends State<GameOneScreen>
                   decoration: const BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage(
-                          'assets/images/numbers/game1/game1_day.webp'),
+                          'assets/images/numbers/game1/fondo-marino.png'),
                       fit: BoxFit.cover,
                     ),
                   ),
-                  child: Container(
-                    color: Colors.white
-                        .withOpacity(0.65), // Adjust opacity as needed
-                  ),
                 ),
                 // Foreground Content
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ScaleTransition(
-                      scale: _wordChangeController,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          NumberImageWidget(
-                            imagePath: viewModel.images[viewModel.currentIndex],
-                          ),
-                          const SizedBox(height: 20),
-                          CharacterBoxWidget(
-                            word: viewModel.numbers[viewModel.currentIndex],
-                          ),
-                        ],
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ScaleTransition(
+                        scale: _wordChangeController,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            NumberImageWidget(
+                              imagePath:
+                                  viewModel.images[viewModel.currentIndex],
+                            ),
+                            const SizedBox(height: 20),
+                            CharacterBoxWidget(
+                              word: viewModel.numbers[viewModel.currentIndex],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 42),
-                    ScaleTransition(
-                      scale: _disorderedCharactersController,
-                      child: DisorderedCharactersWidget(
-                        word: viewModel.numbers[viewModel.currentIndex],
-                        onCorrect: () {
-                          _confettiController.play();
-                        },
+                      const SizedBox(height: 20),
+                      ScaleTransition(
+                        scale: _disorderedCharactersController,
+                        child: DisorderedCharactersWidget(
+                          word: viewModel.numbers[viewModel.currentIndex],
+                          onCorrect: () {
+                            _confettiController.play();
+                          },
+                        ),
                       ),
-                    ),
-                    ConfettiWidget(
-                      confettiController: _confettiController,
-                      blastDirection: pi / 2,
-                      emissionFrequency: 0.05,
-                      numberOfParticles: 10,
-                      gravity: 0.1,
-                    ),
-                  ],
+                      ConfettiWidget(
+                        confettiController: _confettiController,
+                        blastDirection: pi / 2,
+                        emissionFrequency: 0.05,
+                        numberOfParticles: 10,
+                        gravity: 0.1,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             );

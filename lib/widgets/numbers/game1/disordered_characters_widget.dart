@@ -23,24 +23,25 @@ class DisorderedCharactersWidget extends StatelessWidget {
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(characters.length, (index) {
-            return Draggable<String>(
-              data: characters[index],
-              child: DraggableCharacter(
-                character: characters[index],
-                dragging: false,
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Draggable<String>(
+                data: characters[index],
+                child: DraggableCharacter(
+                  character: characters[index],
+                  dragging: false,
+                ),
+                feedback: DraggableCharacter(
+                  character: characters[index],
+                  dragging: true,
+                ),
+                childWhenDragging: DraggableCharacter(
+                  character: characters[index],
+                  dragging: false,
+                  invisible: true,
+                ),
+                onDragEnd: (details) {},
               ),
-              feedback: DraggableCharacter(
-                character: characters[index],
-                dragging: true,
-              ),
-              childWhenDragging: DraggableCharacter(
-                character: characters[index],
-                dragging: false,
-                invisible: true,
-              ),
-              onDragEnd: (details) {
-                // No need to reset characterSlots here, because it will reset all slots
-              },
             );
           }),
         );
@@ -64,22 +65,16 @@ class DraggableCharacter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 50,
-      height: 50,
-      margin: const EdgeInsets.all(4.0),
+      width: 80,
+      height: 80,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: invisible ? Colors.transparent : Colors.blueAccent,
-        borderRadius: BorderRadius.circular(8.0),
-        boxShadow: dragging
-            ? [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.5),
-                  offset: const Offset(0, 2),
-                  blurRadius: 8.0,
-                )
-              ]
-            : null,
+        image: invisible
+            ? null
+            : const DecorationImage(
+                image: AssetImage('assets/images/numbers/game1/burbuja.png'),
+                fit: BoxFit.cover,
+              ),
       ),
       child: Text(
         character,
@@ -87,6 +82,7 @@ class DraggableCharacter extends StatelessWidget {
           fontSize: 32.0,
           fontWeight: FontWeight.bold,
           color: Colors.white,
+          fontFamily: 'FuzzyBubblesFont',
         ),
       ),
     );
