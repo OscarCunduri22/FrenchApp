@@ -80,10 +80,10 @@ class _StartScreenState extends State<StartScreen> {
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const GameSelectionScreen()),
-                      );
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const GameSelectionScreen()));
                     },
                     child: const Text('Jugar como Invitado'),
                   ),

@@ -76,7 +76,7 @@ class GameSelectionScreen extends StatelessWidget {
                       const GameOption(
                         title: 'Nombres',
                         imagePath: 'assets/images/gameSelection/nombres.jpg',
-                        targetView: GameOneScreen(),
+                        targetView: BubbleNumbersGame(),
                       ),
                       const GameOption(
                         title: 'Famille',
