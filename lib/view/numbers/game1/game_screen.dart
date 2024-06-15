@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:frenc_app/view_model/numbers/game1/numbersgame1_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:confetti/confetti.dart';
 import 'package:frenc_app/widgets/numbers/game1/character_box_widget.dart';
 import 'package:frenc_app/widgets/numbers/game1/disordered_characters_widget.dart';
-import 'package:frenc_app/view_model/numbers/game1/game_viewmodel.dart';
 import 'package:frenc_app/widgets/numbers/game1/number_image_widget.dart';
 import 'dart:math';
 
-class GameScreen extends StatefulWidget {
-  const GameScreen({Key? key}) : super(key: key);
+class BubbleNumbersGame extends StatefulWidget {
+  const BubbleNumbersGame({Key? key}) : super(key: key);
 
   @override
-  _GameScreenState createState() => _GameScreenState();
+  _BubbleNumbersGameState createState() => _BubbleNumbersGameState();
 }
 
-class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
+class _BubbleNumbersGameState extends State<BubbleNumbersGame>
+    with TickerProviderStateMixin {
   late ConfettiController _confettiController;
   late AnimationController _characterBoxController;
   late AnimationController _disorderedCharactersController;
@@ -95,52 +96,51 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                   decoration: const BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage(
-                          'assets/images/numbers/game1/game1_day.webp'),
+                          'assets/images/numbers/game1/fondo-marino.png'),
                       fit: BoxFit.cover,
                     ),
                   ),
-                  child: Container(
-                    color: Colors.white
-                        .withOpacity(0.65), // Adjust opacity as needed
-                  ),
                 ),
                 // Foreground Content
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ScaleTransition(
-                      scale: _wordChangeController,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          NumberImageWidget(
-                            imagePath: viewModel.images[viewModel.currentIndex],
-                          ),
-                          const SizedBox(height: 20),
-                          CharacterBoxWidget(
-                            word: viewModel.numbers[viewModel.currentIndex],
-                          ),
-                        ],
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ScaleTransition(
+                        scale: _wordChangeController,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            NumberImageWidget(
+                              imagePath:
+                                  viewModel.images[viewModel.currentIndex],
+                            ),
+                            const SizedBox(height: 20),
+                            CharacterBoxWidget(
+                              word: viewModel.numbers[viewModel.currentIndex],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 42),
-                    ScaleTransition(
-                      scale: _disorderedCharactersController,
-                      child: DisorderedCharactersWidget(
-                        word: viewModel.numbers[viewModel.currentIndex],
-                        onCorrect: () {
-                          _confettiController.play();
-                        },
+                      const SizedBox(height: 20),
+                      ScaleTransition(
+                        scale: _disorderedCharactersController,
+                        child: DisorderedCharactersWidget(
+                          word: viewModel.numbers[viewModel.currentIndex],
+                          onCorrect: () {
+                            _confettiController.play();
+                          },
+                        ),
                       ),
-                    ),
-                    ConfettiWidget(
-                      confettiController: _confettiController,
-                      blastDirection: pi / 2,
-                      emissionFrequency: 0.05,
-                      numberOfParticles: 10,
-                      gravity: 0.1,
-                    ),
-                  ],
+                      ConfettiWidget(
+                        confettiController: _confettiController,
+                        blastDirection: pi / 2,
+                        emissionFrequency: 0.05,
+                        numberOfParticles: 10,
+                        gravity: 0.1,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             );

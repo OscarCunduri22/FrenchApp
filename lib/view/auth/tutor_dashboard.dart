@@ -36,8 +36,7 @@ class TutorDashboardScreen extends StatelessWidget {
         Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage(
-                  'assets/images/auth/background_with_stars.png'), // Reemplaza con la ruta de tu imagen
+              image: AssetImage('assets/images/auth/background_with_stars.png'),
               fit: BoxFit.cover,
             ),
           ),
@@ -95,8 +94,16 @@ class TutorDashboardScreen extends StatelessWidget {
                       Icons.person,
                       0.1,
                       null,
-                      onTap: () {
-                        // Navegar a la pantalla de preferencias
+                      onTap: () async {
+                        String? tutorId = await _databaseRepository
+                            .getTutorId(currentUser.email);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  CreateStudentScreenHorizontal(
+                                      tutorId: tutorId!)),
+                        );
                       },
                     ),
                     _buildCard(
