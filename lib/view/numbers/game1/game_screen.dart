@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:frenc_app/view_model/numbers/game1/numbersgame1_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:confetti/confetti.dart';
 import 'package:frenc_app/widgets/numbers/game1/character_box_widget.dart';
 import 'package:frenc_app/widgets/numbers/game1/disordered_characters_widget.dart';
-import 'package:frenc_app/view_model/numbers/game1/game_viewmodel.dart';
 import 'package:frenc_app/widgets/numbers/game1/number_image_widget.dart';
 import 'dart:math';
 
-class GameOneScreen extends StatefulWidget {
-  const GameOneScreen({Key? key}) : super(key: key);
+class BubbleNumbersGame extends StatefulWidget {
+  const BubbleNumbersGame({Key? key}) : super(key: key);
 
   @override
-  _GameOneScreenState createState() => _GameOneScreenState();
+  _BubbleNumbersGameState createState() => _BubbleNumbersGameState();
 }
 
-class _GameOneScreenState extends State<GameOneScreen>
+class _BubbleNumbersGameState extends State<BubbleNumbersGame>
     with TickerProviderStateMixin {
   late ConfettiController _confettiController;
   late AnimationController _characterBoxController;

@@ -1,8 +1,8 @@
 // ignore_for_file: sort_child_properties_last
 
 import 'package:flutter/material.dart';
+import 'package:frenc_app/view_model/numbers/game1/numbersgame1_viewmodel.dart';
 import 'package:provider/provider.dart';
-import 'package:frenc_app/view_model/numbers/game1/game_viewmodel.dart';
 
 class DisorderedCharactersWidget extends StatelessWidget {
   final String word;
