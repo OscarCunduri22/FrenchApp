@@ -69,17 +69,6 @@ class ProgressBar extends StatelessWidget {
                   ),
                 ),
               ),
-              GestureDetector(
-                onTap: onVolume,
-                child: Container(
-                  margin: const EdgeInsets.only(right: 30),
-                  child: Image.asset(
-                    'assets/images/icons/gallo-galo.png',
-                    width: 30,
-                    height: 30,
-                  ),
-                ),
-              ),
             ],
           ),
           const SizedBox(height: 15),
