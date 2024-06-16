@@ -1,45 +1,151 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:frenc_app/utils/progress_bar.dart';
+import 'package:frenc_app/view/game_selection.dart';
 import 'package:frenc_app/view_model/numbers/game2/game_provider.dart';
 import 'package:frenc_app/widgets/numbers/game2/numbers_options.dart';
 import 'package:frenc_app/widgets/numbers/game2/train_cart.dart';
+import 'package:frenc_app/widgets/numbers/game2/train_engine.dart';
 import 'package:provider/provider.dart';
 
-class TrainWagonNumbersGame extends StatelessWidget {
+class TrainWagonNumbersGame extends StatefulWidget {
+  @override
+  _TrainWagonNumbersGameState createState() => _TrainWagonNumbersGameState();
+}
+
+class _TrainWagonNumbersGameState extends State<TrainWagonNumbersGame> {
+  bool isOffScreenLeft = false;
+  bool isOffScreenRight = false;
+  bool isVisible = true;
+
+  void _onGameComplete() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              GameSelectionScreen()), // Ensure this is the correct screen
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => GameProvider(),
       child: Scaffold(
-        appBar: AppBar(
-          title: Text('Drag and Drop Game'),
-        ),
-        body: Consumer<GameProvider>(
-          builder: (context, gameProvider, child) {
-            return Column(
-              children: [
-                SizedBox(height: 20),
-                Text(
-                  'Select the number to complete the sequence',
-                  style: TextStyle(fontSize: 20),
-                  textAlign: TextAlign.center,
+        body: Stack(
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(
+                      'assets/images/numbers/game2/trainstation_bg.png'),
+                  fit: BoxFit.cover,
                 ),
-                SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: gameProvider.options
-                      .map((number) => NumberOptionWidget(number: number))
-                      .toList(),
-                ),
-                SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: gameProvider.sequence
-                      .map((number) => TrainCar(number: number))
-                      .toList(),
-                ),
-              ],
-            );
-          },
+              ),
+            ),
+            // Game Content
+            Consumer<GameProvider>(
+              builder: (context, gameProvider, child) {
+                if (gameProvider.isCompleted) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    setState(() {
+                      isOffScreenLeft = true;
+                      isVisible = false;
+                    });
+                    Timer(const Duration(seconds: 1), () {
+                      setState(() {
+                        isVisible = false;
+                        isOffScreenLeft = false;
+                      });
+                      Timer(const Duration(seconds: 1), () {
+                        setState(() {
+                          isVisible = false;
+                          isOffScreenRight = true;
+                        });
+                        Timer(const Duration(seconds: 1), () {
+                          setState(() {
+                            isVisible = true;
+                            isOffScreenRight = false;
+                          });
+                        });
+                      });
+                    });
+                  });
+                }
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ProgressBar(
+                      backgroundColor: Color(0xF29B2929),
+                      progressBarColor: Color(0xFF0BCC6C),
+                      headerText: 'Números',
+                      progressValue: gameProvider.progressValue,
+                      onBack: () {
+                        Navigator.pop(context);
+                      },
+                      onVolume: () {},
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: gameProvider.options
+                          .map((number) => NumberOptionWidget(number: number))
+                          .toList(),
+                    ),
+                    const SizedBox(height: 20),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        height: 160,
+                        alignment: Alignment.bottomCenter,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            AnimatedPositioned(
+                              duration: const Duration(seconds: 1),
+                              left: isOffScreenLeft
+                                  ? -MediaQuery.of(context).size.width
+                                  : (isOffScreenRight
+                                      ? MediaQuery.of(context).size.width
+                                      : 0),
+                              child: AnimatedOpacity(
+                                duration: const Duration(milliseconds: 500),
+                                opacity: isVisible ? 1.0 : 0.0,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    TrainEngine(),
+                                    ...gameProvider.sequence
+                                        .asMap()
+                                        .entries
+                                        .map((entry) {
+                                      int idx = entry.key;
+                                      int? number = entry.value;
+                                      if (idx == 1) {
+                                        return TrainCar(
+                                            number: number,
+                                            isMiddle: true,
+                                            onComplete: _onGameComplete);
+                                      } else {
+                                        return TrainCar(
+                                            number: number,
+                                            onComplete: _onGameComplete);
+                                      }
+                                    }).toList(),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ],
         ),
       ),
     );
