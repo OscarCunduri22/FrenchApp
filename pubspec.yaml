@@ -85,6 +85,7 @@ flutter:
     - assets/images/numbers/game1/
     - assets/images/numbers/game2/
     - assets/images/vocals/
+    - assets/images/numbers/game3/
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
