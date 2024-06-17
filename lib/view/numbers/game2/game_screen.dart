@@ -74,12 +74,12 @@ class _TrainWagonNumbersGameState extends State<TrainWagonNumbersGame> {
                 }
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ProgressBar(
-                      backgroundColor: const Color(0xF29B2929),
-                      progressBarColor: const Color(0xFF0BCC6C),
-                      headerText: 'Completa la secuencia de números',
+                      backgroundColor: Color(0xF29B2929),
+                      progressBarColor: Color(0xFF0BCC6C),
+                      headerText: 'Números',
                       progressValue: gameProvider.progressValue,
                       onBack: () {
                         Navigator.pop(context);

@@ -33,6 +33,6 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.teal,
         ),
-        home: const BubbleNumbersGame());
+        home: TrainWagonNumbersGame());
   }
 }
