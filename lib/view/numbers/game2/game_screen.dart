@@ -77,7 +77,7 @@ class _TrainWagonNumbersGameState extends State<TrainWagonNumbersGame> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ProgressBar(
-                      backgroundColor: const Color(0xF29B2929),
+                      backgroundColor: const Color(0xF29B2929).withOpacity(0.8),
                       progressBarColor: const Color(0xFF0BCC6C),
                       headerText: 'Completa la secuencia de números',
                       progressValue: gameProvider.progressValue,

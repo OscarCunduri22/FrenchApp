@@ -125,14 +125,14 @@ class _BubbleNumbersGameState extends State<BubbleNumbersGame>
                               imagePath:
                                   viewModel.images[viewModel.currentIndex],
                             ),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 10),
                             CharacterBoxWidget(
                               word: viewModel.numbers[viewModel.currentIndex],
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
                       ScaleTransition(
                         scale: _disorderedCharactersController,
                         child: DisorderedCharactersWidget(
