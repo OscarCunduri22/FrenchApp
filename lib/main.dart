@@ -3,8 +3,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/firebase_options.dart';
 import 'package:frenc_app/utils/user_provider.dart';
+import 'package:frenc_app/view/family/drag_family.dart';
 import 'package:frenc_app/view/start_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:frenc_app/view/family/family_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,11 +27,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'LudoFrench',
-        theme: ThemeData(
-          primarySwatch: Colors.teal,
-        ),
-        home: const StartScreen());
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.teal,
+      ),
+      home: const DragAndDropGame(),
+    );
   }
 }
