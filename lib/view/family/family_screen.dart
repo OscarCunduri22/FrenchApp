@@ -1,23 +1,9 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
-import 'package:frenc_app/utils/progress_bar.dart';
+import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:frenc_app/utils/replay_popup.dart';
-
-void main() => runApp(const MyApp());
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Family Game',
-      theme: ThemeData.light(useMaterial3: true),
-      home: const FamilyGame(),
-    );
-  }
-}
+import 'package:frenc_app/utils/audio_manager.dart';
 
 class FamilyGame extends StatefulWidget {
   const FamilyGame({super.key});
@@ -31,6 +17,7 @@ class _FamilyGameState extends State<FamilyGame> {
   late List<String> cardsDown;
   int score = 0;
   bool roundCompleted = false;
+  final AudioManager audioManager = AudioManager();
 
   @override
   void initState() {
@@ -38,12 +25,26 @@ class _FamilyGameState extends State<FamilyGame> {
     newGame();
   }
 
+  @override
+  void dispose() {
+    audioManager.dispose();
+    super.dispose();
+  }
+
   void newGame() {
     List<String> images = [
-      'assets/images/family/brother_caucasian.png',
-      'assets/images/family/father_caucasian.png',
-      'assets/images/family/sister_caucasian.png',
-      'assets/images/family/mother_caucasian.png'
+      'assets/images/family/mother.jpg',
+      'assets/images/family/father.jpg',
+      'assets/images/family/parents.jpg',
+      'assets/images/family/parents2.jpg',
+      'assets/images/family/brother.jpg',
+      'assets/images/family/brothers.jpg',
+      'assets/images/family/grandfather.jpg',
+      'assets/images/family/grandmother.jpg',
+      'assets/images/family/grandparents.jpg',
+      'assets/images/family/sister.jpg',
+      'assets/images/family/sisters.jpg',
+      'assets/images/family/siblings.jpg',
     ];
 
     cardUp = images[Random().nextInt(images.length)];
@@ -58,8 +59,9 @@ class _FamilyGameState extends State<FamilyGame> {
     setState(() {});
   }
 
-  void checkMatch(String selectedCard) {
+  void checkMatch(String selectedCard) async {
     if (selectedCard == cardUp) {
+      // await playSound(selectedCard);
       setState(() {
         score++;
         if (score >= 10) {
@@ -68,7 +70,55 @@ class _FamilyGameState extends State<FamilyGame> {
           newGame();
         }
       });
+    } else {
+      await audioManager.play('assets/sounds/error.mp3');
     }
+  }
+
+  Future<void> playSound(String card) async {
+    String soundPath;
+    switch (card) {
+      case 'assets/images/family/mother.jpg':
+        soundPath = 'assets/sounds/mother.mp3';
+        break;
+      case 'assets/images/family/father.jpg':
+        soundPath = 'assets/sounds/father.mp3';
+        break;
+      case 'assets/images/family/parents.jpg':
+        soundPath = 'assets/sounds/parents.mp3';
+        break;
+      case 'assets/images/family/parents2.jpg':
+        soundPath = 'assets/sounds/parents.mp3';
+        break;
+      case 'assets/images/family/brother.jpg':
+        soundPath = 'assets/sounds/brother.mp3';
+        break;
+      case 'assets/images/family/brothers.jpg':
+        soundPath = 'assets/sounds/brothers.mp3';
+        break;
+      case 'assets/images/family/grandfather.jpg':
+        soundPath = 'assets/sounds/grandfather.mp3';
+        break;
+      case 'assets/images/family/grandmother.jpg':
+        soundPath = 'assets/sounds/grandmother.mp3';
+        break;
+      case 'assets/images/family/grandparents.jpg':
+        soundPath = 'assets/sounds/grandparents.mp3';
+        break;
+      case 'assets/images/family/sister.jpg':
+        soundPath = 'assets/sounds/sister.mp3';
+        break;
+      case 'assets/images/family/sisters.jpg':
+        soundPath = 'assets/sounds/sisters.mp3';
+        break;
+      case 'assets/images/family/siblings.jpg':
+        soundPath = 'assets/sounds/siblings.mp3';
+        break;
+      default:
+        soundPath = 'assets/sounds/error.mp3';
+    }
+
+    await audioManager.play(soundPath);
   }
 
   void _showWinDialog() {
@@ -91,7 +141,11 @@ class _FamilyGameState extends State<FamilyGame> {
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-          color: Color.fromARGB(255, 118, 207, 191),
+          image: DecorationImage(
+            image: AssetImage(
+                'assets/images/family/Morado.png'), // Reemplaza con la ruta de tu imagen de fondo
+            fit: BoxFit.cover,
+          ),
         ),
         child: Column(
           children: [
@@ -119,7 +173,7 @@ class _FamilyGameState extends State<FamilyGame> {
                     image: AssetImage(cardUp),
                     fit: BoxFit.cover,
                   ),
-                  borderRadius: BorderRadius.circular(15.0),
+                  borderRadius: BorderRadius.circular(8.0),
                 ),
               ),
             ),
@@ -127,7 +181,6 @@ class _FamilyGameState extends State<FamilyGame> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: cardsDown.asMap().entries.map((entry) {
-                int index = entry.key;
                 String image = entry.value;
                 Widget animatedImage;
 
@@ -150,14 +203,14 @@ class _FamilyGameState extends State<FamilyGame> {
 
   Widget buildImageCard(String image) {
     return Container(
-      width: 80,
-      height: 80,
+      width: 90,
+      height: 110,
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage(image),
           fit: BoxFit.cover,
         ),
-        borderRadius: BorderRadius.circular(15.0),
+        borderRadius: BorderRadius.circular(8.0),
       ),
     );
   }
