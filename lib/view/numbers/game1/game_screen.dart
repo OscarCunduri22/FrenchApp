@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:frenc_app/utils/progress_bar.dart';
 import 'package:frenc_app/view_model/numbers/game1/numbersgame1_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:confetti/confetti.dart';
@@ -41,7 +42,6 @@ class _BubbleNumbersGameState extends State<BubbleNumbersGame>
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
-    // Enforce horizontal orientation
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
@@ -91,7 +91,6 @@ class _BubbleNumbersGameState extends State<BubbleNumbersGame>
             }
             return Stack(
               children: [
-                // Background Image with Opacity
                 Container(
                   decoration: const BoxDecoration(
                     image: DecorationImage(
@@ -104,8 +103,19 @@ class _BubbleNumbersGameState extends State<BubbleNumbersGame>
                 // Foreground Content
                 Center(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      ProgressBar(
+                        backgroundColor:
+                            const Color(0xF2005BA7).withOpacity(0.8),
+                        progressBarColor: const Color(0xFF0BCC6C),
+                        headerText: 'Completa la secuencia de números',
+                        progressValue: viewModel.currentIndex / 10.0,
+                        onBack: () {
+                          Navigator.pop(context);
+                        },
+                        onVolume: () {},
+                      ),
                       ScaleTransition(
                         scale: _wordChangeController,
                         child: Column(
@@ -115,14 +125,14 @@ class _BubbleNumbersGameState extends State<BubbleNumbersGame>
                               imagePath:
                                   viewModel.images[viewModel.currentIndex],
                             ),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 10),
                             CharacterBoxWidget(
                               word: viewModel.numbers[viewModel.currentIndex],
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
                       ScaleTransition(
                         scale: _disorderedCharactersController,
                         child: DisorderedCharactersWidget(

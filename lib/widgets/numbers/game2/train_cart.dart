@@ -1,40 +1,43 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:frenc_app/view_model/numbers/game2/game_provider.dart';
+import 'package:frenc_app/widgets/numbers/game2/number.dart';
 import 'package:provider/provider.dart';
 
 class TrainCar extends StatelessWidget {
   final int? number;
+  final bool isMiddle;
+  final VoidCallback onComplete;
 
-  TrainCar({this.number});
+  TrainCar({this.number, this.isMiddle = false, required this.onComplete});
 
   @override
   Widget build(BuildContext context) {
     return DragTarget<int>(
       onAccept: (data) {
-        context.read<GameProvider>().selectOption(data);
+        context.read<GameProvider>().selectOption(data, onComplete);
       },
       builder: (context, candidateData, rejectedData) {
         return Container(
-          width: 100,
-          height: 100,
-          margin: EdgeInsets.all(10),
+          width: 135,
+          height: 120,
+          margin: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Colors.red,
-            border: Border.all(color: Colors.black),
+            image: const DecorationImage(
+              image: AssetImage(
+                  'assets/images/numbers/game2/tren2-removebg-preview.png'),
+              fit: BoxFit.cover,
+            ),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Center(
-            child: number != null
-                ? Text(
-                    '$number',
-                    style: TextStyle(fontSize: 24, color: Colors.white),
-                  )
-                : (context.watch<GameProvider>().selectedOption != null
-                    ? Text(
-                        '${context.watch<GameProvider>().selectedOption}',
-                        style: TextStyle(fontSize: 24, color: Colors.white),
-                      )
-                    : Container()),
+            child: isMiddle
+                ? (context.watch<GameProvider>().selectedOption != null
+                    ? NumberBox(
+                        number: context.watch<GameProvider>().selectedOption!)
+                    : NumberBox(number: null))
+                : (number != null ? NumberBox(number: number!) : Container()),
           ),
         );
       },

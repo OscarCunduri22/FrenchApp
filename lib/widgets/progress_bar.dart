@@ -75,10 +75,7 @@ class ProgressBar extends StatelessWidget {
           Text(
             headerText,
             style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
+                fontSize: 20, color: Colors.white, fontFamily: 'TitanOneFont'),
             textAlign: TextAlign.center,
           ),
         ],

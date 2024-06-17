@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 class GameProvider with ChangeNotifier {
@@ -10,19 +9,26 @@ class GameProvider with ChangeNotifier {
   int correctAnswer = 0;
   int? selectedOption;
   bool isCompleted = false;
+  int currentLevel = 0;
+  final int totalLevels = 5;
 
   GameProvider() {
     generateNewLevel();
   }
 
-  void selectOption(int option) {
+  void selectOption(int option, VoidCallback onComplete) {
     selectedOption = option;
     if (checkAnswer()) {
       isCompleted = true;
       notifyListeners();
       Timer(const Duration(seconds: 2), () {
         selectedOption = null;
-        generateNewLevel();
+        currentLevel++;
+        if (currentLevel < totalLevels) {
+          generateNewLevel();
+        } else {
+          onComplete();
+        }
         isCompleted = false;
         notifyListeners();
       });
@@ -56,4 +62,6 @@ class GameProvider with ChangeNotifier {
     options = optionsSet.toList();
     options.shuffle();
   }
+
+  double get progressValue => currentLevel / totalLevels;
 }

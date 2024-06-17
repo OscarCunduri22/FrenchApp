@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:frenc_app/firebase_options.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/family/drag_family.dart';
+import 'package:frenc_app/view/auth/student_login.view.dart';
+import 'package:frenc_app/view/numbers/game1/game_screen.dart';
+import 'package:frenc_app/view/numbers/game2/game_screen.dart';
+import 'package:frenc_app/view/numbers/game3/game_screen.dart';
 import 'package:frenc_app/view/start_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:frenc_app/view/family/family_screen.dart';
@@ -27,12 +31,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.teal,
-      ),
-      home: const DragAndDropGame(),
-    );
+        debugShowCheckedModeBanner: false,
+        title: 'LudoFrench',
+        theme: ThemeData(
+          primarySwatch: Colors.teal,
+        ),
+        home: MemoryNumbersGame());
   }
 }
