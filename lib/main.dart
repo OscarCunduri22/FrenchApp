@@ -36,6 +36,6 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.teal,
         ),
-        home: MemoryNumbersGame());
+        home: const DragAndDropGame());
   }
 }
