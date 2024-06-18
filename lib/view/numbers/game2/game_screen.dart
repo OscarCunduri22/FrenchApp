@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:frenc_app/utils/progress_bar.dart';
 import 'package:frenc_app/view/game_selection.dart';
 import 'package:frenc_app/view_model/numbers/game2/game_provider.dart';
 import 'package:frenc_app/widgets/numbers/game2/numbers_options.dart';
 import 'package:frenc_app/widgets/numbers/game2/train_cart.dart';
 import 'package:frenc_app/widgets/numbers/game2/train_engine.dart';
+import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:provider/provider.dart';
 
 class TrainWagonNumbersGame extends StatefulWidget {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
+import 'dart:math';
 
 class DragAndDropGame extends StatefulWidget {
   const DragAndDropGame({Key? key}) : super(key: key);
@@ -27,8 +28,47 @@ class _DragAndDropGameState extends State<DragAndDropGame> {
 
   double score = 0.0;
 
+  final Random random = Random();
+
   @override
   Widget build(BuildContext context) {
+    List<Map<String, dynamic>> targets = [
+      {
+        'target': 'mother',
+        'left': 605.0,
+        'top': 80.0,
+        'silueta': 'assets/images/family/smother.png',
+        'width': 100.0,
+        'height': 160.0,
+      },
+      {
+        'target': 'father',
+        'left': 230.0,
+        'top': 80.0,
+        'silueta': 'assets/images/family/sfather.png',
+        'width': 100.0,
+        'height': 160.0,
+      },
+      {
+        'target': 'sister',
+        'left': 480.0,
+        'top': 120.0,
+        'silueta': 'assets/images/family/ssister.png',
+        'width': 100.0,
+        'height': 130.0,
+      },
+      {
+        'target': 'son',
+        'left': 370.0,
+        'top': 110.0,
+        'silueta': 'assets/images/family/sbrother.png',
+        'width': 100.0,
+        'height': 130.0,
+      },
+    ];
+
+    targets.shuffle(random);
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -56,38 +96,16 @@ class _DragAndDropGameState extends State<DragAndDropGame> {
             Expanded(
               child: Stack(
                 children: [
-                  buildPositionedDragTarget(
-                    'mother',
-                    left: 605,
-                    top: 80,
-                    silueta: 'assets/images/family/smother.png',
-                    width: 100,
-                    height: 160,
-                  ),
-                  buildPositionedDragTarget(
-                    'father',
-                    left: 230,
-                    top: 80,
-                    silueta: 'assets/images/family/sfather.png',
-                    width: 100,
-                    height: 160,
-                  ),
-                  buildPositionedDragTarget(
-                    'sister',
-                    left: 480,
-                    top: 120,
-                    silueta: 'assets/images/family/ssister.png',
-                    width: 100,
-                    height: 130,
-                  ),
-                  buildPositionedDragTarget(
-                    'son',
-                    left: 370,
-                    top: 110,
-                    silueta: 'assets/images/family/sbrother.png',
-                    width: 100,
-                    height: 130,
-                  ),
+                  ...targets.map((target) {
+                    return buildPositionedDragTarget(
+                      target['target'],
+                      left: target['left'],
+                      top: target['top'],
+                      silueta: target['silueta'],
+                      width: target['width'],
+                      height: target['height'],
+                    );
+                  }).toList(),
                   // Draggable images in specific squares
                   ...buildRemainingDraggableImages(),
                 ],

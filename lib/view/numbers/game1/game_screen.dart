@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:frenc_app/utils/progress_bar.dart';
 import 'package:frenc_app/view_model/numbers/game1/numbersgame1_viewmodel.dart';
+import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:confetti/confetti.dart';
 import 'package:frenc_app/widgets/numbers/game1/character_box_widget.dart';
