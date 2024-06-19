@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
 import 'dart:math';
 
-class DragAndDropGame extends StatefulWidget {
-  const DragAndDropGame({Key? key}) : super(key: key);
+class GatherFamilyGame extends StatefulWidget {
+  const GatherFamilyGame({Key? key}) : super(key: key);
 
   @override
-  State<DragAndDropGame> createState() => _DragAndDropGameState();
+  State<GatherFamilyGame> createState() => _GatherFamilyGameState();
 }
 
-class _DragAndDropGameState extends State<DragAndDropGame> {
+class _GatherFamilyGameState extends State<GatherFamilyGame> {
   final List<String> images = [
     'assets/images/family/siluetmother.png',
     'assets/images/family/siluetsister.png',
