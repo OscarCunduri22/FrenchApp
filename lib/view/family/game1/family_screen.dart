@@ -5,14 +5,14 @@ import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:frenc_app/utils/replay_popup.dart';
 import 'package:frenc_app/utils/audio_manager.dart';
 
-class FamilyGame extends StatefulWidget {
-  const FamilyGame({super.key});
+class FindFamilyGame extends StatefulWidget {
+  const FindFamilyGame({super.key});
 
   @override
-  State<FamilyGame> createState() => _FamilyGameState();
+  State<FindFamilyGame> createState() => _FindFamilyGameState();
 }
 
-class _FamilyGameState extends State<FamilyGame> {
+class _FindFamilyGameState extends State<FindFamilyGame> {
   late String cardUp;
   late List<String> cardsDown;
   int score = 0;
