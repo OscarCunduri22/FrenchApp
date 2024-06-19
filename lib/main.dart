@@ -3,14 +3,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/firebase_options.dart';
 import 'package:frenc_app/utils/user_provider.dart';
-import 'package:frenc_app/view/family/drag_family.dart';
+import 'package:frenc_app/view/family/game3/drag_family.dart';
 import 'package:frenc_app/view/auth/student_login.view.dart';
 import 'package:frenc_app/view/numbers/game1/game_screen.dart';
 import 'package:frenc_app/view/numbers/game2/game_screen.dart';
 import 'package:frenc_app/view/numbers/game3/game_screen.dart';
 import 'package:frenc_app/view/start_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:frenc_app/view/family/family_screen.dart';
+import 'package:frenc_app/view/family/game1/family_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,6 +36,9 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.teal,
         ),
-        home: MemoryNumbersGame());
+        home: const GatherFamilyGame());
   }
 }
+
+
+/* Checked */
