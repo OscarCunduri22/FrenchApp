@@ -81,7 +81,9 @@ flutter:
     - assets/images/gameSelection/
     - assets/images/numbers/
     - assets/images/family/
+    - assets/images/family/game1/
     - assets/images/family/game2/
+    - assets/images/family/game3/
     - assets/images/icons/
     - assets/images/numbers/game1/
     - assets/images/numbers/game2/
