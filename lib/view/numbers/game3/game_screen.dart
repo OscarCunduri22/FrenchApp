@@ -4,6 +4,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
 
+/* Checked */
+
 class MemoryNumbersGame extends StatefulWidget {
   @override
   _MemoryNumbersGameState createState() => _MemoryNumbersGameState();
