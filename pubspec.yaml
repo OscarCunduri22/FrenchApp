@@ -85,8 +85,11 @@ flutter:
     - assets/images/icons/
     - assets/images/numbers/game1/
     - assets/images/numbers/game2/
-    - assets/images/vocals/
     - assets/images/numbers/game3/
+    - assets/images/vocals/game2/
+    - assets/images/vocals/game1/
+    - assets/images/vocals/game3/animals/
+    - assets/images/vocals/game3/background/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
