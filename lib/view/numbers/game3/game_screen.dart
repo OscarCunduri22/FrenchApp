@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:frenc_app/widgets/progress_bar.dart';
 
 class MemoryNumbersGame extends StatefulWidget {
   @override
@@ -16,6 +17,7 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame> {
   bool allowFlip = false;
   int level = 1;
   int pairsFound = 0;
+  int maxLevel = 3;
 
   @override
   void initState() {
@@ -98,26 +100,52 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame> {
 
   void levelUp() {
     setState(() {
-      level++;
-      if (level > 3) {
+      if (level < maxLevel) {
+        level++;
+      } else {
         level = 1;
       }
       startLevel();
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final double cardWidth = 100; // Manually set card width
-    final double cardHeight = 150; // Manually set card height
+  List<Widget> buildRows() {
+    List<Widget> rows = [];
+    int cardsPerRow = level == 3 ? 6 : 4;
+    double cardWidth = 150;
+    double cardHeight = 122;
 
-    List<Widget> buildRow(int startIndex, int count) {
-      List<Widget> rowChildren = [];
-      for (int i = startIndex; i < startIndex + count; i++) {
-        rowChildren.add(
-          GestureDetector(
-            onTap: () => onCardTap(i),
+    if (level == 3) {
+      cardWidth = 120;
+      cardHeight = 102;
+    }
+
+    for (int i = 0; i < cardImages.length; i += cardsPerRow) {
+      rows.add(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: buildRow(i, min(cardsPerRow, cardImages.length - i),
+              cardWidth, cardHeight),
+        ),
+      );
+      rows.add(const SizedBox(height: 10));
+    }
+    return rows;
+  }
+
+  List<Widget> buildRow(
+      int startIndex, int count, double cardWidth, double cardHeight) {
+    List<Widget> rowChildren = [];
+    for (int i = startIndex; i < startIndex + count; i++) {
+      rowChildren.add(
+        GestureDetector(
+          onTap: () => onCardTap(i),
+          child: Container(
+            width: cardWidth,
+            height: cardHeight,
             child: Card(
+              color: Colors.transparent,
+              elevation: 0,
               child: cardFlips[i] || cardMatched[i]
                   ? Image.asset(cardImages[i], fit: BoxFit.cover)
                   : Image.asset(
@@ -126,34 +154,40 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame> {
                     ),
             ),
           ),
-        );
-      }
-      return rowChildren;
+        ),
+      );
     }
+    return rowChildren;
+  }
 
-    final int totalCards = cardImages.length;
-    final int halfCards = (totalCards / 2).ceil();
-
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Level $level',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: buildRow(0, halfCards),
-            ),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: buildRow(halfCards, totalCards - halfCards),
-            ),
-          ],
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/numbers/game3/gamebg.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ProgressBar(
+                backgroundColor: const Color(0xFFFF5F01),
+                progressBarColor: const Color(0xFF8DB270),
+                headerText: 'Completa la secuencia de números',
+                progressValue: (level - 1) / maxLevel,
+                onBack: () {
+                  Navigator.pop(context);
+                },
+                onVolume: () {},
+              ),
+              SizedBox(height: 10),
+              ...buildRows(),
+            ],
+          ),
         ),
       ),
     );
