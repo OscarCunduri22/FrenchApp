@@ -17,7 +17,7 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
   late List<String> cardsDown;
   int score = 0;
   bool roundCompleted = false;
-  final AudioManager audioManager = AudioManager();
+  final AudioManager _audioManager = AudioManager();
 
   @override
   void initState() {
@@ -27,24 +27,24 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
 
   @override
   void dispose() {
-    audioManager.dispose();
+    _audioManager.dispose();
     super.dispose();
   }
 
   void newGame() {
     List<String> images = [
-      'assets/images/family/mother.jpg',
-      'assets/images/family/father.jpg',
-      'assets/images/family/parents.jpg',
-      'assets/images/family/parents2.jpg',
-      'assets/images/family/brother.jpg',
-      'assets/images/family/brothers.jpg',
-      'assets/images/family/grandfather.jpg',
-      'assets/images/family/grandmother.jpg',
-      'assets/images/family/grandparents.jpg',
-      'assets/images/family/sister.jpg',
-      'assets/images/family/sisters.jpg',
-      'assets/images/family/siblings.jpg',
+      'assets/images/family/game1/mother.jpg',
+      'assets/images/family/game1/father.jpg',
+      'assets/images/family/game1/parents.jpg',
+      'assets/images/family/game1/parents2.jpg',
+      'assets/images/family/game1/brother.jpg',
+      'assets/images/family/game1/brothers.jpg',
+      'assets/images/family/game1/grandfather.jpg',
+      'assets/images/family/game1/grandmother.jpg',
+      'assets/images/family/game1/grandparents.jpg',
+      'assets/images/family/game1/sister.jpg',
+      'assets/images/family/game1/sisters.jpg',
+      'assets/images/family/game1/siblings.jpg',
     ];
 
     cardUp = images[Random().nextInt(images.length)];
@@ -61,6 +61,7 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
 
   void checkMatch(String selectedCard) async {
     if (selectedCard == cardUp) {
+      await _audioManager.play('sound/correct.mp3');
       // await playSound(selectedCard);
       setState(() {
         score++;
@@ -71,7 +72,7 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
         }
       });
     } else {
-      await audioManager.play('assets/sounds/error.mp3');
+      await _audioManager.play('sound/incorrect.mp3');
     }
   }
 
@@ -118,7 +119,7 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
         soundPath = 'assets/sounds/error.mp3';
     }
 
-    await audioManager.play(soundPath);
+    await _audioManager.play(soundPath);
   }
 
   void _showWinDialog() {
@@ -142,8 +143,7 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage(
-                'assets/images/family/Morado.png'), // Reemplaza con la ruta de tu imagen de fondo
+            image: AssetImage('assets/images/family/game1/Morado.png'),
             fit: BoxFit.cover,
           ),
         ),
