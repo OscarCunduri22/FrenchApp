@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
-import 'package:frenc_app/utils/replay_popup.dart';
+import 'package:frenc_app/widgets/replay_popup.dart';
 import 'package:frenc_app/utils/audio_manager.dart';
 
 class FindFamilyGame extends StatefulWidget {

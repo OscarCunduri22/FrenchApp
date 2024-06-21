@@ -51,7 +51,6 @@ class _StartScreenState extends State<StartScreen> {
       ),
       body: Stack(
         children: [
-          // Fondo animado detrás de todo
           const Positioned.fill(
             child: RiveAnimation.asset(
               'assets/RiveAssets/solofondo.riv',
@@ -74,7 +73,7 @@ class _StartScreenState extends State<StartScreen> {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
-                      AudioManager.background().stop(); // Stop music here
+                      AudioManager.background().stop();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -86,7 +85,7 @@ class _StartScreenState extends State<StartScreen> {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
-                      AudioManager.background().stop(); // Stop music here
+                      AudioManager.background().stop();
                       Navigator.push(
                           context,
                           MaterialPageRoute(

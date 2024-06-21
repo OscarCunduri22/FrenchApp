@@ -1,13 +1,17 @@
+// ignore_for_file: use_build_context_synchronously, prefer_const_constructors_in_immutables, library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
+import 'package:frenc_app/repository/global.repository.dart';
+import 'package:frenc_app/utils/validator.dart';
 import 'package:frenc_app/view/auth/register_tutor.view.dart';
 import 'package:frenc_app/view/auth/tutor_dashboard.dart';
+import 'package:frenc_app/widgets/character/gallo.dart';
+import 'package:frenc_app/widgets/custom_theme_text.dart';
 import 'package:provider/provider.dart';
 import 'package:frenc_app/model/tutor.dart';
-import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
-
-import '../../widgets/character/gallo.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class TutorLoginScreen extends StatefulWidget {
   TutorLoginScreen({Key? key}) : super(key: key);
@@ -22,6 +26,34 @@ class _TutorLoginScreenState extends State<TutorLoginScreen> {
   final DatabaseRepository databaseRepository = DatabaseRepository();
   bool isLoading = false;
 
+  Future<void> signIn() async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      final snackBar = SnackBar(
+        content: AwesomeSnackbarContent(
+          title: 'Login Failed',
+          message: e.message ?? 'Unknown error',
+          contentType: ContentType.failure,
+          messageFontSize: 10,
+          titleFontSize: 12,
+        ),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      );
+      ScaffoldMessenger.of(context)
+        ..hideCurrentMaterialBanner()
+        ..showSnackBar(snackBar);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -34,192 +66,62 @@ class _TutorLoginScreenState extends State<TutorLoginScreen> {
             height: screenSize.height,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/auth/login_bg.png'),
+                image: AssetImage('assets/images/global/clouds-creditsbg.png'),
                 fit: BoxFit.cover,
               ),
             ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const SizedBox(height: 1),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 2, 12, 2),
-                        child: TextField(
-                          controller: emailController,
-                          decoration: const InputDecoration(
-                            labelText: 'Correo Electrónico',
-                            labelStyle: TextStyle(
-                              color: Colors.grey, // Placeholder gris
-                            ),
-                            filled: true, // Fondo blanco
-                            fillColor: Colors.white, // Fondo blanco
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.black,
-                              ),
-                            ),
+            child: SafeArea(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 2, 8, 2),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: Image.asset(
+                            'assets/images/icons/hacia-atras.png',
+                            width: 32,
+                            height: 32,
                           ),
-                        ),
-                      ),
-                      const SizedBox(height: 3),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-                        child: TextField(
-                          controller: passwordController,
-                          decoration: const InputDecoration(
-                            labelText: 'Contraseña',
-                            labelStyle: TextStyle(
-                              color: Colors.grey, // Placeholder gris
-                            ),
-                            filled: true, // Fondo blanco
-                            fillColor: Colors.white, // Fondo blanco
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                          obscureText: true,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 4, 12, 0),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            setState(() {
-                              isLoading = true;
-                            });
-
-                            String? tutorId = await databaseRepository
-                                .getTutorId(emailController.text);
-                            Tutor? tutor = await databaseRepository.loginTutor(
-                              emailController.text,
-                              passwordController.text,
-                            );
-
-                            if (tutorId != null && tutor != null) {
-                              int? studentCount = await databaseRepository
-                                  .getStudentsCountByTutorId(tutorId);
-
-                              setState(() {
-                                isLoading = false;
-                              });
-
-                              final snackBar = SnackBar(
-                                content: AwesomeSnackbarContent(
-                                  title: 'Login Successful',
-                                  message:
-                                      'You have successfully logged in! Redirecting...',
-                                  contentType: ContentType.success,
-                                  messageFontSize: 10,
-                                  titleFontSize: 12,
-                                ),
-                                behavior: SnackBarBehavior.floating,
-                                backgroundColor: Colors.transparent,
-                                elevation: 0,
-                              );
-                              ScaffoldMessenger.of(context)
-                                ..hideCurrentMaterialBanner()
-                                ..showSnackBar(snackBar);
-
-                              await Future.delayed(const Duration(seconds: 3));
-
-                              if (mounted) {
-                                Provider.of<UserProvider>(context,
-                                        listen: false)
-                                    .setCurrentUser(tutor);
-
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => TutorDashboardScreen(
-                                      tutorName: tutor.name,
-                                      studentCount: studentCount ?? 0,
-                                    ),
-                                  ),
-                                );
-                              }
-                            } else {
-                              setState(() {
-                                isLoading = false;
-                              });
-
-                              final snackBar = SnackBar(
-                                content: AwesomeSnackbarContent(
-                                  title: 'Login Failed',
-                                  message: 'Invalid credentials!',
-                                  contentType: ContentType.failure,
-                                  messageFontSize: 10,
-                                  titleFontSize: 12,
-                                ),
-                                behavior: SnackBarBehavior.floating,
-                                backgroundColor: Colors.transparent,
-                                elevation: 0,
-                              );
-                              ScaffoldMessenger.of(context)
-                                ..hideCurrentMaterialBanner()
-                                ..showSnackBar(snackBar);
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF016171),
-                            minimumSize: const Size(double.infinity, 50),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          child: const Text(
-                            'Iniciar Sesión',
-                            style: TextStyle(color: Colors.white, fontSize: 18),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 2, 12, 2),
-                        child: ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const RegisterPage(),
-                              ),
-                            );
+                            Navigator.pop(context);
                           },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFF15E2F),
-                            minimumSize: const Size(double.infinity, 50),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                        ),
+                        const Expanded(
+                          child: Center(
+                            child: CustomTextWidget(
+                              text: 'LudoFrench',
+                              type: TextType.Title,
+                              fontSize: 44,
+                              fontWeight: FontWeight.w200,
+                              letterSpacing: 1.0,
                             ),
                           ),
-                          child: const Text(
-                            'Registrarse',
-                            style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: _buildLoginForm(context),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                const Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: GalloComponent(
-                          padding: EdgeInsets.only(
-                              top: 180, right: 0, left: 120, bottom: 10),
+                        const Expanded(
+                          child: Center(
+                            child: Padding(
+                                padding: EdgeInsets.all(32),
+                                child: GalloComponent()),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           if (isLoading)
@@ -235,8 +137,210 @@ class _TutorLoginScreenState extends State<TutorLoginScreen> {
       ),
     );
   }
-}
 
-void _printHello() {
-  // Add a valid function or callback here
+  Widget _buildLoginForm(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const CustomTextWidget(
+          text: "Iniciar Sesión",
+          type: TextType.Subtitle,
+          fontSize: 30.0,
+          color: ColorType.Secondary,
+        ),
+        const SizedBox(height: 4),
+        TextField(
+          controller: emailController,
+          decoration: const InputDecoration(
+            labelText: 'Correo Electrónico',
+            labelStyle: TextStyle(color: Colors.grey),
+            filled: true,
+            fillColor: Colors.white,
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.black),
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        TextField(
+          controller: passwordController,
+          decoration: const InputDecoration(
+            labelText: 'Contraseña',
+            labelStyle: TextStyle(color: Colors.grey),
+            filled: true,
+            fillColor: Colors.white,
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.black),
+            ),
+          ),
+          obscureText: true,
+        ),
+        const SizedBox(height: 8),
+        ElevatedButton(
+          onPressed: () async {
+            Validator emailValidator = Validator(emailController.text)
+                .checkEmpty()
+                .checkEmail()
+                .checkInjection();
+
+            Validator passwordValidator = Validator(passwordController.text)
+                .checkEmail()
+                .checkEmpty()
+                .checkInjection();
+
+            if (!emailValidator.isValid() && !passwordValidator.isValid()) {
+              final snackBar = SnackBar(
+                content: AwesomeSnackbarContent(
+                  title: 'Error! Datos inválidos',
+                  message: 'Intenta nuevamente',
+                  contentType: ContentType.failure,
+                  messageFontSize: 10,
+                  titleFontSize: 12,
+                ),
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+              );
+              ScaffoldMessenger.of(context)
+                ..hideCurrentMaterialBanner()
+                ..showSnackBar(snackBar);
+              setState(() {
+                isLoading = false;
+              });
+              return;
+            }
+
+            setState(() {
+              isLoading = true;
+            });
+
+            try {
+              String? tutorId =
+                  await databaseRepository.getTutorId(emailController.text);
+              Tutor? tutor = await databaseRepository.loginTutor(
+                emailController.text,
+                passwordController.text,
+              );
+
+              if (tutorId != null && tutor != null) {
+                int? studentCount =
+                    await databaseRepository.getStudentsCountByTutorId(tutorId);
+
+                setState(() {
+                  isLoading = false;
+                });
+
+                final snackBar = SnackBar(
+                  content: AwesomeSnackbarContent(
+                    title: 'Login Successful',
+                    message: 'You have successfully logged in! Redirecting...',
+                    contentType: ContentType.success,
+                    messageFontSize: 10,
+                    titleFontSize: 12,
+                  ),
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                );
+                ScaffoldMessenger.of(context)
+                  ..hideCurrentMaterialBanner()
+                  ..showSnackBar(snackBar);
+
+                await Future.delayed(const Duration(seconds: 3));
+
+                if (mounted) {
+                  Provider.of<UserProvider>(context, listen: false)
+                      .setCurrentUser(tutor);
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TutorDashboardScreen(
+                        tutorName: tutor.name,
+                        studentCount: studentCount ?? 0,
+                      ),
+                    ),
+                  );
+                }
+              } else {
+                setState(() {
+                  isLoading = false;
+                });
+
+                final snackBar = SnackBar(
+                  content: AwesomeSnackbarContent(
+                    title: 'Login Failed',
+                    message: 'Invalid credentials!',
+                    contentType: ContentType.failure,
+                    messageFontSize: 10,
+                    titleFontSize: 12,
+                  ),
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                );
+                ScaffoldMessenger.of(context)
+                  ..hideCurrentMaterialBanner()
+                  ..showSnackBar(snackBar);
+              }
+            } catch (e) {
+              setState(() {
+                isLoading = false;
+              });
+
+              final snackBar = SnackBar(
+                content: AwesomeSnackbarContent(
+                  title: 'Login Failed',
+                  message: 'An error occurred!',
+                  contentType: ContentType.failure,
+                  messageFontSize: 10,
+                  titleFontSize: 12,
+                ),
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+              );
+              ScaffoldMessenger.of(context)
+                ..hideCurrentMaterialBanner()
+                ..showSnackBar(snackBar);
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF016171),
+            minimumSize: const Size(double.infinity, 50),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          child: const Text(
+            'Iniciar Sesión',
+            style: TextStyle(color: Colors.white, fontSize: 18),
+          ),
+        ),
+        const SizedBox(height: 4),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const RegisterPage(),
+              ),
+            );
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFFF15E2F),
+            minimumSize: const Size(double.infinity, 50),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          child: const Text(
+            'Registrarse',
+            style: TextStyle(color: Colors.white, fontSize: 18),
+          ),
+        ),
+      ],
+    );
+  }
 }
