@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:frenc_app/utils/replay_popup.dart';
+import 'package:frenc_app/widgets/replay_popup.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
 
 class GatherFamilyGame extends StatefulWidget {

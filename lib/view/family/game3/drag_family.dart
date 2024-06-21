@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frenc_app/utils/audio_manager.dart';
-import 'package:frenc_app/utils/confetti_animation.dart';
-import 'package:frenc_app/utils/replay_popup.dart';
+import 'package:frenc_app/widgets/confetti_animation.dart';
+import 'package:frenc_app/widgets/replay_popup.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
 
 class MemoryGamePage extends StatefulWidget {
@@ -115,16 +115,16 @@ class _MemoryGamePageState extends State<MemoryGamePage>
               _controllers[flippedIndices[0]].reverse();
               _controllers[flippedIndices[1]].reverse();
               flippedIndices.clear();
-              AudioManager().play('sound/incorrect.mp3');
+              AudioManager.effects().play('sound/incorrect.mp3');
               Future.delayed(const Duration(seconds: 2), () {
-                AudioManager().stop();
+                AudioManager.effects().stop();
               });
             });
           });
         } else {
-          AudioManager().play('sound/correct.mp3');
+          AudioManager.effects().play('sound/correct.mp3');
           Future.delayed(const Duration(seconds: 2), () {
-            AudioManager().stop();
+            AudioManager.effects().stop();
           });
           flippedIndices.clear();
         }

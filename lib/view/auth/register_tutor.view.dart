@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:frenc_app/utils/botton_buttons.dart';
-import 'package:frenc_app/utils/step_progress.dart';
-import '../../utils/page_screen.dart';
+import 'package:frenc_app/widgets/auth/botton_buttons.dart';
+import 'package:frenc_app/widgets/step_progress.dart';
+import '../../widgets/auth/page_screen.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
