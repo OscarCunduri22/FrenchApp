@@ -115,16 +115,16 @@ class _MemoryGamePageState extends State<MemoryGamePage>
               _controllers[flippedIndices[0]].reverse();
               _controllers[flippedIndices[1]].reverse();
               flippedIndices.clear();
-              AudioManager().play('sound/incorrect.mp3');
+              AudioManager.effects().play('sound/incorrect.mp3');
               Future.delayed(const Duration(seconds: 2), () {
-                AudioManager().stop();
+                AudioManager.effects().stop();
               });
             });
           });
         } else {
-          AudioManager().play('sound/correct.mp3');
+          AudioManager.effects().play('sound/correct.mp3');
           Future.delayed(const Duration(seconds: 2), () {
-            AudioManager().stop();
+            AudioManager.effects().stop();
           });
           flippedIndices.clear();
         }
