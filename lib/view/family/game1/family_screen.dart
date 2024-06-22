@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
-import 'package:frenc_app/utils/replay_popup.dart';
+import 'package:frenc_app/widgets/replay_popup.dart';
 import 'package:frenc_app/utils/audio_manager.dart';
 
 class FindFamilyGame extends StatefulWidget {
@@ -17,7 +17,6 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
   late List<String> cardsDown;
   int score = 0;
   bool roundCompleted = false;
-  final AudioManager _audioManager = AudioManager();
 
   @override
   void initState() {
@@ -27,7 +26,6 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
 
   @override
   void dispose() {
-    _audioManager.dispose();
     super.dispose();
   }
 
@@ -48,8 +46,6 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
     ];
 
     cardUp = images[Random().nextInt(images.length)];
-
-    // Ensure all cards are different and only one matches the cardUp
     cardsDown = images.where((image) => image != cardUp).toList();
     cardsDown.shuffle();
     cardsDown = cardsDown.take(3).toList();
@@ -61,8 +57,7 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
 
   void checkMatch(String selectedCard) async {
     if (selectedCard == cardUp) {
-      await _audioManager.play('sound/correct.mp3');
-      // await playSound(selectedCard);
+      AudioManager.effects().play('sound/correct.mp3');
       setState(() {
         score++;
         if (score >= 10) {
@@ -72,7 +67,7 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
         }
       });
     } else {
-      await _audioManager.play('sound/incorrect.mp3');
+      AudioManager.effects().play('sound/error.mp3');
     }
   }
 
@@ -118,8 +113,7 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
       default:
         soundPath = 'assets/sounds/error.mp3';
     }
-
-    await _audioManager.play(soundPath);
+    AudioManager.effects().play(soundPath);
   }
 
   void _showWinDialog() {
@@ -164,7 +158,7 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
             ),
             const SizedBox(height: 20),
             BounceInDown(
-              key: UniqueKey(), // Unique key to force rebuild
+              key: UniqueKey(),
               child: Container(
                 width: 90,
                 height: 110,

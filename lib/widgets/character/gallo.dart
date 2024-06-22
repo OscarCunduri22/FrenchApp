@@ -22,9 +22,9 @@ class _GalloComponentState extends State<GalloComponent> {
   @override
   void initState() {
     super.initState();
-    rootBundle.load('assets/RiveAssets/pez2.riv').then(
+    rootBundle.load('assets/RiveAssets/gallindo.riv').then(
       (data) async {
-        final file = await RiveFile.asset('assets/RiveAssets/pez2.riv');
+        final file = await RiveFile.asset('assets/RiveAssets/gallindo.riv');
         final artboard = file.mainArtboard;
         var controller =
             StateMachineController.fromArtboard(artboard, 'State Machine 1');
@@ -44,12 +44,12 @@ class _GalloComponentState extends State<GalloComponent> {
   }
 
   void _playSound() async {
-    await audioPlayer.play(AssetSource('../assets/sound/speech1.mp3'));
+    await audioPlayer.play(AssetSource('../assets/sound/Login.m4a'));
   }
 
   @override
   Widget build(BuildContext context) {
-    /*return Padding(
+    return Padding(
       padding: widget.padding,
       child: riveArtboard == null
           ? const SizedBox()
@@ -63,9 +63,8 @@ class _GalloComponentState extends State<GalloComponent> {
               ),
             ),
     );
-  }*/
-    return Center(
-      child: Rive(artboard: riveArtboard!),
-    );
   }
+  // return Center(
+  //   child: Rive(artboard: riveArtboard!),
+  //);
 }

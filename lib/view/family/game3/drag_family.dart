@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frenc_app/utils/audio_manager.dart';
-import 'package:frenc_app/utils/replay_popup.dart';
+import 'package:frenc_app/widgets/confetti_animation.dart';
+import 'package:frenc_app/widgets/replay_popup.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
 
 class MemoryGamePage extends StatefulWidget {
@@ -10,8 +11,9 @@ class MemoryGamePage extends StatefulWidget {
   State<MemoryGamePage> createState() => _MemoryGamePageState();
 }
 
-class _MemoryGamePageState extends State<MemoryGamePage> {
-  final AudioManager _audioManager = AudioManager();
+class _MemoryGamePageState extends State<MemoryGamePage>
+    with TickerProviderStateMixin {
+  bool _showConfetti = false;
 
   List<String> allImages = [
     'assets/images/family/game3/aunt.jpg',
@@ -31,58 +33,99 @@ class _MemoryGamePageState extends State<MemoryGamePage> {
   List<bool> cardsFlipped = [];
   List<int> flippedIndices = [];
   int score = 0;
-  int gamesCompleted = 0;
+  late List<AnimationController> _controllers;
+  late List<Animation<double>> _animations;
 
   @override
   void initState() {
     super.initState();
+    _controllers = List.generate(allImages.length, (index) {
+      return AnimationController(
+        duration: const Duration(seconds: 1),
+        vsync: this,
+      );
+    });
+
+    _animations = _controllers.map((controller) {
+      return Tween<double>(begin: 0, end: 1).animate(controller);
+    }).toList();
+
     _newGame();
+  }
+
+  @override
+  void dispose() {
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
+    super.dispose();
   }
 
   void _newGame() {
     setState(() {
-      cardImages = (allImages..shuffle()).take(3).toList();
+      cardImages = (allImages..shuffle()).take(4).toList();
       cardImages = List.from(cardImages)..addAll(cardImages);
       cardImages.shuffle();
       cardsFlipped = List<bool>.filled(cardImages.length, false);
       flippedIndices = [];
+      _showConfetti = false; // Reset confetti on new game
+      for (var controller in _controllers) {
+        controller.reset();
+      }
     });
   }
 
   void _showWinDialog() {
+    setState(() {
+      _showConfetti = true;
+    });
     showDialog(
       context: context,
-      builder: (context) => ReplayPopup(
-        score: score,
-        onReplay: () {
-          setState(() {
-            score = 0;
-            gamesCompleted = 0;
-            _newGame();
-          });
-        },
+      builder: (context) => Stack(
+        children: [
+          ReplayPopup(
+            score: score,
+            onReplay: () {
+              setState(() {
+                score = 0;
+                _newGame();
+              });
+            },
+          ),
+          if (_showConfetti) ConfettiAnimation(animate: _showConfetti),
+        ],
       ),
     );
   }
 
   void onCardTap(int index) {
+    if (cardsFlipped[index]) return;
+
     setState(() {
-      if (cardsFlipped[index]) return;
       cardsFlipped[index] = true;
       flippedIndices.add(index);
+      _controllers[index].forward();
 
       if (flippedIndices.length == 2) {
         if (cardImages[flippedIndices[0]] != cardImages[flippedIndices[1]]) {
-          Future.delayed(const Duration(seconds: 1), () {
+          Future.delayed(const Duration(seconds: 2), () {
             setState(() {
               cardsFlipped[flippedIndices[0]] = false;
               cardsFlipped[flippedIndices[1]] = false;
+              _controllers[flippedIndices[0]].reverse();
+              _controllers[flippedIndices[1]].reverse();
               flippedIndices.clear();
-              _audioManager.play('sound/incorrect.mp3');
+              AudioManager.effects().play('sound/incorrect.mp3');
+              Future.delayed(const Duration(seconds: 2), () {
+                AudioManager.effects().stop();
+              });
             });
           });
         } else {
-          _audioManager.play('sound/correct.mp3');
+          AudioManager.effects().play('sound/correct.mp3');
+          Future.delayed(const Duration(seconds: 2), () {
+            AudioManager.effects().stop();
+          });
           flippedIndices.clear();
         }
       }
@@ -90,7 +133,7 @@ class _MemoryGamePageState extends State<MemoryGamePage> {
       if (cardsFlipped.every((flipped) => flipped)) {
         score += 1;
         Future.delayed(const Duration(seconds: 2), () {
-          if (gamesCompleted <= 10) {
+          if (score < 1) {
             _newGame();
           } else {
             _showWinDialog();
@@ -106,64 +149,87 @@ class _MemoryGamePageState extends State<MemoryGamePage> {
     final widthPadding = size.width * 0.1;
 
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(
-                'assets/images/family/game3/Verde.png'), // Reemplaza con la ruta de tu imagen de fondo
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Column(
-          children: [
-            ProgressBar(
-              backgroundColor: const Color(0xFF424141),
-              progressBarColor: const Color(0xFF8DB270),
-              headerText:
-                  'Sélectionnez l\'image qui ressemble à celle ci-dessus',
-              progressValue: score / 10,
-              onBack: () {
-                // Acción para retroceder
-              },
-              onVolume: () {
-                // Acción para controlar el volumen
-              },
-            ),
-            Expanded(
-              child: Center(
-                child: GridView.builder(
-                  shrinkWrap: true,
-                  padding:
-                      EdgeInsets.only(left: widthPadding, right: widthPadding),
-                  itemCount: cardImages.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 70,
-                    mainAxisSpacing: 10,
-                    mainAxisExtent: size.height * 0.30,
-                  ),
-                  itemBuilder: (context, index) {
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(15.0),
-                      child: cardsFlipped[index]
-                          ? Image.asset(
-                              cardImages[index],
-                              fit: BoxFit.fill,
-                            )
-                          : GestureDetector(
-                              onTap: () => onCardTap(index),
-                              child: Image.asset(
-                                'assets/images/family/game3/Card.png',
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                    );
-                  },
-                ),
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/family/game3/Verde.png'),
+                fit: BoxFit.cover,
               ),
             ),
-          ],
-        ),
+            child: Column(
+              children: [
+                ProgressBar(
+                  backgroundColor: const Color(0xFF424141),
+                  progressBarColor: const Color(0xFF8DB270),
+                  headerText:
+                      'Sélectionnez l\'image qui ressemble à celle ci-dessus',
+                  progressValue: score / 10,
+                  onBack: () {
+                    // Acción para retroceder
+                  },
+                  onVolume: () {
+                    // Acción para activar/desactivar el sonido
+                  },
+                ),
+                Expanded(
+                  child: Center(
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      padding: EdgeInsets.only(
+                          left: widthPadding, right: widthPadding),
+                      itemCount: cardImages.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 4,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                        mainAxisExtent: size.height * 0.30,
+                      ),
+                      itemBuilder: (context, index) {
+                        return ClipRRect(
+                          borderRadius: BorderRadius.circular(15.0),
+                          child: GestureDetector(
+                            onTap: () => onCardTap(index),
+                            child: AnimatedBuilder(
+                              animation: _animations[index],
+                              builder: (context, child) {
+                                final angle = _animations[index].value *
+                                    3.141592653589793;
+                                final isFlipped =
+                                    angle >= 3.141592653589793 / 2;
+                                final transform = Matrix4.rotationY(angle);
+                                return Transform(
+                                  transform: transform,
+                                  alignment: Alignment.center,
+                                  child: isFlipped
+                                      ? Image.asset(
+                                          cardImages[index],
+                                          key: ValueKey<int>(index),
+                                          fit: BoxFit.fill,
+                                        )
+                                      : Image.asset(
+                                          'assets/images/family/game3/Card.png',
+                                          key: ValueKey<int>(index + 100),
+                                          fit: BoxFit.fill,
+                                        ),
+                                );
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (_showConfetti)
+            Positioned.fill(
+              child: ConfettiAnimation(animate: _showConfetti),
+            ),
+        ],
       ),
     );
   }

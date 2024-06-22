@@ -17,7 +17,13 @@ class _StartScreenState extends State<StartScreen> {
   @override
   void initState() {
     super.initState();
-    AudioManager().play('sound/start_page.mp3');
+    AudioManager.background().play('sound/start_page.mp3');
+  }
+
+  @override
+  void dispose() {
+    AudioManager.background().stop();
+    super.dispose();
   }
 
   @override
@@ -32,10 +38,10 @@ class _StartScreenState extends State<StartScreen> {
             padding: const EdgeInsets.only(right: 16.0, top: 8.0),
             child: IconButton(
               onPressed: () async {
-                if (await AudioManager().isPlaying()) {
-                  AudioManager().pause();
+                if (await AudioManager.background().isPlaying()) {
+                  AudioManager.background().pause();
                 } else {
-                  AudioManager().play('sound/start_page.mp3');
+                  AudioManager.background().play('sound/start_page.mp3');
                 }
               },
               icon: const Icon(Icons.volume_up),
@@ -45,7 +51,6 @@ class _StartScreenState extends State<StartScreen> {
       ),
       body: Stack(
         children: [
-          // Fondo animado detrás de todo
           const Positioned.fill(
             child: RiveAnimation.asset(
               'assets/RiveAssets/solofondo.riv',
@@ -68,6 +73,7 @@ class _StartScreenState extends State<StartScreen> {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
+                      AudioManager.background().stop();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -79,6 +85,7 @@ class _StartScreenState extends State<StartScreen> {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
+                      AudioManager.background().stop();
                       Navigator.push(
                           context,
                           MaterialPageRoute(
