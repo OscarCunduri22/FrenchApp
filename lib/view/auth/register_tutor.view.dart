@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frenc_app/widgets/auth/botton_buttons.dart';
+import 'package:frenc_app/widgets/custom_theme_text.dart';
 import 'package:frenc_app/widgets/step_progress.dart';
 import '../../widgets/auth/page_screen.dart';
 
@@ -39,18 +40,28 @@ class _RegisterPageState extends State<RegisterPage> {
         children: [
           Positioned.fill(
             child: Image.asset(
-              'assets/images/auth/register_background.png', // Replace with your image asset path
+              'assets/images/global/clouds-creditsbg.png',
               fit: BoxFit.cover,
             ),
           ),
           Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 20),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                child: StepProgress(currenstStep: _currentPageValue, steps: 3),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CustomTextWidget(
+                    text: "Registrarse",
+                    type: TextType.Title,
+                    fontSize: 44,
+                    letterSpacing: 1,
+                    fontWeight: FontWeight.w200,
+                  ),
+                ],
               ),
+              StepProgress(currenstStep: _currentPageValue, steps: 3),
               Expanded(
                 child: PageView(
                   controller: _controller,
@@ -92,7 +103,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: BottomButtons(pageController: _controller),
               ),
               const SizedBox(
