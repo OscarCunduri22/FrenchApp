@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
+import 'package:provider/provider.dart';
 import 'dart:math';
+import 'package:frenc_app/utils/user_tracking.dart';
 
 class VocalGame extends StatefulWidget {
+  const VocalGame({Key? key}) : super(key: key);
+
   @override
   _VocalGameState createState() => _VocalGameState();
 }
@@ -33,7 +37,21 @@ class _VocalGameState extends State<VocalGame> {
   @override
   void initState() {
     super.initState();
+    //_incrementTimesPlayed();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _loadNewScene();
+  }
+
+  void _incrementTimesPlayed() {
+    Provider.of<UserTracking>(context, listen: false).incrementTimesPlayed('vocal_game');
+  }
+
+  void _incrementTimesCompleted() {
+    Provider.of<UserTracking>(context, listen: false).incrementTimesCompleted('vocal_game');
   }
 
   void _loadNewScene() {
@@ -58,6 +76,7 @@ class _VocalGameState extends State<VocalGame> {
     setState(() {
       foundVowels++;
       if (foundVowels >= 3) {
+        _incrementTimesCompleted();
         _showWinDialog();
       } else {
         _loadNewScene();
