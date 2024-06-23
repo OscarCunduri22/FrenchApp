@@ -97,7 +97,7 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 15),
                 const Wrap(
                   spacing: 20, // Adjust the spacing as needed
                   alignment: WrapAlignment.center,

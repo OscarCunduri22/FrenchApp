@@ -91,6 +91,8 @@ flutter:
     - assets/images/numbers/game3/
     - assets/images/vocals/game2/
     - assets/images/vocals/game1/
+    - assets/images/vocals/game1/background/
+    - assets/images/vocals/vocal/
     - assets/images/vocals/game3/animals/
     - assets/images/vocals/game3/background/
     - assets/images/global/
