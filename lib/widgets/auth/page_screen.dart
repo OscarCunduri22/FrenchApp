@@ -1,11 +1,10 @@
-// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
-
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:frenc_app/model/tutor.dart';
 import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/audio_manager.dart';
+import 'package:frenc_app/utils/validator.dart';
 import 'package:frenc_app/view/auth/login_tutor_screen.dart';
 import 'package:frenc_app/widgets/character/gallo.dart';
 import 'package:frenc_app/widgets/custom_theme_text.dart';
@@ -20,6 +19,7 @@ class PageScreen extends StatefulWidget {
   final TextEditingController passwordController;
   final TextEditingController confirmPasswordController;
   final TextEditingController codeController;
+  final Function setLoading;
 
   const PageScreen({
     super.key,
@@ -32,6 +32,7 @@ class PageScreen extends StatefulWidget {
     required this.passwordController,
     required this.confirmPasswordController,
     required this.codeController,
+    required this.setLoading,
   });
 
   @override
@@ -44,10 +45,30 @@ class _PageScreenState extends State<PageScreen> {
   final DatabaseRepository databaseRepository = DatabaseRepository();
 
   static const messages = [
-    'Por favor, introduce tu nombre, usuario y correo electrónico.',
+    'Introduce tu nombre, usuario y correo electrónico.',
     'Ingresa tu contraseña y confírmala.',
-    'Ingresa tu codigo de acceso al area de tutor.',
+    'Ingresa tu codigo de acceso al área de tutor.',
   ];
+
+  static const errorMessages = [
+    'Completa los campos correctamente.',
+    'Las contraseñas no coinciden o son muy cortas.',
+    'Ingrese un codigo valido.',
+  ];
+
+  bool isNameValid = true;
+  bool isUsernameValid = true;
+  bool isEmailValid = true;
+  bool isPasswordValid = true;
+  bool isConfirmPasswordValid = true;
+  bool isCodeValid = true;
+
+  String nameErrorMessage = '';
+  String usernameErrorMessage = '';
+  String emailErrorMessage = '';
+  String passwordErrorMessage = '';
+  String confirmPasswordErrorMessage = '';
+  String codeErrorMessage = '';
 
   @override
   void initState() {
@@ -56,31 +77,150 @@ class _PageScreenState extends State<PageScreen> {
   }
 
   void _onIndexChanged() {
-    switch (widget.pageIndex) {
-      case 0:
-        // AudioManager.effects().play('sound/nombre.m4a');
-        setState(() {
-          text = messages[widget.pageIndex];
-        });
-        break;
-      case 1:
-        // AudioManager.effects().play('sound/contrasena.m4a');
-        setState(() {
-          text = messages[widget.pageIndex];
-        });
-        break;
-      case 2:
-        setState(() {
-          text = messages[widget.pageIndex];
-        });
-        Timer(const Duration(milliseconds: 1000), () {
-          AudioManager.effects().play('sound/codigo.m4a');
-        });
-        break;
-      default:
-        setState(() {
-          text = '';
-        });
+    setState(() {
+      text = messages[widget.pageIndex];
+    });
+    if (widget.pageIndex == 2) {
+      Timer(const Duration(milliseconds: 1000), () {
+        AudioManager.effects().play('sound/codigo.m4a');
+      });
+    }
+  }
+
+  Future<void> _registerTutor() async {
+    setState(() {
+      isLoading = true;
+      widget.setLoading(true);
+      isNameValid =
+          Validator(widget.nameController.text).checkEmpty().isValid();
+      isUsernameValid =
+          Validator(widget.usernameController.text).checkEmpty().isValid();
+      isEmailValid = Validator(widget.emailController.text)
+          .checkEmpty()
+          .checkEmail()
+          .isValid();
+      isPasswordValid = Validator(widget.passwordController.text)
+          .checkEmpty()
+          .checkLength(6)
+          .isValid();
+      isConfirmPasswordValid = widget.passwordController.text ==
+          widget.confirmPasswordController.text;
+      isCodeValid = Validator(widget.codeController.text)
+          .checkEmpty()
+          .checkLength(4)
+          .isValid();
+
+      nameErrorMessage = isNameValid
+          ? ''
+          : Validator(widget.nameController.text).checkEmpty().errorMessage();
+      usernameErrorMessage = isUsernameValid
+          ? ''
+          : Validator(widget.usernameController.text)
+              .checkEmpty()
+              .errorMessage();
+      emailErrorMessage = isEmailValid
+          ? ''
+          : Validator(widget.emailController.text)
+              .checkEmpty()
+              .checkEmail()
+              .errorMessage();
+      passwordErrorMessage = isPasswordValid
+          ? ''
+          : Validator(widget.passwordController.text)
+              .checkEmpty()
+              .checkLength(6)
+              .errorMessage();
+      confirmPasswordErrorMessage =
+          isConfirmPasswordValid ? '' : 'Passwords do not match';
+      codeErrorMessage = isCodeValid
+          ? ''
+          : Validator(widget.codeController.text)
+              .checkEmpty()
+              .checkLength(4)
+              .errorMessage();
+    });
+
+    bool isValid = isNameValid &&
+        isUsernameValid &&
+        isEmailValid &&
+        isPasswordValid &&
+        isConfirmPasswordValid &&
+        isCodeValid;
+
+    if (!isValid) {
+      setState(() {
+        isLoading = false;
+        widget.setLoading(false);
+      });
+
+      final errorMessage = !isNameValid || !isUsernameValid || !isEmailValid
+          ? errorMessages[0]
+          : !isPasswordValid || !isConfirmPasswordValid
+              ? errorMessages[1]
+              : errorMessages[2];
+
+      final snackBar = SnackBar(
+        content: AwesomeSnackbarContent(
+          title: 'Error de validación',
+          message: errorMessage,
+          contentType: ContentType.failure,
+          messageFontSize: 10,
+          titleFontSize: 12,
+        ),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      );
+      ScaffoldMessenger.of(context)
+        ..hideCurrentMaterialBanner()
+        ..showSnackBar(snackBar);
+
+      return;
+    }
+
+    bool success = await databaseRepository.addTutor(
+      Tutor(
+        name: widget.nameController.text,
+        username: widget.usernameController.text,
+        email: widget.emailController.text,
+        password: widget.passwordController.text,
+        code: int.parse(widget.codeController.text),
+      ),
+    );
+
+    setState(() {
+      isLoading = false;
+      widget.setLoading(false);
+    });
+
+    final snackBar = SnackBar(
+      content: AwesomeSnackbarContent(
+        title: success ? 'Registrado con éxito' : 'Registro fallido',
+        message: success
+            ? 'Has sido registrado con éxito! Inicia sesión para continuar.'
+            : 'Ha ocurrido un error al registrarte. Intenta de nuevo.',
+        contentType: success ? ContentType.success : ContentType.failure,
+        messageFontSize: 10,
+        titleFontSize: 12,
+      ),
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+    );
+    ScaffoldMessenger.of(context)
+      ..hideCurrentMaterialBanner()
+      ..showSnackBar(snackBar);
+
+    if (success) {
+      await Future.delayed(const Duration(seconds: 3));
+      if (mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TutorLoginScreen(),
+          ),
+        );
+      }
     }
   }
 
@@ -97,14 +237,15 @@ class _PageScreenState extends State<PageScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Padding(
-                      padding: const EdgeInsets.all(6.0),
-                      child: CustomTextWidget(
-                        text: text,
-                        type: TextType.Subtitle,
-                        fontSize: 16,
-                        color: ColorType.Primary,
-                        shadow: false,
-                      )),
+                    padding: const EdgeInsets.all(6.0),
+                    child: CustomTextWidget(
+                      text: text,
+                      type: TextType.Subtitle,
+                      fontSize: 16,
+                      color: ColorType.Primary,
+                      shadow: false,
+                    ),
+                  ),
                   const Expanded(
                     child: GalloComponent(),
                   ),
@@ -120,68 +261,82 @@ class _PageScreenState extends State<PageScreen> {
                     if (widget.pageIndex == 0) ...[
                       TextField(
                         controller: widget.nameController,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           labelText: 'Nombre',
-                          labelStyle: TextStyle(
-                            color: Colors.grey,
-                          ),
+                          labelStyle: const TextStyle(color: Colors.grey),
                           filled: true,
                           fillColor: Colors.white,
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: Colors.black,
-                            ),
+                                color: isNameValid ? Colors.black : Colors.red),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: isNameValid ? Colors.black : Colors.red),
                           ),
                         ),
                       ),
                       const SizedBox(height: 6),
                       TextField(
                         controller: widget.usernameController,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           labelText: 'Usuario',
-                          labelStyle: TextStyle(
-                            color: Colors.grey,
-                          ),
+                          labelStyle: const TextStyle(color: Colors.grey),
                           filled: true,
                           fillColor: Colors.white,
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: Colors.black,
-                            ),
+                                color: isUsernameValid
+                                    ? Colors.black
+                                    : Colors.red),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: isUsernameValid
+                                    ? Colors.black
+                                    : Colors.red),
                           ),
                         ),
                       ),
                       const SizedBox(height: 6),
                       TextField(
                         controller: widget.emailController,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           labelText: 'Correo Electrónico',
-                          labelStyle: TextStyle(
-                            color: Colors.grey,
-                          ),
+                          labelStyle: const TextStyle(color: Colors.grey),
                           filled: true,
                           fillColor: Colors.white,
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: Colors.black,
-                            ),
+                                color:
+                                    isEmailValid ? Colors.black : Colors.red),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color:
+                                    isEmailValid ? Colors.black : Colors.red),
                           ),
                         ),
                       ),
                     ] else if (widget.pageIndex == 1) ...[
                       TextField(
                         controller: widget.passwordController,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           labelText: 'Contraseña',
-                          labelStyle: TextStyle(
-                            color: Colors.grey,
-                          ),
+                          labelStyle: const TextStyle(color: Colors.grey),
                           filled: true,
                           fillColor: Colors.white,
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: Colors.black,
-                            ),
+                                color: isPasswordValid
+                                    ? Colors.black
+                                    : Colors.red),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: isPasswordValid
+                                    ? Colors.black
+                                    : Colors.red),
                           ),
                         ),
                         obscureText: true,
@@ -189,17 +344,22 @@ class _PageScreenState extends State<PageScreen> {
                       const SizedBox(height: 16),
                       TextField(
                         controller: widget.confirmPasswordController,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           labelText: 'Confirmar Contraseña',
-                          labelStyle: TextStyle(
-                            color: Colors.grey,
-                          ),
+                          labelStyle: const TextStyle(color: Colors.grey),
                           filled: true,
                           fillColor: Colors.white,
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: Colors.black,
-                            ),
+                                color: isConfirmPasswordValid
+                                    ? Colors.black
+                                    : Colors.red),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: isConfirmPasswordValid
+                                    ? Colors.black
+                                    : Colors.red),
                           ),
                         ),
                         obscureText: true,
@@ -208,84 +368,25 @@ class _PageScreenState extends State<PageScreen> {
                       TextField(
                         controller: widget.codeController,
                         maxLength: 4,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           labelText: 'Codigo',
-                          labelStyle: TextStyle(
-                            color: Colors.grey,
-                          ),
+                          labelStyle: const TextStyle(color: Colors.grey),
                           filled: true,
                           fillColor: Colors.white,
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: Colors.black,
-                            ),
+                                color: isCodeValid ? Colors.black : Colors.red),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: isCodeValid ? Colors.black : Colors.red),
                           ),
                         ),
                         keyboardType: TextInputType.number,
                       ),
                       const SizedBox(height: 12),
                       ElevatedButton(
-                        onPressed: () async {
-                          setState(() {
-                            isLoading = true;
-                          });
-                          await Future.delayed(const Duration(seconds: 2));
-                          bool success = await databaseRepository.addTutor(
-                            Tutor(
-                              name: widget.nameController.text,
-                              username: widget.usernameController.text,
-                              email: widget.emailController.text,
-                              password: widget.passwordController.text,
-                              code: int.parse(widget.codeController.text),
-                            ),
-                          );
-                          setState(() {
-                            isLoading = false;
-                          });
-                          if (success) {
-                            final snackBar = SnackBar(
-                              content: AwesomeSnackbarContent(
-                                title: 'Registration Successful',
-                                message:
-                                    'You have successfully registered! Redirecting...',
-                                contentType: ContentType.success,
-                                messageFontSize: 10,
-                                titleFontSize: 12,
-                              ),
-                              behavior: SnackBarBehavior.floating,
-                              backgroundColor: Colors.transparent,
-                              elevation: 0,
-                            );
-                            ScaffoldMessenger.of(context)
-                              ..hideCurrentMaterialBanner()
-                              ..showSnackBar(snackBar);
-                            await Future.delayed(const Duration(seconds: 3));
-                            if (mounted) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => TutorLoginScreen(),
-                                ),
-                              );
-                            }
-                          } else {
-                            final snackBar = SnackBar(
-                              content: AwesomeSnackbarContent(
-                                title: 'Registration Failed',
-                                message: 'Something went wrong!',
-                                contentType: ContentType.failure,
-                                messageFontSize: 10,
-                                titleFontSize: 12,
-                              ),
-                              behavior: SnackBarBehavior.floating,
-                              backgroundColor: Colors.transparent,
-                              elevation: 0,
-                            );
-                            ScaffoldMessenger.of(context)
-                              ..hideCurrentMaterialBanner()
-                              ..showSnackBar(snackBar);
-                          }
-                        },
+                        onPressed: _registerTutor,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF016171),
                           minimumSize: const Size(double.infinity, 50),
@@ -298,11 +399,7 @@ class _PageScreenState extends State<PageScreen> {
                           style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
                       ),
-                    ],
-                    if (isLoading)
-                      const Center(
-                        child: CircularProgressIndicator(),
-                      ),
+                    ]
                   ],
                 ),
               ),
