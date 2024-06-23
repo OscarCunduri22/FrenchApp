@@ -13,18 +13,27 @@ class SecurityCodeDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Security Code'),
+      title: const Text(
+        'Security Code',
+        style: TextStyle(color: Color(0xFF4A90E2)), // Lingokids blue
+      ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text('Please enter the 4-digit security code to proceed.'),
+          const Text(
+            'Please enter the 4-digit security code to proceed.',
+            style: TextStyle(color: Color(0xFF4A90E2)), // Lingokids blue
+          ),
           const SizedBox(height: 16),
           SecurityCodeInput(onSuccess: onSuccess),
         ],
       ),
       actions: [
         TextButton(
-          child: const Text('Cancel'),
+          child: const Text(
+            'Cancel',
+            style: TextStyle(color: Color(0xFF4A90E2)), // Lingokids blue
+          ),
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -84,14 +93,27 @@ class _SecurityCodeInputState extends State<SecurityCodeInput> {
             borderRadius: BorderRadius.circular(5),
             fieldHeight: 50,
             fieldWidth: 40,
-            activeFillColor: Colors.white,
+            activeFillColor: Colors.yellow,
+            selectedFillColor: Colors.yellow,
+            inactiveFillColor: Colors.white,
+            activeColor: Color(0xFF4A90E2),
+            selectedColor: Color(0xFF4A90E2),
+            inactiveColor: Color(0xFF4A90E2),
           ),
         ),
         if (_errorMessage != null) ...[
           const SizedBox(height: 8),
-          Text(
-            _errorMessage!,
-            style: const TextStyle(color: Colors.red),
+          Row(
+            children: [
+              Icon(Icons.error, color: Colors.red),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  _errorMessage!,
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ),
+            ],
           ),
         ],
       ],

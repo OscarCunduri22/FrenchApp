@@ -54,15 +54,15 @@ class StudentCard extends StatelessWidget {
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'ShortBabyFont',
-                    color: Colors.black,
+                    color: Color(0xFF016171),
                   ),
                 ),
                 Text(
                   student.group,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 12,
                     fontFamily: 'LoveDaysLoveFont',
-                    color: Colors.black.withOpacity(0.8),
+                    color: Color(0xFFF15E2F),
                   ),
                 ),
               ],

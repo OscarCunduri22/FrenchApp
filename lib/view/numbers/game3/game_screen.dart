@@ -186,7 +186,6 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame> {
                 },
                 onVolume: () {},
               ),
-              SizedBox(height: 10),
               ...buildRows(),
             ],
           ),

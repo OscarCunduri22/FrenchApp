@@ -46,7 +46,6 @@ class FruitGameScreen extends StatelessWidget {
             ),
             Consumer<FruitGameViewModel>(
               builder: (context, viewModel, child) {
-                // Check if all fruits are correctly placed
                 if (viewModel.correctAnswers.length ==
                         viewModel.fruits.length &&
                     viewModel.correctAnswers.values
@@ -59,8 +58,6 @@ class FruitGameScreen extends StatelessWidget {
                     );
                   });
                 }
-
-                // Shuffle the fruits for draggable and drop target areas
                 final draggableFruits = List<Fruit>.from(viewModel.fruits)
                   ..shuffle(Random());
                 final targetFruits = List<Fruit>.from(viewModel.fruits)
@@ -73,12 +70,39 @@ class FruitGameScreen extends StatelessWidget {
                     children: [
                       const SizedBox(height: 32),
                       const Text(
-                        'Place the Fruits in the Correct Baskets',
+                        'Arrastra las frutas a la canasta correspondiente',
                         style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.w900,
                           fontFamily: 'ShortBabyFont',
                           color: Colors.brown,
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: draggableFruits.map((fruit) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ShakeWidget(
+                                interval:
+                                    Duration(seconds: 2 + Random().nextInt(3)),
+                                child: Draggable<Fruit>(
+                                  data: fruit,
+                                  feedback:
+                                      Image.asset(fruit.imagePath, width: 80),
+                                  childWhenDragging: Opacity(
+                                    opacity: 0.5,
+                                    child:
+                                        Image.asset(fruit.imagePath, width: 80),
+                                  ),
+                                  child:
+                                      Image.asset(fruit.imagePath, width: 80),
+                                ),
+                              ),
+                            );
+                          }).toList(),
                         ),
                       ),
                       Expanded(
@@ -110,34 +134,6 @@ class FruitGameScreen extends StatelessWidget {
                                   ),
                                 );
                               },
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: draggableFruits.map((fruit) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: ShakeWidget(
-                                interval: Duration(
-                                    seconds: 2 +
-                                        Random().nextInt(3)), // Random interval
-                                child: Draggable<Fruit>(
-                                  data: fruit,
-                                  feedback:
-                                      Image.asset(fruit.imagePath, width: 80),
-                                  childWhenDragging: Opacity(
-                                    opacity: 0.5,
-                                    child:
-                                        Image.asset(fruit.imagePath, width: 80),
-                                  ),
-                                  child:
-                                      Image.asset(fruit.imagePath, width: 80),
-                                ),
-                              ),
                             );
                           }).toList(),
                         ),
