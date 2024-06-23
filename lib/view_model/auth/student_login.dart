@@ -4,11 +4,11 @@ import 'package:frenc_app/model/fruit.dart';
 
 class FruitGameViewModel extends ChangeNotifier {
   List<Fruit> fruits = [
-    Fruit('banana', 'assets/images/auth/banana.png'),
-    Fruit('orange', 'assets/images/auth/orange.png'),
-    Fruit('pear', 'assets/images/auth/pear.png'),
-    Fruit('strawberry', 'assets/images/auth/strawberry.png'),
-    Fruit('watermelon', 'assets/images/auth/watermelon.png'),
+    Fruit(name: 'banana'),
+    Fruit(name: 'orange'),
+    Fruit(name: 'lemon'),
+    Fruit(name: 'strawberry'),
+    Fruit(name: 'watermelon'),
   ];
 
   Map<String, bool> correctAnswers = {};

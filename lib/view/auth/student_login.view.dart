@@ -13,14 +13,6 @@ class FruitGameScreen extends StatelessWidget {
 
   FruitGameScreen({Key? key, required this.studentId}) : super(key: key);
 
-  final Map<String, Color> fruitColors = {
-    'banana': Colors.yellow,
-    'orange': Colors.orange,
-    'pear': Colors.green,
-    'strawberry': Colors.red,
-    'watermelon': Colors.green[800]!,
-  };
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -54,10 +46,12 @@ class FruitGameScreen extends StatelessWidget {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const GameSelectionScreen()),
+                        builder: (context) => const GameSelectionScreen(),
+                      ),
                     );
                   });
                 }
+
                 final draggableFruits = List<Fruit>.from(viewModel.fruits)
                   ..shuffle(Random());
                 final targetFruits = List<Fruit>.from(viewModel.fruits)
@@ -70,39 +64,12 @@ class FruitGameScreen extends StatelessWidget {
                     children: [
                       const SizedBox(height: 32),
                       const Text(
-                        'Arrastra las frutas a la canasta correspondiente',
+                        'Place the Fruits in the Correct Baskets',
                         style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.w900,
                           fontFamily: 'ShortBabyFont',
                           color: Colors.brown,
-                        ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: draggableFruits.map((fruit) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: ShakeWidget(
-                                interval:
-                                    Duration(seconds: 2 + Random().nextInt(3)),
-                                child: Draggable<Fruit>(
-                                  data: fruit,
-                                  feedback:
-                                      Image.asset(fruit.imagePath, width: 80),
-                                  childWhenDragging: Opacity(
-                                    opacity: 0.5,
-                                    child:
-                                        Image.asset(fruit.imagePath, width: 80),
-                                  ),
-                                  child:
-                                      Image.asset(fruit.imagePath, width: 80),
-                                ),
-                              ),
-                            );
-                          }).toList(),
                         ),
                       ),
                       Expanded(
@@ -123,17 +90,44 @@ class FruitGameScreen extends StatelessWidget {
                                 return Container(
                                   width: 100,
                                   height: 100,
-                                  color: isCorrect
-                                      ? Colors.green
-                                      : fruitColors[fruit.name],
-                                  child: Center(
-                                    child: isCorrect
-                                        ? const Icon(Icons.check,
-                                            color: Colors.white)
-                                        : null,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage(isCorrect
+                                          ? fruit.correctTargetImagePath
+                                          : fruit.targetImagePath),
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 );
                               },
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: draggableFruits.map((fruit) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ShakeWidget(
+                                interval:
+                                    Duration(seconds: 2 + Random().nextInt(3)),
+                                child: Draggable<Fruit>(
+                                  data: fruit,
+                                  feedback: Image.asset(
+                                      fruit.draggableImagePath,
+                                      width: 80),
+                                  childWhenDragging: Opacity(
+                                    opacity: 0.5,
+                                    child: Image.asset(fruit.draggableImagePath,
+                                        width: 80),
+                                  ),
+                                  child: Image.asset(fruit.draggableImagePath,
+                                      width: 80),
+                                ),
+                              ),
                             );
                           }).toList(),
                         ),
