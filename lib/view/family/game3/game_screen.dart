@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:animate_do/animate_do.dart';
 import 'package:frenc_app/utils/audio_manager.dart';
 import 'package:frenc_app/widgets/confetti_animation.dart';
 import 'package:frenc_app/widgets/replay_popup.dart';
@@ -35,6 +36,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
   int score = 0;
   late List<AnimationController> _controllers;
   late List<Animation<double>> _animations;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -50,7 +52,15 @@ class _MemoryGamePageState extends State<MemoryGamePage>
       return Tween<double>(begin: 0, end: 1).animate(controller);
     }).toList();
 
+    _loadGame();
+  }
+
+  Future<void> _loadGame() async {
+    await AudioManager.effects().play('sound/family/instruccionGame2.m4a');
     _newGame();
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -59,6 +69,49 @@ class _MemoryGamePageState extends State<MemoryGamePage>
       controller.dispose();
     }
     super.dispose();
+    AudioManager.background().stop();
+  }
+
+  Future<void> playSound(String card) async {
+    String soundPath;
+    switch (card) {
+      case 'assets/images/family/game3/mother.jpg':
+        soundPath = 'sound/family/mere.m4a';
+        break;
+      case 'assets/images/family/game3/father.jpg':
+        soundPath = 'sound/family/pere.m4a';
+        break;
+      case 'assets/images/family/game3/brother.jpg':
+        soundPath = 'sound/family/frere.m4a';
+        break;
+      case 'assets/images/family/game3/grandfather.jpg':
+        soundPath = 'sound/family/grandpere.m4a';
+        break;
+      case 'assets/images/family/game3/grandmother.jpg':
+        soundPath = 'sound/family/grandmere.m4a';
+        break;
+      case 'assets/images/family/game3/sister.jpg':
+        soundPath = 'sound/family/soeur.m4a';
+        break;
+      case 'assets/images/family/game3/uncle.jpg':
+        soundPath = 'sound/family/oncle.m4a';
+        break;
+      case 'assets/images/family/game3/aunt.jpg':
+        soundPath = 'sound/family/tante.m4a';
+        break;
+      case 'assets/images/family/game3/baby.jpg':
+        soundPath = 'sound/family/bebe.m4a';
+        break;
+      case 'assets/images/family/game3/cousin.jpg':
+        soundPath = 'sound/family/cousin.m4a';
+        break;
+      case 'assets/images/family/game3/cousinw.jpg':
+        soundPath = 'sound/family/cousine.m4a';
+        break;
+      default:
+        soundPath = 'sound/correct.mp3';
+    }
+    await AudioManager.effects().play(soundPath);
   }
 
   void _newGame() {
@@ -68,7 +121,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
       cardImages.shuffle();
       cardsFlipped = List<bool>.filled(cardImages.length, false);
       flippedIndices = [];
-      _showConfetti = false; // Reset confetti on new game
+      _showConfetti = false;
       for (var controller in _controllers) {
         controller.reset();
       }
@@ -78,6 +131,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
   void _showWinDialog() {
     setState(() {
       _showConfetti = true;
+      AudioManager.effects().play('sound/family/level_win.mp3');
     });
     showDialog(
       context: context,
@@ -122,7 +176,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
             });
           });
         } else {
-          AudioManager.effects().play('sound/correct.mp3');
+          playSound(cardImages[flippedIndices[0]]);
           Future.delayed(const Duration(seconds: 2), () {
             AudioManager.effects().stop();
           });
@@ -133,7 +187,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
       if (cardsFlipped.every((flipped) => flipped)) {
         score += 1;
         Future.delayed(const Duration(seconds: 2), () {
-          if (score < 1) {
+          if (score < 2) {
             _newGame();
           } else {
             _showWinDialog();
@@ -173,55 +227,67 @@ class _MemoryGamePageState extends State<MemoryGamePage>
                     // Acción para activar/desactivar el sonido
                   },
                 ),
-                Expanded(
-                  child: Center(
-                    child: GridView.builder(
-                      shrinkWrap: true,
-                      padding: EdgeInsets.only(
-                          left: widthPadding, right: widthPadding),
-                      itemCount: cardImages.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 4,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                        mainAxisExtent: size.height * 0.30,
-                      ),
-                      itemBuilder: (context, index) {
-                        return ClipRRect(
-                          borderRadius: BorderRadius.circular(15.0),
-                          child: GestureDetector(
-                            onTap: () => onCardTap(index),
-                            child: AnimatedBuilder(
-                              animation: _animations[index],
-                              builder: (context, child) {
-                                final angle = _animations[index].value *
-                                    3.141592653589793;
-                                final isFlipped =
-                                    angle >= 3.141592653589793 / 2;
-                                final transform = Matrix4.rotationY(angle);
-                                return Transform(
-                                  transform: transform,
-                                  alignment: Alignment.center,
-                                  child: isFlipped
-                                      ? Image.asset(
-                                          cardImages[index],
-                                          key: ValueKey<int>(index),
-                                          fit: BoxFit.fill,
-                                        )
-                                      : Image.asset(
-                                          'assets/images/family/game3/Card.png',
-                                          key: ValueKey<int>(index + 100),
-                                          fit: BoxFit.fill,
-                                        ),
-                                );
-                              },
+                _isLoading
+                    ? const Expanded(
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    : Expanded(
+                        child: Center(
+                          child: GridView.builder(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.only(
+                                left: widthPadding, right: widthPadding),
+                            itemCount: cardImages.length,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 4,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                              mainAxisExtent: size.height * 0.30,
                             ),
+                            itemBuilder: (context, index) {
+                              return FadeInUp(
+                                duration: const Duration(milliseconds: 500),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  child: GestureDetector(
+                                    onTap: () => onCardTap(index),
+                                    child: AnimatedBuilder(
+                                      animation: _animations[index],
+                                      builder: (context, child) {
+                                        final angle = _animations[index].value *
+                                            3.141592653589793;
+                                        final isFlipped =
+                                            angle >= 3.141592653589793 / 2;
+                                        final transform =
+                                            Matrix4.rotationY(angle);
+                                        return Transform(
+                                          transform: transform,
+                                          alignment: Alignment.center,
+                                          child: isFlipped
+                                              ? Image.asset(
+                                                  cardImages[index],
+                                                  key: ValueKey<int>(index),
+                                                  fit: BoxFit.fill,
+                                                )
+                                              : Image.asset(
+                                                  'assets/images/family/game3/Card.png',
+                                                  key: ValueKey<int>(
+                                                      index + 100),
+                                                  fit: BoxFit.fill,
+                                                ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
+                        ),
+                      ),
               ],
             ),
           ),
