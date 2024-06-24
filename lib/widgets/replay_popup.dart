@@ -17,10 +17,10 @@ class ReplayPopup extends StatelessWidget {
       contentPadding: const EdgeInsets.all(16),
       content: Row(
         children: [
-          SizedBox(
+          const SizedBox(
             width: 100, // Ajusta el ancho según sea necesario
             height: 100, // Ajusta la altura según sea necesario
-            child: const GalloComponent(),
+            child: GalloComponent(),
           ),
           const SizedBox(width: 20),
           Expanded(
@@ -28,13 +28,13 @@ class ReplayPopup extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Text(
-                  'Congratulations!',
+                  'Toutes nos félicitations!',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  'Your Score: $score',
+                  'Ton score: $score',
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontSize: 20),
                 ),
@@ -44,7 +44,13 @@ class ReplayPopup extends StatelessWidget {
                     onReplay();
                     Navigator.of(context).pop();
                   },
-                  child: const Text('Replay'),
+                  child: const Text('Répéter'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Quitter'),
                 ),
               ],
             ),

@@ -76,6 +76,7 @@ flutter:
   assets:
     - assets/RiveAssets/
     - assets/sound/
+    - assets/sound/family/
     - assets/images/
     - assets/images/auth/
     - assets/images/gameSelection/
