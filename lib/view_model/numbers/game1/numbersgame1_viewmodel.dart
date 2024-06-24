@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 class GameViewModel extends ChangeNotifier {
@@ -30,6 +31,8 @@ class GameViewModel extends ChangeNotifier {
   int _currentIndex = 0;
   late List<String?> characterSlots;
   bool _currentIndexChanged = false;
+  bool _isGameCompleted = false;
+  final int totalLevels = 10;
 
   GameViewModel() {
     characterSlots = List<String?>.filled(_numbers[_currentIndex].length, null);
@@ -39,6 +42,7 @@ class GameViewModel extends ChangeNotifier {
   List<String> get images => _images;
   int get currentIndex => _currentIndex;
   bool get currentIndexChanged => _currentIndexChanged;
+  bool get isGameCompleted => _isGameCompleted;
 
   set currentIndexChanged(bool value) {
     _currentIndexChanged = value;
@@ -58,10 +62,16 @@ class GameViewModel extends ChangeNotifier {
   }
 
   void nextWord() {
-    _currentIndex = (_currentIndex + 1) % _numbers.length;
-    characterSlots = List<String?>.filled(_numbers[_currentIndex].length, null);
-    _currentIndexChanged = true;
-    notifyListeners();
+    if (_currentIndex < totalLevels - 1) {
+      _currentIndex++;
+      characterSlots =
+          List<String?>.filled(_numbers[_currentIndex].length, null);
+      _currentIndexChanged = true;
+      notifyListeners();
+    } else {
+      _isGameCompleted = true;
+      notifyListeners();
+    }
   }
 
   void onCorrect() {

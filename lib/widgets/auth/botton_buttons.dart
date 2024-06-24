@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_unnecessary_containers
+
 import 'package:flutter/material.dart';
 
 class BottomButtons extends StatelessWidget {
@@ -13,7 +15,8 @@ class BottomButtons extends StatelessWidget {
         ElevatedButton(
           onPressed: () {
             pageController.previousPage(
-                duration: Duration(milliseconds: 500), curve: Curves.easeIn);
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeIn);
           },
           child: Container(
             height: 50,

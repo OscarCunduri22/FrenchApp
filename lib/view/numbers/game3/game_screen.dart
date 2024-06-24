@@ -1,8 +1,14 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:frenc_app/repository/global.repository.dart';
+import 'package:frenc_app/utils/user_provider.dart';
+import 'package:frenc_app/view/game_selection.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
+import 'package:provider/provider.dart';
 
 /* Checked */
 
@@ -20,11 +26,30 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame> {
   int level = 1;
   int pairsFound = 0;
   int maxLevel = 3;
+  final databaseRepository = DatabaseRepository();
 
   @override
   void initState() {
     super.initState();
     startLevel();
+  }
+
+  void _onGameComplete() async {
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
+
+    if (studentId != null) {
+      await databaseRepository.updateGameCompletionStatus(
+          studentId, 'Nombres', [true, true, false]);
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => GameSelectionScreen(
+                category: 'Nombres',
+              )),
+    );
   }
 
   void startLevel() {
@@ -105,7 +130,7 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame> {
       if (level < maxLevel) {
         level++;
       } else {
-        level = 1;
+        _onGameComplete();
       }
       startLevel();
     });
@@ -186,7 +211,6 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame> {
                 },
                 onVolume: () {},
               ),
-              SizedBox(height: 10),
               ...buildRows(),
             ],
           ),
