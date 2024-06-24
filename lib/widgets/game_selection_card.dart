@@ -1,14 +1,15 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:frenc_app/widgets/custom_theme_text.dart';
 
 class GameCard extends StatelessWidget {
+  final String category;
   final int gameNumber;
   final bool isUnlocked;
   final VoidCallback onPlayPressed;
 
   GameCard({
+    required this.category,
     required this.gameNumber,
     required this.isUnlocked,
     required this.onPlayPressed,
@@ -16,6 +17,9 @@ class GameCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final imagePath =
+        'assets/images/gameSelection/${category}_game_$gameNumber.jpg';
+
     return Stack(
       children: [
         ClipRRect(
@@ -48,7 +52,7 @@ class GameCard extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Image.asset(
-                      'assets/images/gameSelection/game_image_$gameNumber.jpg',
+                      imagePath,
                       fit: BoxFit.cover,
                     ),
                   ),

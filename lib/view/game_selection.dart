@@ -1,15 +1,13 @@
 import 'dart:ui';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/repository/global.repository.dart';
+import 'package:frenc_app/utils/game_navigator.dart';
 import 'package:frenc_app/utils/user_provider.dart';
-import 'package:frenc_app/view/numbers/game2/game_screen.dart';
 import 'package:frenc_app/widgets/custom_theme_text.dart';
 import 'package:frenc_app/widgets/game_selection_card.dart';
-import 'package:frenc_app/model/game_result.dart';
 import 'package:provider/provider.dart';
 
-class GameSelectionScreen extends StatelessWidget {
+class GameSelectionScreen extends StatefulWidget {
   final String category;
 
   GameSelectionScreen({
@@ -17,31 +15,60 @@ class GameSelectionScreen extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
+  _GameSelectionScreenState createState() => _GameSelectionScreenState();
+}
+
+class _GameSelectionScreenState extends State<GameSelectionScreen> {
+  List<bool> gameCompletionStatus = [false, false, false];
+  bool isLoading = true;
+  String errorMessage = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchGameCompletionStatus();
+  }
+
+  Future<void> _fetchGameCompletionStatus() async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     final currentStudentId = userProvider.currentStudentId;
 
+    if (currentStudentId != null) {
+      try {
+        List<bool> status = await DatabaseRepository()
+            .getGameCompletionStatusByCategory(
+                currentStudentId, widget.category);
+
+        if (status.isEmpty) {
+          status = [false, false, false];
+        }
+
+        setState(() {
+          gameCompletionStatus = status;
+          isLoading = false;
+        });
+      } catch (e) {
+        setState(() {
+          errorMessage = 'Error loading game results';
+          isLoading = false;
+        });
+      }
+    } else {
+      setState(() {
+        errorMessage = 'No student selected';
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      body: currentStudentId == null
-          ? Center(child: Text('No student selected'))
-          : FutureBuilder<List<bool>>(
-              future: _getGameCompletionStatus(currentStudentId, category),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                }
-
-                if (snapshot.hasError) {
-                  return Center(child: Text('Error loading game results'));
-                }
-
-                if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('No game data found'));
-                }
-
-                List<bool> gameCompletionStatus = snapshot.data!;
-
-                return Stack(
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : errorMessage.isNotEmpty
+              ? Center(child: Text(errorMessage))
+              : Stack(
                   children: [
                     Positioned.fill(
                       child: Image.asset(
@@ -73,7 +100,7 @@ class GameSelectionScreen extends StatelessWidget {
                               Align(
                                 alignment: Alignment.center,
                                 child: CustomTextWidget(
-                                  text: category,
+                                  text: widget.category,
                                   type: TextType.Subtitle,
                                   fontSize: 48,
                                   color: ColorType.Secondary,
@@ -91,20 +118,26 @@ class GameSelectionScreen extends StatelessWidget {
                                     MainAxisAlignment.spaceEvenly,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: List.generate(3, (index) {
+                                  bool isUnlocked = (index == 0) ||
+                                      (index == 1 && gameCompletionStatus[0]) ||
+                                      (index == 2 &&
+                                          gameCompletionStatus[0] &&
+                                          gameCompletionStatus[1]);
                                   return Padding(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 32.0),
                                     child: GameCard(
+                                      category: widget.category,
                                       gameNumber: index + 1,
-                                      isUnlocked: gameCompletionStatus[index],
-                                      onPlayPressed: () {
-                                        if (index == 0 ||
-                                            gameCompletionStatus[index - 1]) {
+                                      isUnlocked: isUnlocked,
+                                      onPlayPressed: () async {
+                                        if (isUnlocked) {
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) {
-                                                return TrainWagonNumbersGame();
+                                                return getGameScreen(
+                                                    widget.category, index + 1);
                                               },
                                             ),
                                           );
@@ -120,32 +153,7 @@ class GameSelectionScreen extends StatelessWidget {
                       ],
                     ),
                   ],
-                );
-              },
-            ),
+                ),
     );
-  }
-
-  Future<List<bool>> _getGameCompletionStatus(
-      String studentId, String category) async {
-    List<bool> gameCompletionStatus = [true, false, false];
-
-    QuerySnapshot snapshot =
-        await DatabaseRepository().getGameResults(studentId, category).first;
-
-    if (snapshot.docs.isNotEmpty) {
-      for (var doc in snapshot.docs) {
-        GameResult gameResult =
-            GameResult.fromJson(doc.data() as Map<String, dynamic>);
-        if (gameResult.isCompleted) {
-          gameCompletionStatus[gameResult.gameNumber - 1] = true;
-          if (gameResult.gameNumber < 3) {
-            gameCompletionStatus[gameResult.gameNumber] = true;
-          }
-        }
-      }
-    }
-
-    return gameCompletionStatus;
   }
 }

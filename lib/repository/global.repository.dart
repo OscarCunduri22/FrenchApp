@@ -107,17 +107,56 @@ class DatabaseRepository {
     return null;
   }
 
-  Stream<QuerySnapshot> getGameResults(String studentId, String category) {
-    return _gameResultRef
-        .where('studentId', isEqualTo: studentId)
-        .where('category', isEqualTo: category)
-        .snapshots();
+  Future<List<bool>> getGameCompletionStatusByCategory(
+      String studentId, String category) async {
+    final doc = await _gameResultRef.doc(studentId).get();
+    if (doc.exists) {
+      final gameResult = doc.data() as GameResult;
+      switch (category) {
+        case 'Nombres':
+          return gameResult.nombresGameCompleted;
+        case 'Voyelles':
+          return gameResult.voyellesGameCompleted;
+        case 'Famille':
+          return gameResult.familleGameCompleted;
+        default:
+          throw Exception('Unknown category');
+      }
+    } else {
+      return [false, false, false];
+    }
   }
 
-  Future<void> saveGameResult(GameResult gameResult) async {
-    await _gameResultRef
-        .doc(
-            '${gameResult.studentId}_${gameResult.category}_${gameResult.gameNumber}')
-        .set(gameResult);
+  Future<void> updateGameCompletionStatus(
+      String studentId, String category, List<bool> newStatus) async {
+    final doc = await _gameResultRef.doc(studentId).get();
+    if (doc.exists) {
+      final gameResult = doc.data() as GameResult;
+      switch (category) {
+        case 'Nombres':
+          gameResult.nombresGameCompleted.setAll(0, newStatus);
+          break;
+        case 'Voyelles':
+          gameResult.voyellesGameCompleted.setAll(0, newStatus);
+          break;
+        case 'Famille':
+          gameResult.familleGameCompleted.setAll(0, newStatus);
+          break;
+        default:
+          throw Exception('Unknown category');
+      }
+      await _gameResultRef.doc(studentId).set(gameResult);
+    } else {
+      final newGameResult = GameResult(
+        studentId: studentId,
+        nombresGameCompleted:
+            category == 'Nombres' ? newStatus : [false, false, false],
+        voyellesGameCompleted:
+            category == 'Voyelles' ? newStatus : [false, false, false],
+        familleGameCompleted:
+            category == 'Famille' ? newStatus : [false, false, false],
+      );
+      await _gameResultRef.doc(studentId).set(newGameResult);
+    }
   }
 }

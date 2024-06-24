@@ -1,7 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/repository/global.repository.dart';
-import 'package:frenc_app/utils/game_provider.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/game_selection.dart';
 import 'package:frenc_app/view_model/numbers/game2/game_provider.dart';
@@ -10,7 +11,6 @@ import 'package:frenc_app/widgets/numbers/game2/train_cart.dart';
 import 'package:frenc_app/widgets/numbers/game2/train_engine.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:provider/provider.dart';
-import 'package:frenc_app/model/game_result.dart';
 
 class TrainWagonNumbersGame extends StatefulWidget {
   @override
@@ -22,40 +22,30 @@ class _TrainWagonNumbersGameState extends State<TrainWagonNumbersGame> {
   bool isOffScreenRight = false;
   bool isVisible = true;
 
-  void _onGameComplete() {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    final currentStudentId = userProvider.currentStudentId;
-    final gameProvider =
-        Provider.of<GameStatusProvider>(context, listen: false);
+  final databaseRepository = DatabaseRepository();
 
-    if (currentStudentId != null) {
-      DatabaseRepository().saveGameResult(GameResult(
-        studentId: currentStudentId,
-        category: gameProvider.category,
-        gameNumber: gameProvider.gameNumber,
-        isCompleted: true,
-      ));
+  void _onGameComplete() async {
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
+
+    if (studentId != null) {
+      await databaseRepository.updateGameCompletionStatus(
+          studentId, 'Nombres', [true, false, false]);
     }
 
-    Navigator.pushReplacement(
+    Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => GameSelectionScreen(category: 'Nombres'),
-      ),
+          builder: (context) => GameSelectionScreen(
+                category: 'Nombres',
+              )),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
-    final currentStudentId = userProvider.currentStudentId;
-
     return ChangeNotifierProvider(
-      create: (context) => GameStatusProvider(
-        studentId: currentStudentId!,
-        category: 'Nombres',
-        gameNumber: 1,
-      ),
+      create: (context) => GameProvider(),
       child: Scaffold(
         body: Stack(
           children: [
@@ -92,7 +82,6 @@ class _TrainWagonNumbersGameState extends State<TrainWagonNumbersGame> {
                             isVisible = true;
                             isOffScreenRight = false;
                           });
-                          _onGameComplete();
                         });
                       });
                     });

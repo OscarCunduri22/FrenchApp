@@ -1,31 +1,33 @@
 class GameResult {
   final String studentId;
-  final String category;
-  final int gameNumber;
-  final bool isCompleted;
+  final List<bool> nombresGameCompleted;
+  final List<bool> voyellesGameCompleted;
+  final List<bool> familleGameCompleted;
 
   GameResult({
     required this.studentId,
-    required this.category,
-    required this.gameNumber,
-    required this.isCompleted,
-  });
+    List<bool>? nombresGameCompleted,
+    List<bool>? voyellesGameCompleted,
+    List<bool>? familleGameCompleted,
+  })  : nombresGameCompleted = nombresGameCompleted ?? [false, false, false],
+        voyellesGameCompleted = voyellesGameCompleted ?? [false, false, false],
+        familleGameCompleted = familleGameCompleted ?? [false, false, false];
 
   Map<String, dynamic> toJson() {
     return {
       'studentId': studentId,
-      'category': category,
-      'gameNumber': gameNumber,
-      'isCompleted': isCompleted,
+      'nombresGameCompleted': nombresGameCompleted,
+      'voyellesGameCompleted': voyellesGameCompleted,
+      'familleGameCompleted': familleGameCompleted,
     };
   }
 
   factory GameResult.fromJson(Map<String, dynamic> json) {
     return GameResult(
       studentId: json['studentId'],
-      category: json['category'],
-      gameNumber: json['gameNumber'],
-      isCompleted: json['isCompleted'],
+      nombresGameCompleted: List<bool>.from(json['nombresGameCompleted']),
+      voyellesGameCompleted: List<bool>.from(json['voyellesGameCompleted']),
+      familleGameCompleted: List<bool>.from(json['familleGameCompleted']),
     );
   }
 }

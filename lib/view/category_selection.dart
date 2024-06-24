@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:frenc_app/model/student.dart';
+import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/game_selection.dart';
 import 'package:frenc_app/view/numbers/game1/game_screen.dart';
 import 'package:frenc_app/view/vocals/tracing.dart';
 import 'package:frenc_app/widgets/character/button.dart';
 import 'package:frenc_app/view/start_screen.dart';
+import 'package:provider/provider.dart';
 
-class CategorySelectionScreen extends StatelessWidget {
+class CategorySelectionScreen extends StatefulWidget {
   const CategorySelectionScreen({super.key});
 
+  @override
+  _CategorySelectionScreenState createState() =>
+      _CategorySelectionScreenState();
+}
+
+class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,22 +75,19 @@ class CategorySelectionScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       GameOption(
-                        title: 'Voyelles',
-                        imagePath: 'assets/images/gameSelection/voyelles.jpg',
-                        targetView: TracingGame(
-                            imageAssetPath: 'assets/images/vocals/bee.jpg',
-                            letter: 'A',
-                            imageObjectName: 'Abellie'),
-                      ),
+                          title: 'Voyelles',
+                          imagePath: 'assets/images/gameSelection/voyelles.jpg',
+                          targetView:
+                              GameSelectionScreen(category: 'Voyelles')),
                       GameOption(
                         title: 'Nombres',
                         imagePath: 'assets/images/gameSelection/nombres.jpg',
                         targetView: GameSelectionScreen(category: 'Nombres'),
                       ),
-                      const GameOption(
+                      GameOption(
                         title: 'Famille',
                         imagePath: 'assets/images/gameSelection/famille.jpg',
-                        targetView: StartScreen(),
+                        targetView: GameSelectionScreen(category: 'Famille'),
                       ),
                     ],
                   ),
@@ -124,7 +130,6 @@ class GameOption extends StatelessWidget {
                   ..color = Colors.white,
               ),
             ),
-            // Texto con color de relleno
             Text(
               title,
               style: const TextStyle(
@@ -139,14 +144,13 @@ class GameOption extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             border: Border.all(
-              color: Colors.black, // Color del borde
-              width: 2.0, // Ancho del borde
+              color: Colors.black,
+              width: 2.0,
             ),
-            borderRadius:
-                BorderRadius.circular(18.0), // Radio del borde redondeado
+            borderRadius: BorderRadius.circular(18.0),
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(16.0), // Mismo radio del borde
+            borderRadius: BorderRadius.circular(16.0),
             child: Image.asset(
               imagePath,
               width: 150,
