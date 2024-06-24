@@ -1,175 +1,151 @@
+import 'dart:ui';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:frenc_app/view/numbers/game1/game_screen.dart';
-import 'package:frenc_app/view/vocals/tracing.dart';
-import 'package:frenc_app/widgets/character/button.dart';
-import 'package:frenc_app/view/start_screen.dart';
+import 'package:frenc_app/repository/global.repository.dart';
+import 'package:frenc_app/utils/user_provider.dart';
+import 'package:frenc_app/view/numbers/game2/game_screen.dart';
+import 'package:frenc_app/widgets/custom_theme_text.dart';
+import 'package:frenc_app/widgets/game_selection_card.dart';
+import 'package:frenc_app/model/game_result.dart';
+import 'package:provider/provider.dart';
 
 class GameSelectionScreen extends StatelessWidget {
-  const GameSelectionScreen({super.key});
+  final String category;
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          // Imagen de fondo
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/GameSelectionBg.jpg'),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          SafeArea(
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    const Spacer(),
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF016171),
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: IconButton(
-                        icon: const Icon(Icons.person),
-                        iconSize: 36,
-                        color: Colors.white,
-                        onPressed: () {},
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF016171),
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: IconButton(
-                        icon: const Icon(Icons.person),
-                        iconSize: 36,
-                        color: Colors.white,
-                        onPressed: () {},
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                  ],
-                ),
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      GameOption(
-                        title: 'Voyelles',
-                        imagePath: 'assets/images/gameSelection/voyelles.jpg',
-                        targetView: TracingGame(
-                            imageAssetPath: 'assets/images/vocals/bee.jpg',
-                            letter: 'A',
-                            imageObjectName: 'Abellie'),
-                      ),
-                      const GameOption(
-                        title: 'Nombres',
-                        imagePath: 'assets/images/gameSelection/nombres.jpg',
-                        targetView: BubbleNumbersGame(),
-                      ),
-                      const GameOption(
-                        title: 'Famille',
-                        imagePath: 'assets/images/gameSelection/famille.jpg',
-                        targetView: StartScreen(),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class GameOption extends StatelessWidget {
-  final String title;
-  final String imagePath;
-  final Widget targetView;
-
-  const GameOption({
-    super.key,
-    required this.title,
-    required this.imagePath,
-    required this.targetView,
+  GameSelectionScreen({
+    required this.category,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Stack(
-          children: [
-            // Contorno del texto (stroke)
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-                foreground: Paint()
-                  ..style = PaintingStyle.stroke
-                  ..strokeWidth = 6
-                  ..color = Colors.white,
-              ),
+    final userProvider = Provider.of<UserProvider>(context);
+    final currentStudentId = userProvider.currentStudentId;
+
+    return Scaffold(
+      body: currentStudentId == null
+          ? Center(child: Text('No student selected'))
+          : FutureBuilder<List<bool>>(
+              future: _getGameCompletionStatus(currentStudentId, category),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error loading game results'));
+                }
+
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('No game data found'));
+                }
+
+                List<bool> gameCompletionStatus = snapshot.data!;
+
+                return Stack(
+                  children: [
+                    Positioned.fill(
+                      child: Image.asset(
+                        'assets/images/global/cloudsbg.png',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Stack(
+                            children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: IconButton(
+                                  icon: Image.asset(
+                                    'assets/images/icons/hacia-atras.png',
+                                    width: 32,
+                                    height: 32,
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.center,
+                                child: CustomTextWidget(
+                                  text: category,
+                                  type: TextType.Subtitle,
+                                  fontSize: 48,
+                                  color: ColorType.Secondary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Center(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: List.generate(3, (index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 32.0),
+                                    child: GameCard(
+                                      gameNumber: index + 1,
+                                      isUnlocked: gameCompletionStatus[index],
+                                      onPlayPressed: () {
+                                        if (index == 0 ||
+                                            gameCompletionStatus[index - 1]) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) {
+                                                return TrainWagonNumbersGame();
+                                              },
+                                            ),
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  );
+                                }),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              },
             ),
-            // Texto con color de relleno
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFFF44B09),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
-        Container(
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.black, // Color del borde
-              width: 2.0, // Ancho del borde
-            ),
-            borderRadius:
-                BorderRadius.circular(18.0), // Radio del borde redondeado
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(16.0), // Mismo radio del borde
-            child: Image.asset(
-              imagePath,
-              width: 150,
-              height: 150,
-            ),
-          ),
-        ),
-        const SizedBox(height: 10),
-        CustomButton(
-          text: '   Jugar   ',
-          color: const Color(0xFF321158),
-          targetView: targetView,
-          textStyle: const TextStyle(
-            fontSize: 20,
-            color: Color(0xFFFFE600),
-          ),
-          borderSide: const BorderSide(
-            color: Color(0xFFFFE600),
-            width: 2,
-          ),
-        ),
-      ],
     );
+  }
+
+  Future<List<bool>> _getGameCompletionStatus(
+      String studentId, String category) async {
+    List<bool> gameCompletionStatus = [true, false, false];
+
+    QuerySnapshot snapshot =
+        await DatabaseRepository().getGameResults(studentId, category).first;
+
+    if (snapshot.docs.isNotEmpty) {
+      for (var doc in snapshot.docs) {
+        GameResult gameResult =
+            GameResult.fromJson(doc.data() as Map<String, dynamic>);
+        if (gameResult.isCompleted) {
+          gameCompletionStatus[gameResult.gameNumber - 1] = true;
+          if (gameResult.gameNumber < 3) {
+            gameCompletionStatus[gameResult.gameNumber] = true;
+          }
+        }
+      }
+    }
+
+    return gameCompletionStatus;
   }
 }

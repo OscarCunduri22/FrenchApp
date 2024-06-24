@@ -1,20 +1,38 @@
-// ignore_for_file: deprecated_member_use
-
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/model/fruit.dart';
-import 'package:frenc_app/view/game_selection.dart';
+import 'package:frenc_app/repository/global.repository.dart';
+import 'package:frenc_app/utils/user_provider.dart';
+import 'package:frenc_app/view/category_selection.dart';
 import 'package:frenc_app/view_model/auth/student_login.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
+import 'package:frenc_app/model/student.dart';
 
 class FruitGameScreen extends StatelessWidget {
   final String studentId;
 
   FruitGameScreen({Key? key, required this.studentId}) : super(key: key);
 
+  void _setStudentIdInProvider(BuildContext context) async {
+    final repository = DatabaseRepository();
+    final student = await repository.getStudentById(studentId);
+
+    if (student != null) {
+      Provider.of<UserProvider>(context, listen: false)
+          .setCurrentStudent(studentId, student);
+    }
+
+    print('Student ID: $studentId');
+    final studentToPrint =
+        Provider.of<UserProvider>(context, listen: false).currentStudent;
+    print('Student: $studentToPrint');
+  }
+
   @override
   Widget build(BuildContext context) {
+    _setStudentIdInProvider(context);
+
     return ChangeNotifierProvider(
       create: (_) => FruitGameViewModel(),
       child: Scaffold(
@@ -46,7 +64,7 @@ class FruitGameScreen extends StatelessWidget {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const GameSelectionScreen(),
+                        builder: (context) => const CategorySelectionScreen(),
                       ),
                     );
                   });

@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:frenc_app/firebase_options.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/auth/student_login.view.dart';
-import 'package:frenc_app/view/family/game3/drag_family.dart';
+import 'package:frenc_app/view/family/game1/game_screen.dart';
+import 'package:frenc_app/view/family/game2/game_screen.dart';
+import 'package:frenc_app/view/family/game3/game_screen.dart';
+import 'package:frenc_app/view/game_selection.dart';
 import 'package:frenc_app/view/numbers/game3/game_screen.dart';
 import 'package:frenc_app/view/start_screen.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +36,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.teal,
         ),
-        home: FruitGameScreen(studentId: '1234567890'));
+        home: const StartScreen());
   }
 }
 

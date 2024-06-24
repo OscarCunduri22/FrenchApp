@@ -1,4 +1,3 @@
-// view_models/fruit_game_view_model.dart
 import 'package:flutter/material.dart';
 import 'package:frenc_app/model/fruit.dart';
 
