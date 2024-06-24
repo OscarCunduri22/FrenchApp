@@ -1,7 +1,9 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:frenc_app/widgets/confetti_animation.dart';
 import 'package:frenc_app/widgets/replay_popup.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
+import 'package:frenc_app/utils/audio_manager.dart';
 
 class GatherFamilyGame extends StatefulWidget {
   const GatherFamilyGame({Key? key}) : super(key: key);
@@ -29,15 +31,32 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
     'grandfather': 'assets/images/family/game2/sgrandfather.png',
   };
 
+  final Map<String, String> soundMappings = {
+    'mother': 'sound/family/mere.m4a',
+    'sister': 'sound/family/soeur.m4a',
+    'father': 'sound/family/pere.m4a',
+    'son': 'sound/family/frere.m4a',
+    'grandmother': 'sound/family/grandmere.m4a',
+    'grandfather': 'sound/family/grandpere.m4a',
+  };
+
   late List<String> selectedKeys;
   Map<String, String> placedImages = {};
   int score = 0;
   int gamesCompleted = 0;
+  bool _showConfetti = false;
 
   @override
   void initState() {
     super.initState();
     newGame();
+    AudioManager.effects().play('sound/family/instruccionGame2.m4a');
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    AudioManager.background().stop();
   }
 
   void newGame() {
@@ -45,7 +64,19 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
     selectedKeys.shuffle(Random());
     selectedKeys = selectedKeys.take(4).toList();
     placedImages.clear();
-    setState(() {});
+    setState(() {
+      _showConfetti = false;
+    });
+  }
+
+  Future<void> playSound(String key, bool correct) async {
+    String soundPath;
+    if (correct) {
+      soundPath = soundMappings[key]!;
+    } else {
+      soundPath = 'sound/incorrect.mp3';
+    }
+    await AudioManager.effects().play(soundPath);
   }
 
   void _checkCompletion() {
@@ -55,24 +86,34 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
         if (score >= 2) {
           _showWinDialog();
         } else {
-          newGame();
+          Future.delayed(const Duration(seconds: 2), () {
+            newGame();
+          });
         }
       });
     }
   }
 
   void _showWinDialog() {
+    setState(() {
+      _showConfetti = true;
+      AudioManager.effects().play('sound/family/level_win.mp3');
+    });
     showDialog(
       context: context,
-      builder: (context) => ReplayPopup(
-        score: score,
-        onReplay: () {
-          setState(() {
-            score = 0;
-            gamesCompleted = 0;
-            newGame();
-          });
-        },
+      builder: (context) => Stack(
+        children: [
+          ReplayPopup(
+            score: score,
+            onReplay: () {
+              setState(() {
+                score = 0;
+                newGame();
+              });
+            },
+          ),
+          if (_showConfetti) ConfettiAnimation(animate: _showConfetti),
+        ],
       ),
     );
   }
@@ -92,8 +133,7 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
             ProgressBar(
               backgroundColor: const Color(0xFF424141),
               progressBarColor: const Color(0xFFD67171),
-              headerText:
-                  'Sélectionnez l\'image qui ressemble à celle ci-dessus',
+              headerText: 'Trouver la bonne position familiale',
               progressValue: score / 10,
               onBack: () {
                 // Acción para retroceder
@@ -220,12 +260,16 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
           ),
         );
       },
-      onWillAccept: (data) => data == imageMappings[target],
-      onAccept: (data) {
-        setState(() {
-          placedImages[target] = data;
-        });
-        _checkCompletion();
+      onWillAccept: (data) => true, // Accept any data to play sound
+      onAccept: (data) async {
+        bool correct = data == imageMappings[target];
+        await playSound(target, correct);
+        if (correct) {
+          setState(() {
+            placedImages[target] = data;
+          });
+          _checkCompletion();
+        }
       },
     );
   }
