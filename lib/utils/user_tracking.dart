@@ -61,7 +61,7 @@ class UserTracking extends ChangeNotifier {
     _timesPlayed[game] = (_timesPlayed[game] ?? 0) + 1;
     _saveToPrefs();
     _saveToFirestore();
-    notifyListeners();
+    //notifyListeners();
   }
 
   void incrementTimesCompleted(String game) {

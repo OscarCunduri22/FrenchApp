@@ -9,12 +9,26 @@ class AnimalNameGame extends StatefulWidget {
 }
 
 class _AnimalNameGameState extends State<AnimalNameGame> {
+  final List<Map<String, String>> animals = [
+    {'name': 'che_n', 'image': 'dog.png', 'targetVowel': 'I'},
+    {'name': 'ch_t', 'image': 'cat.png', 'targetVowel': 'A'},
+    {'name': 'ch_chon', 'image': 'pig.png', 'targetVowel': 'O'},
+    {'name': 'vach_', 'image': 'cow.png', 'targetVowel': 'E'},
+    {'name': '_urs', 'image': 'bear.png', 'targetVowel': 'O'},
+    {'name': 'l_nx', 'image': 'lynx.png', 'targetVowel': 'Y'},
+  ];
+
+  int currentAnimalIndex = 0;
   String missingVowel = "_";
-  String targetVowel = "I";
   bool isCorrect = false;
 
   @override
   Widget build(BuildContext context) {
+    final currentAnimal = animals[currentAnimalIndex];
+    final animalName = currentAnimal['name']!;
+    final animalImage = currentAnimal['image']!;
+    final targetVowel = currentAnimal['targetVowel']!;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -33,7 +47,7 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
                   backgroundColor: const Color(0xF2005BA7).withOpacity(0.8),
                   progressBarColor: const Color(0xFF0BCC6C),
                   headerText: "Completa el juego",
-                  progressValue: 1.0,
+                  progressValue: (currentAnimalIndex + 1) / animals.length,
                   onBack: () {
                     Navigator.pop(context);
                   },
@@ -43,9 +57,9 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
                 Container(
                   width: 90,
                   height: 110,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/vocals/game3/animals/dog.png'),
+                      image: AssetImage('assets/images/vocals/game3/animals/$animalImage'),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -54,9 +68,9 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      'CH',
-                      style: TextStyle(
+                    Text(
+                      animalName.split('_')[0],
+                      style: const TextStyle(
                         fontSize: 40,
                         fontWeight: FontWeight.bold,
                       ),
@@ -83,14 +97,42 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
                       onWillAccept: (data) => true,
                       onAccept: (data) {
                         setState(() {
-                          missingVowel = data;
+                          missingVowel = data!;
                           isCorrect = (data == targetVowel);
+                          if (isCorrect) {
+                            Future.delayed(const Duration(seconds: 1), () {
+                              setState(() {
+                                if (currentAnimalIndex < animals.length - 1) {
+                                  currentAnimalIndex++;
+                                  missingVowel = "_";
+                                  isCorrect = false;
+                                } else {
+                                  // Game completed, show winning message
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: const Text("¡Felicidades!"),
+                                      content: const Text("Has completado el juego."),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text("OK"),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }
+                              });
+                            });
+                          }
                         });
                       },
                     ),
-                    const Text(
-                      'N',
-                      style: TextStyle(
+                    Text(
+                      animalName.split('_')[1],
+                      style: const TextStyle(
                         fontSize: 40,
                         fontWeight: FontWeight.bold,
                       ),
@@ -107,6 +149,7 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
                     VowelTile(letter: 'I'),
                     VowelTile(letter: 'O'),
                     VowelTile(letter: 'U'),
+                    VowelTile(letter: 'Y'),
                   ],
                 ),
               ],

@@ -25,19 +25,19 @@ class _VocalGameState extends State<VocalGame> {
     'assets/images/vocals/vocal/i.png',
     'assets/images/vocals/vocal/o.png',
     'assets/images/vocals/vocal/u.png',
-    // Añade más vocales según sea necesario
+    'assets/images/vocals/vocal/y.png',
   ];
 
   int foundVowels = 0;
   String currentBackground = "";
-  String currentVowel = "";
   double vowelPositionX = 0;
   double vowelPositionY = 0;
 
   @override
   void initState() {
     super.initState();
-    //_incrementTimesPlayed();
+    _incrementTimesPlayed();
+    _loadNewScene();
   }
 
   @override
@@ -57,25 +57,22 @@ class _VocalGameState extends State<VocalGame> {
   void _loadNewScene() {
     final random = Random();
     currentBackground = backgrounds[random.nextInt(backgrounds.length)];
-    currentVowel = vocals[random.nextInt(vocals.length)];
-    setState(() {
-      // Tamaño máximo de la pantalla
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       final screenWidth = MediaQuery.of(context).size.width;
       final screenHeight = MediaQuery.of(context).size.height;
-
-      // Tamaño de la imagen de la vocal
       final vocalSize = 100.0;
 
-      // Posiciones aleatorias teniendo en cuenta el tamaño de la pantalla y la imagen
-      vowelPositionX = random.nextDouble() * (screenWidth - vocalSize);
-      vowelPositionY = random.nextDouble() * (screenHeight - vocalSize - 100); // Restando 100 para dejar espacio para la ProgressBar
+      setState(() {
+        vowelPositionX = random.nextDouble() * (screenWidth - vocalSize);
+        vowelPositionY = random.nextDouble() * (screenHeight - vocalSize - 100);
+      });
     });
   }
 
   void _onVowelTapped() {
     setState(() {
       foundVowels++;
-      if (foundVowels >= 3) {
+      if (foundVowels >= 6) {
         _incrementTimesCompleted();
         _showWinDialog();
       } else {
@@ -89,7 +86,7 @@ class _VocalGameState extends State<VocalGame> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text('¡Ganaste!'),
-        content: Text('Has encontrado 3 vocales.'),
+        content: Text('Has encontrado las 6 vocales.'),
         actions: [
           TextButton(
             onPressed: () {
@@ -115,7 +112,7 @@ class _VocalGameState extends State<VocalGame> {
             backgroundColor: const Color(0xFF424141),
             progressBarColor: const Color(0xFFD67171),
             headerText: 'Sélectionnez l\'image qui ressemble à celle ci-dessus',
-            progressValue: foundVowels / 3,
+            progressValue: foundVowels / 6,
             onBack: () {
               // Acción para retroceder
             },
@@ -132,18 +129,19 @@ class _VocalGameState extends State<VocalGame> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                Positioned(
-                  left: vowelPositionX,
-                  top: vowelPositionY,
-                  child: GestureDetector(
-                    onTap: _onVowelTapped,
-                    child: SizedBox(
-                      width: 100,
-                      height: 100,
-                      child: Image.asset(currentVowel),
+                if (foundVowels < vocals.length)
+                  Positioned(
+                    left: vowelPositionX,
+                    top: vowelPositionY,
+                    child: GestureDetector(
+                      onTap: _onVowelTapped,
+                      child: SizedBox(
+                        width: 100,
+                        height: 100,
+                        child: Image.asset(vocals[foundVowels]),
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
           ),
