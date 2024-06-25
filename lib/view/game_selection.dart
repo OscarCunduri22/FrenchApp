@@ -27,6 +27,7 @@ class _GameSelectionScreenState extends State<GameSelectionScreen> {
   void initState() {
     super.initState();
     _fetchGameCompletionStatus();
+    print('GameSelectionScreen: ${widget.category}');
   }
 
   Future<void> _fetchGameCompletionStatus() async {

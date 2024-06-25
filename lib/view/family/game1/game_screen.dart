@@ -1,10 +1,16 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:frenc_app/repository/global.repository.dart';
+import 'package:frenc_app/utils/user_provider.dart';
+import 'package:frenc_app/view/game_selection.dart';
 import 'package:frenc_app/widgets/confetti_animation.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:frenc_app/widgets/replay_popup.dart';
 import 'package:frenc_app/utils/audio_manager.dart';
+import 'package:provider/provider.dart';
 
 class FindFamilyGame extends StatefulWidget {
   const FindFamilyGame({super.key});
@@ -22,6 +28,8 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
   bool showBounceAnimation = true;
   bool _showConfetti = false;
 
+  final databaseRepository = DatabaseRepository();
+
   @override
   void initState() {
     super.initState();
@@ -33,6 +41,24 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
   void dispose() {
     super.dispose();
     AudioManager.background().stop();
+  }
+
+  void _onGameComplete() async {
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
+
+    if (studentId != null) {
+      await databaseRepository.updateGameCompletionStatus(
+          studentId, 'Famille', [true, false, false]);
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => GameSelectionScreen(
+                category: 'Famille',
+              )),
+    );
   }
 
   void newGame() {
@@ -148,8 +174,9 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
             score: score,
             onReplay: () {
               setState(() {
+                /*newGame();*/
+                _onGameComplete();
                 score = 0;
-                newGame();
               });
             },
           ),

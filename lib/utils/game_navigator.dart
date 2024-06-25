@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:frenc_app/view/family/game1/game_screen.dart';
+import 'package:frenc_app/view/family/game2/game_screen.dart';
+import 'package:frenc_app/view/family/game3/game_screen.dart';
 import 'package:frenc_app/view/numbers/game1/game_screen.dart';
 import 'package:frenc_app/view/numbers/game2/game_screen.dart';
 import 'package:frenc_app/view/numbers/game3/game_screen.dart';
@@ -30,7 +33,7 @@ Widget getGameScreen(String category, int gameNumber) {
     case 'Famille':
       switch (gameNumber) {
         case 1:
-          return Container();
+          return const FindFamilyGame();
         case 2:
           return Container();
         case 3:
