@@ -209,13 +209,13 @@ class _StudentListScreenState extends State<StudentListScreen> {
                         },
                       ),
                     ),
-                    const Positioned(
+                    Positioned(
                       bottom: 16,
                       right: 12,
                       child: SizedBox(
                         height: 230,
                         width: 230,
-                        child: GalloComponent(),
+                        child: GalloComponent.dancing(),
                       ),
                     ),
                   ],
