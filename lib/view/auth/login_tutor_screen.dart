@@ -109,11 +109,11 @@ class _TutorLoginScreenState extends State<TutorLoginScreen> {
                             child: _buildLoginForm(context),
                           ),
                         ),
-                        const Expanded(
+                        Expanded(
                           child: Center(
                             child: Padding(
-                                padding: EdgeInsets.all(32),
-                                child: GalloComponent()),
+                                padding: const EdgeInsets.all(32),
+                                child: GalloComponent.dancing()),
                           ),
                         ),
                       ],
