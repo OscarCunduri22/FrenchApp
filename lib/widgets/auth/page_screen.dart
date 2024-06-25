@@ -246,8 +246,8 @@ class _PageScreenState extends State<PageScreen> {
                       shadow: false,
                     ),
                   ),
-                  const Expanded(
-                    child: GalloComponent(),
+                  Expanded(
+                    child: GalloComponent.dancing(),
                   ),
                 ],
               ),

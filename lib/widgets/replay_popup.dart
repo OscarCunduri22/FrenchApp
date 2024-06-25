@@ -17,10 +17,10 @@ class ReplayPopup extends StatelessWidget {
       contentPadding: const EdgeInsets.all(16),
       content: Row(
         children: [
-          const SizedBox(
+          SizedBox(
             width: 100, // Ajusta el ancho según sea necesario
             height: 100, // Ajusta la altura según sea necesario
-            child: GalloComponent(),
+            child: GalloComponent.dancing(),
           ),
           const SizedBox(width: 20),
           Expanded(

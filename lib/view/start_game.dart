@@ -3,7 +3,11 @@ import 'package:frenc_app/widgets/character/button.dart';
 import 'package:frenc_app/widgets/character/gallo.dart';
 
 class StartGame extends StatelessWidget {
-  const StartGame({Key? key}) : super(key: key);
+  final String title;
+  final List<ButtonData> buttons;
+
+  const StartGame({Key? key, required this.title, required this.buttons})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +49,7 @@ class StartGame extends StatelessWidget {
                         child: Stack(
                           children: [
                             Text(
-                              'Famille',
+                              title,
                               style: TextStyle(
                                 fontSize: 75,
                                 fontWeight: FontWeight.bold,
@@ -55,9 +59,9 @@ class StartGame extends StatelessWidget {
                                   ..color = Colors.white,
                               ),
                             ),
-                            const Text(
-                              'Famille',
-                              style: TextStyle(
+                            Text(
+                              title,
+                              style: const TextStyle(
                                 fontSize: 75,
                                 fontWeight: FontWeight.bold,
                                 color: Color(0xFFF44B09),
@@ -68,72 +72,56 @@ class StartGame extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const Expanded(
+                  Expanded(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Expanded(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                width: 200,
-                                child: CustomButton(
-                                  text: 'Jugar',
-                                  color: Color(0xFF321158),
-                                  textStyle: TextStyle(
-                                    fontSize: 25,
-                                    color: Color(0xFFFFE600),
-                                  ),
-                                  borderSide: BorderSide(
-                                    color: Color(0xFFFFE600),
-                                    width: 2,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              SizedBox(
-                                width: 200,
-                                child: CustomButton(
-                                  text: 'Ajustes',
-                                  color: Color(0xFF321158),
-                                  textStyle: TextStyle(
-                                    fontSize: 25,
-                                    color: Color(0xFFFFE600),
-                                  ),
-                                  borderSide: BorderSide(
-                                    color: Color(0xFFFFE600),
-                                    width: 2,
+                            children: buttons.map((buttonData) {
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 5.0),
+                                child: SizedBox(
+                                  width: 200,
+                                  child: CustomButton(
+                                    text: buttonData.text,
+                                    color: const Color(0xFF321158),
+                                    textStyle: const TextStyle(
+                                      fontSize: 25,
+                                      color: Color(0xFFFFE600),
+                                    ),
+                                    borderSide: const BorderSide(
+                                      color: Color(0xFFFFE600),
+                                      width: 2,
+                                    ),
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              buttonData.widget,
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ),
-                              ),
-                              SizedBox(height: 10),
-                              SizedBox(
-                                width: 200,
-                                child: CustomButton(
-                                  text: 'Instrucciones',
-                                  color: Color(0xFF321158),
-                                  textStyle: TextStyle(
-                                    fontSize: 25,
-                                    color: Color(0xFFFFE600),
-                                  ),
-                                  borderSide: BorderSide(
-                                    color: Color(0xFFFFE600),
-                                    width: 2,
-                                  ),
-                                ),
-                              ),
-                            ],
+                              );
+                            }).toList(),
                           ),
                         ),
                         Expanded(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Expanded(
-                                child: Center(child: GalloComponent()),
+                              ElevatedButton(
+                                onPressed: () {
+                                  GalloComponent.showPopup(context,
+                                      '¡Hola! Este es un mensaje emergente.');
+                                },
+                                child: Text('Mostrar Popup'),
                               ),
-                              SizedBox(height: 10),
+                              const SizedBox(height: 10),
                             ],
                           ),
                         ),
@@ -165,4 +153,11 @@ class StartGame extends StatelessWidget {
       ),
     );
   }
+}
+
+class ButtonData {
+  final String text;
+  final Widget widget;
+
+  ButtonData({required this.text, required this.widget});
 }
