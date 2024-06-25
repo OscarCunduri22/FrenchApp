@@ -4,6 +4,8 @@ enum TextType { Title, Subtitle }
 
 enum ColorType { Primary, Secondary }
 
+enum ShadowType { Light, Dark }
+
 class CustomTextWidget extends StatelessWidget {
   final String text;
   final TextType type;
@@ -13,6 +15,7 @@ class CustomTextWidget extends StatelessWidget {
   final ColorType? color;
   final TextAlign? align;
   final bool shadow;
+  final ShadowType shadowColor;
 
   const CustomTextWidget(
       {Key? key,
@@ -23,11 +26,16 @@ class CustomTextWidget extends StatelessWidget {
       this.letterSpacing = 0.0,
       this.color,
       this.align,
-      this.shadow = true})
+      this.shadow = true,
+      this.shadowColor = ShadowType.Dark})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    Color getShadowColor(ShadowType shadowType) {
+      return shadowType == ShadowType.Light ? Colors.white : Colors.black;
+    }
+
     if (type == TextType.Title) {
       final splitIndex = (text.length / 2).ceil();
       final firstPart = text.substring(0, splitIndex);
@@ -42,13 +50,15 @@ class CustomTextWidget extends StatelessWidget {
             fontWeight: fontWeight,
             color: const Color(0xFF016171),
             letterSpacing: letterSpacing,
-            shadows: const [
-              Shadow(
-                blurRadius: 0.0,
-                color: Colors.black,
-                offset: Offset(4.0, 4.0),
-              ),
-            ],
+            shadows: shadow
+                ? [
+                    Shadow(
+                      blurRadius: 0.0,
+                      color: getShadowColor(shadowColor),
+                      offset: Offset(4.0, 4.0),
+                    ),
+                  ]
+                : null,
           ),
           children: <TextSpan>[
             TextSpan(
@@ -58,13 +68,15 @@ class CustomTextWidget extends StatelessWidget {
                 fontFamily: "TitanOneFont",
                 fontWeight: fontWeight,
                 color: const Color(0xFFF15E2F),
-                shadows: const [
-                  Shadow(
-                    blurRadius: 0.0,
-                    color: Colors.black,
-                    offset: Offset(4.0, 4.0),
-                  ),
-                ],
+                shadows: shadow
+                    ? [
+                        Shadow(
+                          blurRadius: 0.0,
+                          color: getShadowColor(shadowColor),
+                          offset: Offset(4.0, 4.0),
+                        ),
+                      ]
+                    : null,
               ),
             ),
           ],
@@ -82,14 +94,15 @@ class CustomTextWidget extends StatelessWidget {
               : const Color(0xFFF15E2F),
           letterSpacing: letterSpacing,
           shadows: shadow
-              ? const [
+              ? [
                   Shadow(
-                    color: Colors.black,
+                    color: getShadowColor(shadowColor),
                     offset: Offset(2.0, 2.0),
                   ),
                 ]
               : null,
         ),
+        textAlign: align,
       );
     } else {
       throw ArgumentError(

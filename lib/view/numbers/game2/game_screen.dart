@@ -1,5 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:frenc_app/repository/global.repository.dart';
+import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/game_selection.dart';
 import 'package:frenc_app/view_model/numbers/game2/game_provider.dart';
 import 'package:frenc_app/widgets/numbers/game2/numbers_options.dart';
@@ -18,12 +22,23 @@ class _TrainWagonNumbersGameState extends State<TrainWagonNumbersGame> {
   bool isOffScreenRight = false;
   bool isVisible = true;
 
-  void _onGameComplete() {
+  final databaseRepository = DatabaseRepository();
+
+  void _onGameComplete() async {
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
+
+    if (studentId != null) {
+      await databaseRepository.updateGameCompletionStatus(
+          studentId, 'Nombres', [true, false, false]);
+    }
+
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) =>
-              GameSelectionScreen()), // Ensure this is the correct screen
+          builder: (context) => GameSelectionScreen(
+                category: 'Nombres',
+              )),
     );
   }
 

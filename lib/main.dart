@@ -8,7 +8,6 @@ import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/numbers/game3/game_screen.dart';
 import 'package:frenc_app/utils/user_tracking.dart';
 import 'package:frenc_app/view/start_screen.dart';
-import 'package:frenc_app/view/numbers/game3/game_screen.dart';
 import 'package:frenc_app/view/vocals/game1/vocal_game.dart';
 import 'package:frenc_app/view/vocals/game3/animal_name_game.dart';
 import 'package:provider/provider.dart';

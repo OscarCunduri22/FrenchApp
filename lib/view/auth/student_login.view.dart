@@ -1,28 +1,38 @@
-// ignore_for_file: deprecated_member_use
-
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/model/fruit.dart';
-import 'package:frenc_app/view/game_selection.dart';
+import 'package:frenc_app/repository/global.repository.dart';
+import 'package:frenc_app/utils/user_provider.dart';
+import 'package:frenc_app/view/category_selection.dart';
 import 'package:frenc_app/view_model/auth/student_login.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
+import 'package:frenc_app/model/student.dart';
 
 class FruitGameScreen extends StatelessWidget {
   final String studentId;
 
   FruitGameScreen({Key? key, required this.studentId}) : super(key: key);
 
-  final Map<String, Color> fruitColors = {
-    'banana': Colors.yellow,
-    'orange': Colors.orange,
-    'pear': Colors.green,
-    'strawberry': Colors.red,
-    'watermelon': Colors.green[800]!,
-  };
+  void _setStudentIdInProvider(BuildContext context) async {
+    final repository = DatabaseRepository();
+    final student = await repository.getStudentById(studentId);
+
+    if (student != null) {
+      Provider.of<UserProvider>(context, listen: false)
+          .setCurrentStudent(studentId, student);
+    }
+
+    print('Student ID: $studentId');
+    final studentToPrint =
+        Provider.of<UserProvider>(context, listen: false).currentStudent;
+    print('Student: $studentToPrint');
+  }
 
   @override
   Widget build(BuildContext context) {
+    _setStudentIdInProvider(context);
+
     return ChangeNotifierProvider(
       create: (_) => FruitGameViewModel(),
       child: Scaffold(
@@ -46,7 +56,6 @@ class FruitGameScreen extends StatelessWidget {
             ),
             Consumer<FruitGameViewModel>(
               builder: (context, viewModel, child) {
-                // Check if all fruits are correctly placed
                 if (viewModel.correctAnswers.length ==
                         viewModel.fruits.length &&
                     viewModel.correctAnswers.values
@@ -55,12 +64,12 @@ class FruitGameScreen extends StatelessWidget {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const GameSelectionScreen()),
+                        builder: (context) => const CategorySelectionScreen(),
+                      ),
                     );
                   });
                 }
 
-                // Shuffle the fruits for draggable and drop target areas
                 final draggableFruits = List<Fruit>.from(viewModel.fruits)
                   ..shuffle(Random());
                 final targetFruits = List<Fruit>.from(viewModel.fruits)
@@ -99,14 +108,13 @@ class FruitGameScreen extends StatelessWidget {
                                 return Container(
                                   width: 100,
                                   height: 100,
-                                  color: isCorrect
-                                      ? Colors.green
-                                      : fruitColors[fruit.name],
-                                  child: Center(
-                                    child: isCorrect
-                                        ? const Icon(Icons.check,
-                                            color: Colors.white)
-                                        : null,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage(isCorrect
+                                          ? fruit.correctTargetImagePath
+                                          : fruit.targetImagePath),
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 );
                               },
@@ -122,20 +130,20 @@ class FruitGameScreen extends StatelessWidget {
                             return Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: ShakeWidget(
-                                interval: Duration(
-                                    seconds: 2 +
-                                        Random().nextInt(3)), // Random interval
+                                interval:
+                                    Duration(seconds: 2 + Random().nextInt(3)),
                                 child: Draggable<Fruit>(
                                   data: fruit,
-                                  feedback:
-                                      Image.asset(fruit.imagePath, width: 80),
+                                  feedback: Image.asset(
+                                      fruit.draggableImagePath,
+                                      width: 80),
                                   childWhenDragging: Opacity(
                                     opacity: 0.5,
-                                    child:
-                                        Image.asset(fruit.imagePath, width: 80),
+                                    child: Image.asset(fruit.draggableImagePath,
+                                        width: 80),
                                   ),
-                                  child:
-                                      Image.asset(fruit.imagePath, width: 80),
+                                  child: Image.asset(fruit.draggableImagePath,
+                                      width: 80),
                                 ),
                               ),
                             );
