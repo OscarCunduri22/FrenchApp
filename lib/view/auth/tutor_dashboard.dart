@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously, use_key_in_widget_constructors
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frenc_app/model/tutor.dart';
@@ -11,6 +9,7 @@ import 'package:frenc_app/view/auth/create_student.dart'; // Importar la pantall
 import 'package:frenc_app/widgets/auth/student_card.dart'; // Importar el widget StudentCard
 import 'package:frenc_app/model/student.dart'; // Importar el modelo Student
 import 'package:frenc_app/view/auth/edit_profile.dart'; // Importar la pantalla de edición de perfil
+import 'package:frenc_app/view/auth/student_detail_screen.dart'; // Importar la pantalla de detalles del estudiante
 
 class TutorDashboardScreen extends StatefulWidget {
   final String tutorName;
@@ -174,26 +173,29 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                         ),
                         Column(
                           children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => EditProfileScreen(tutor: currentUser),
+                            Container(
+                              width: 77.6, // Ancho ajustado restando 2.4 píxeles del tamaño original (80)
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => EditProfileScreen(tutor: currentUser),
+                                    ),
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF016171),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF016171),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                              ),
-                              child: const Text(
-                                'Editar',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
+                                child: const Text(
+                                  'Editar',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 11,
+                                  ),
                                 ),
                               ),
                             ),
@@ -289,12 +291,27 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                                child: StudentCard(
-                                  student: student,
-                                  studentId: studentId,
-                                  onTap: (id) {
-                                    // Lógica para navegar a la pantalla de detalles del alumno
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => StudentDetailScreen(student: student),
+                                      ),
+                                    );
                                   },
+                                  child: StudentCard(
+                                    student: student,
+                                    studentId: studentId,
+                                    onTap: (id) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => StudentDetailScreen(student: student),
+                                        ),
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
                               if (showDeleteButtons)

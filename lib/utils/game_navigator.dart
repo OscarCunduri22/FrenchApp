@@ -5,6 +5,8 @@ import 'package:frenc_app/view/family/game3/game_screen.dart';
 import 'package:frenc_app/view/numbers/game1/game_screen.dart';
 import 'package:frenc_app/view/numbers/game2/game_screen.dart';
 import 'package:frenc_app/view/numbers/game3/game_screen.dart';
+import 'package:frenc_app/view/vocals/game1/vocal_game.dart';
+import 'package:frenc_app/view/vocals/game3/animal_name_game.dart';
 
 Widget getGameScreen(String category, int gameNumber) {
   switch (category) {
@@ -22,11 +24,11 @@ Widget getGameScreen(String category, int gameNumber) {
     case 'Voyelles':
       switch (gameNumber) {
         case 1:
-          return Container();
+          return const VocalGame();
         case 2:
           return Container();
         case 3:
-          return Container();
+          return const AnimalNameGame();
         default:
           return Container();
       }
