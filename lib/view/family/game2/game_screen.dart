@@ -1,9 +1,14 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:frenc_app/repository/global.repository.dart';
+import 'package:frenc_app/utils/user_provider.dart';
+import 'package:frenc_app/view/game_selection.dart';
+import 'package:frenc_app/view/button.dart';
 import 'package:frenc_app/widgets/confetti_animation.dart';
 import 'package:frenc_app/widgets/replay_popup.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:frenc_app/utils/audio_manager.dart';
+import 'package:provider/provider.dart';
 
 class GatherFamilyGame extends StatefulWidget {
   const GatherFamilyGame({Key? key}) : super(key: key);
@@ -46,6 +51,8 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
   int gamesCompleted = 0;
   bool _showConfetti = false;
 
+  final databaseRepository = DatabaseRepository();
+
   @override
   void initState() {
     super.initState();
@@ -57,6 +64,24 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
   void dispose() {
     super.dispose();
     AudioManager.background().stop();
+  }
+
+  void _onGameComplete() async {
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
+
+    if (studentId != null) {
+      await databaseRepository
+          .updateGameCompletionStatus(studentId, 'Famille', [true, true, true]);
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => GameSelectionScreen(
+                category: 'Famille',
+              )),
+    );
   }
 
   void newGame() {
@@ -107,9 +132,13 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
             score: score,
             onReplay: () {
               setState(() {
-                score = 0;
                 newGame();
+                score = 0;
               });
+            },
+            onQuit: () {
+              score = 0;
+              _onGameComplete();
             },
           ),
           if (_showConfetti) ConfettiAnimation(animate: _showConfetti),
@@ -124,7 +153,7 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/family/game2/redbackground.jpg'),
+            image: AssetImage('assets/images/family/game2/draganddrop.jpg'),
             fit: BoxFit.cover,
           ),
         ),
@@ -136,7 +165,7 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
               headerText: 'Trouver la bonne position familiale',
               progressValue: score / 10,
               onBack: () {
-                // Acción para retroceder
+                Navigator.pop(context);
               },
               onVolume: () {
                 // Acción para controlar el volumen
@@ -153,6 +182,7 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
                     ],
                   ),
                   ...buildRemainingDraggableImages(),
+                  const MovableButtonScreen(),
                 ],
               ),
             ),
@@ -206,16 +236,16 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
           top = 0;
           break;
         case 1:
-          left = MediaQuery.of(context).size.width - 110;
+          left = MediaQuery.of(context).size.width - 120;
           top = 0;
           break;
         case 2:
           left = 0;
-          top = MediaQuery.of(context).size.height - 230;
+          top = MediaQuery.of(context).size.height - 280;
           break;
         case 3:
-          left = MediaQuery.of(context).size.width - 110;
-          top = MediaQuery.of(context).size.height - 230;
+          left = MediaQuery.of(context).size.width - 120;
+          top = MediaQuery.of(context).size.height - 280;
           break;
         default:
           left = 0;

@@ -6,10 +6,12 @@ class ReplayPopup extends StatelessWidget {
     Key? key,
     required this.score,
     required this.onReplay,
+    required this.onQuit,
   }) : super(key: key);
 
   final int score;
   final VoidCallback onReplay;
+  final VoidCallback onQuit;
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +50,7 @@ class ReplayPopup extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
+                    onQuit();
                     Navigator.of(context).pop();
                   },
                   child: const Text('Quitter'),
