@@ -10,6 +10,7 @@ import 'package:frenc_app/widgets/auth/student_card.dart'; // Importar el widget
 import 'package:frenc_app/model/student.dart'; // Importar el modelo Student
 import 'package:frenc_app/view/auth/edit_profile.dart'; // Importar la pantalla de edición de perfil
 import 'package:frenc_app/view/auth/student_detail_screen.dart'; // Importar la pantalla de detalles del estudiante
+import 'package:frenc_app/widgets/auth/common_button_styles.dart'; // Importar estilos de botones comunes
 
 class TutorDashboardScreen extends StatefulWidget {
   final String tutorName;
@@ -184,12 +185,7 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                                     ),
                                   );
                                 },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF016171),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
+                                style: CommonButtonStyles.primaryButtonStyle,
                                 child: const Text(
                                   'Editar',
                                   style: TextStyle(
@@ -228,12 +224,7 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                         );
                         _loadStudentCount();
                       },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF016171),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
+                      style: CommonButtonStyles.primaryButtonStyle,
                       child: const Text(
                         'Crear Alumno',
                         style: TextStyle(
@@ -292,14 +283,6 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                               Padding(
                                 padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                                 child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => StudentDetailScreen(student: student),
-                                      ),
-                                    );
-                                  },
                                   child: StudentCard(
                                     student: student,
                                     studentId: studentId,
@@ -307,7 +290,7 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => StudentDetailScreen(student: student),
+                                          builder: (context) => StudentDetailScreen(student: student, studentId: studentId),
                                         ),
                                       );
                                     },

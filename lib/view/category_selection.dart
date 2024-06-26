@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:frenc_app/model/student.dart';
+import 'package:flutter/services.dart';
 import 'package:frenc_app/utils/user_provider.dart';
-import 'package:frenc_app/view/game_selection.dart';
-import 'package:frenc_app/view/numbers/game1/game_screen.dart';
-import 'package:frenc_app/view/vocals/tracing.dart';
 import 'package:frenc_app/widgets/character/button.dart';
-import 'package:frenc_app/view/start_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:frenc_app/view/game_selection.dart';
 
 class CategorySelectionScreen extends StatefulWidget {
   const CategorySelectionScreen({super.key});
@@ -18,7 +15,40 @@ class CategorySelectionScreen extends StatefulWidget {
 
 class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
   @override
+  void initState() {
+    super.initState();
+    // Establecer la orientación horizontal
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+    ]);
+  }
+
+  @override
+  void dispose() {
+    // Restaurar la orientación predeterminada (ambas orientaciones)
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final currentStudentId = Provider.of<UserProvider>(context).currentStudentId;
+    final currentStudent = Provider.of<UserProvider>(context).currentStudent;
+
+    if (currentStudentId == null || currentStudent == null) {
+      return Scaffold(
+        body: Center(
+          child: Text('No student selected'),
+        ),
+      );
+    }
+
     return Scaffold(
       body: Stack(
         children: [

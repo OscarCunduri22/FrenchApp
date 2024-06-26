@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:frenc_app/model/student.dart';
+import 'package:frenc_app/widgets/auth/common_button_styles.dart'; // Importar estilos de botones comunes
+import 'package:frenc_app/view/game_selection.dart';
+import 'package:frenc_app/view/category_selection.dart'; // Importar la pantalla de selección de categoría
 
 class StudentDetailScreen extends StatelessWidget {
   final Student student;
+  final String studentId;
 
-  const StudentDetailScreen({required this.student});
+  const StudentDetailScreen({required this.student, required this.studentId});
 
   @override
   Widget build(BuildContext context) {
@@ -57,9 +61,21 @@ class StudentDetailScreen extends StatelessWidget {
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
-                // Lógica para empezar a jugar
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CategorySelectionScreen(),
+                  ),
+                );
               },
-              child: const Text('Jugar'),
+              style: CommonButtonStyles.primaryButtonStyle,
+              child: const Text(
+                'Jugar',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
             ),
           ],
         ),

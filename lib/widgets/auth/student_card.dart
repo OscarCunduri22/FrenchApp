@@ -1,73 +1,53 @@
-// widgets/student_card.dart
 import 'package:flutter/material.dart';
 import 'package:frenc_app/model/student.dart';
 
 class StudentCard extends StatelessWidget {
   final Student student;
   final String studentId;
-  final Function(String) onTap;
+  final void Function(String studentId) onTap;
 
   const StudentCard({
-    Key? key,
     required this.student,
     required this.studentId,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => onTap(studentId),
       child: Card(
-        elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
+          borderRadius: BorderRadius.circular(10),
         ),
-        color: Colors.transparent,
-        child: Container(
-          width: 125,
-          height: 210,
-          decoration: BoxDecoration(
-            image: const DecorationImage(
-              image: AssetImage('assets/images/auth/cardbg1.png'),
-              fit: BoxFit.cover,
-            ),
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(4, 0, 4, 2),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ClipOval(
+        elevation: 4,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: 150,
+              child: Center(
+                child: ClipOval(
                   child: Image.network(
                     student.imageUrl,
-                    width: 60,
-                    height: 60,
+                    height: 100, // Adjust height and width as needed
+                    width: 100,
                     fit: BoxFit.cover,
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  student.name,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'ShortBabyFont',
-                    color: Color(0xFF016171),
-                  ),
-                ),
-                Text(
-                  student.group,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontFamily: 'LoveDaysLoveFont',
-                    color: Color(0xFFF15E2F),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                student.name,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
