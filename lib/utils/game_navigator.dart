@@ -35,9 +35,9 @@ Widget getGameScreen(String category, int gameNumber) {
         case 1:
           return const FindFamilyGame();
         case 2:
-          return Container();
+          return const GatherFamilyGame();
         case 3:
-          return Container();
+          return const MemoryGamePage();
         default:
           return Container();
       }
