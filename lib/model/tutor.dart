@@ -1,4 +1,5 @@
 class Tutor {
+  String id; // Añadir este campo
   String name;
   String username;
   String email;
@@ -6,6 +7,7 @@ class Tutor {
   int code;
 
   Tutor({
+    required this.id, // Añadir este campo
     required this.name,
     required this.username,
     required this.email,
@@ -15,6 +17,7 @@ class Tutor {
 
   Tutor.fromJson(Map<String, Object?> json)
       : this(
+          id: json['id']! as String, // Añadir este campo
           name: json['name']! as String,
           username: json['username']! as String,
           email: json['email']! as String,
@@ -23,6 +26,7 @@ class Tutor {
         );
 
   Tutor copyWith({
+    String? id, // Añadir este campo
     String? name,
     String? username,
     String? email,
@@ -30,6 +34,7 @@ class Tutor {
     int? code,
   }) {
     return Tutor(
+      id: id ?? this.id, // Añadir este campo
       name: name ?? this.name,
       username: username ?? this.username,
       email: email ?? this.email,
@@ -40,6 +45,7 @@ class Tutor {
 
   Map<String, Object?> toJson() {
     return {
+      'id': id, // Añadir este campo
       'name': name,
       'username': username,
       'email': email,

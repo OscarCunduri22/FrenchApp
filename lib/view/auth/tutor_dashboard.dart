@@ -10,6 +10,7 @@ import 'dart:ui';
 import 'package:frenc_app/view/auth/create_student.dart'; // Importar la pantalla de creación de usuario
 import 'package:frenc_app/widgets/auth/student_card.dart'; // Importar el widget StudentCard
 import 'package:frenc_app/model/student.dart'; // Importar el modelo Student
+import 'package:frenc_app/view/auth/edit_profile.dart'; // Importar la pantalla de edición de perfil
 
 class TutorDashboardScreen extends StatefulWidget {
   final String tutorName;
@@ -23,6 +24,7 @@ class TutorDashboardScreen extends StatefulWidget {
 class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
   final DatabaseRepository _databaseRepository = DatabaseRepository();
   bool showDeleteButtons = false;
+  int studentCount = 0;
 
   @override
   void initState() {
@@ -32,6 +34,7 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    _loadStudentCount();
   }
 
   @override
@@ -44,6 +47,16 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
     super.dispose();
   }
 
+  Future<void> _loadStudentCount() async {
+    Tutor? currentUser = Provider.of<UserProvider>(context, listen: false).currentUser;
+    if (currentUser != null) {
+      List<Map<String, dynamic>> students = await _databaseRepository.getStudentsByTutorId(currentUser.email);
+      setState(() {
+        studentCount = students.length;
+      });
+    }
+  }
+
   void toggleDeleteButtons() {
     setState(() {
       showDeleteButtons = !showDeleteButtons;
@@ -52,6 +65,7 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
 
   Future<void> deleteStudent(String studentId) async {
     await _databaseRepository.deleteStudentById(studentId);
+    _loadStudentCount();
     setState(() {});
   }
 
@@ -148,7 +162,7 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  currentUser.email,
+                                  'Estudiantes: $studentCount',
                                   style: const TextStyle(
                                     fontSize: 16,
                                     color: Colors.grey,
@@ -162,7 +176,12 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                           children: [
                             ElevatedButton(
                               onPressed: () {
-                                // Lógica para editar perfil
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => EditProfileScreen(tutor: currentUser),
+                                  ),
+                                );
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF016171),
@@ -198,13 +217,14 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
+                      onPressed: () async {
+                        await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => CreateStudentScreenHorizontal(tutorId: currentUser.email), // Usar email en lugar de id
                           ),
                         );
+                        _loadStudentCount();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF016171),
