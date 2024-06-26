@@ -22,6 +22,7 @@ class TutorDashboardScreen extends StatefulWidget {
 
 class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
   final DatabaseRepository _databaseRepository = DatabaseRepository();
+  bool showDeleteButtons = false;
 
   @override
   void initState() {
@@ -35,14 +36,53 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
 
   @override
   void dispose() {
-    // Restaurar la orientación predeterminada
+    // Restaurar la orientación vertical predeterminada
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
     ]);
     super.dispose();
+  }
+
+  void toggleDeleteButtons() {
+    setState(() {
+      showDeleteButtons = !showDeleteButtons;
+    });
+  }
+
+  Future<void> deleteStudent(String studentId) async {
+    await _databaseRepository.deleteStudentById(studentId);
+    setState(() {});
+  }
+
+  Future<void> confirmDeleteStudent(String studentId, String studentName) async {
+    bool? shouldDelete = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Eliminar Alumno'),
+          content: Text('¿Deseas eliminar al alumno $studentName?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // Cancelar
+              },
+              child: Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true); // Aceptar
+              },
+              child: Text('Aceptar'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldDelete == true) {
+      await deleteStudent(studentId);
+    }
   }
 
   @override
@@ -62,7 +102,7 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/auth/background_with_stars.png'),
+                image: AssetImage('assets/images/montessoribg.jpg'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -79,33 +119,84 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 32),
-                Text(
-                  'Bienvenido, ${widget.tutorName}',
-                  style: const TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    shadows: [
-                      Shadow(
-                        offset: Offset(2.0, 2.0),
-                        blurRadius: 3.0,
-                        color: Color.fromARGB(255, 0, 0, 0),
-                      ),
-                    ],
+                Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundImage: AssetImage('assets/images/gallo.png'),
+                              radius: 40,
+                            ),
+                            const SizedBox(width: 16),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  currentUser.name,
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  currentUser.email,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                // Lógica para editar perfil
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF016171),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              child: const Text(
+                                'Editar',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20),
+                const Text(
+                  'Alumnos',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 0, 0, 0),
+                  ),
+                ),
+                const SizedBox(height: 10),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Alumnos',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
@@ -115,7 +206,36 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                           ),
                         );
                       },
-                      child: Text('Crear Alumno'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF016171),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: const Text(
+                        'Crear Alumno',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: toggleDeleteButtons,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: const Text(
+                        'Eliminar Alumno',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -134,7 +254,7 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
 
                       final alumnos = snapshot.data!;
                       return GridView.builder(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2, // Número de columnas
                           mainAxisSpacing: 10.0,
                           crossAxisSpacing: 10.0,
@@ -145,15 +265,30 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                           final studentData = alumnos[index]['data'];
                           final studentId = alumnos[index]['id'];
                           final student = Student.fromJson(studentData);
-                          return Padding(
-                            padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                            child: StudentCard(
-                              student: student,
-                              studentId: studentId,
-                              onTap: (id) {
-                                // Lógica para navegar a la pantalla de detalles del alumno
-                              },
-                            ),
+                          return Stack(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                                child: StudentCard(
+                                  student: student,
+                                  studentId: studentId,
+                                  onTap: (id) {
+                                    // Lógica para navegar a la pantalla de detalles del alumno
+                                  },
+                                ),
+                              ),
+                              if (showDeleteButtons)
+                                Positioned(
+                                  top: 8,
+                                  right: 8,
+                                  child: IconButton(
+                                    icon: const Icon(Icons.close, color: Colors.red),
+                                    onPressed: () async {
+                                      await confirmDeleteStudent(studentId, student.name);
+                                    },
+                                  ),
+                                ),
+                            ],
                           );
                         },
                       );

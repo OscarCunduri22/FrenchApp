@@ -62,12 +62,16 @@ class UserTracking extends ChangeNotifier {
     _saveToPrefs();
     _saveToFirestore();
     //notifyListeners();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
   }
 
   void incrementTimesCompleted(String game) {
     _timesCompleted[game] = (_timesCompleted[game] ?? 0) + 1;
     _saveToPrefs();
     _saveToFirestore();
-    notifyListeners();
+    //notifyListeners();
+    
   }
 }

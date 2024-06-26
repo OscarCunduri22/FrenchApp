@@ -49,6 +49,8 @@ class DatabaseRepository {
     _tutorRef.doc(id).delete();
   }
 
+
+
   Future<Tutor?> loginTutor(String email, String password) async {
     final tutor = await _tutorRef
         .where('email', isEqualTo: email)
@@ -87,6 +89,12 @@ class DatabaseRepository {
     }
     return [];
   }
+
+  Future<void> deleteStudentById(String studentId) async {
+  await _studentRef.doc(studentId).delete();
+  }
+
+
 
   Future<String?> getStudentIdByEmail(String name) async {
     final student = await _firestore

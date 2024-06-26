@@ -108,7 +108,7 @@ class _CreateStudentScreenHorizontalState extends State<CreateStudentScreenHoriz
     showSnackBar(context, 'Success', 'Student created successfully.',
         ContentType.success);
     await Future.delayed(const Duration(seconds: 2));
-    Navigator.pop(context);
+    Navigator.pop(context, student); // Pasar el nuevo estudiante de regreso
   }
 
   void showSnackBar(
