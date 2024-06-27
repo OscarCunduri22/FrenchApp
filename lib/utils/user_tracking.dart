@@ -11,22 +11,21 @@ class UserTracking extends ChangeNotifier {
   Map<String, int> get timesCompleted => _timesCompleted;
 
   UserTracking() {
-    _init();
+    // _init() is removed since student-specific data should be loaded separately
   }
 
-  void _init() async {
-    await _loadFromPrefs();
-    await _loadFromFirestore();
-    // Usar `addPostFrameCallback` para asegurarse de que los listeners se notifiquen fuera del ciclo de construcción de widgets
+  Future<void> loadTrackingData(String studentId) async {
+    await _loadFromPrefs(studentId);
+    await _loadFromFirestore(studentId);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       notifyListeners();
     });
   }
 
-  Future<void> _loadFromPrefs() async {
+  Future<void> _loadFromPrefs(String studentId) async {
     final prefs = await SharedPreferences.getInstance();
-    final timesPlayedString = prefs.getString('timesPlayed');
-    final timesCompletedString = prefs.getString('timesCompleted');
+    final timesPlayedString = prefs.getString('timesPlayed_$studentId');
+    final timesCompletedString = prefs.getString('timesCompleted_$studentId');
     if (timesPlayedString != null) {
       _timesPlayed = Map<String, int>.from(json.decode(timesPlayedString));
     }
@@ -35,8 +34,8 @@ class UserTracking extends ChangeNotifier {
     }
   }
 
-  Future<void> _loadFromFirestore() async {
-    final docSnapshot = await FirebaseFirestore.instance.collection('users').doc('userId').get();
+  Future<void> _loadFromFirestore(String studentId) async {
+    final docSnapshot = await FirebaseFirestore.instance.collection('users').doc(studentId).get();
     if (docSnapshot.exists) {
       final data = docSnapshot.data()!;
       _timesPlayed = Map<String, int>.from(data['timesPlayed'] ?? {});
@@ -44,34 +43,45 @@ class UserTracking extends ChangeNotifier {
     }
   }
 
-  void _saveToPrefs() async {
+  Future<void> _saveToPrefs(String studentId) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString('timesPlayed', json.encode(_timesPlayed));
-    prefs.setString('timesCompleted', json.encode(_timesCompleted));
+    prefs.setString('timesPlayed_$studentId', json.encode(_timesPlayed));
+    prefs.setString('timesCompleted_$studentId', json.encode(_timesCompleted));
   }
 
-  void _saveToFirestore() async {
-    await FirebaseFirestore.instance.collection('users').doc('userId').set({
+  Future<void> _saveToFirestore(String studentId) async {
+    await FirebaseFirestore.instance.collection('users').doc(studentId).set({
       'timesPlayed': _timesPlayed,
       'timesCompleted': _timesCompleted,
     });
   }
 
-  void incrementTimesPlayed(String game) {
+  void incrementTimesPlayed(String studentId, String game) {
     _timesPlayed[game] = (_timesPlayed[game] ?? 0) + 1;
-    _saveToPrefs();
-    _saveToFirestore();
-    //notifyListeners();
+    _saveToPrefs(studentId);
+    _saveToFirestore(studentId);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       notifyListeners();
     });
   }
 
-  void incrementTimesCompleted(String game) {
+  void incrementTimesCompleted(String studentId, String game) {
     _timesCompleted[game] = (_timesCompleted[game] ?? 0) + 1;
-    _saveToPrefs();
-    _saveToFirestore();
-    //notifyListeners();
-    
+    _saveToPrefs(studentId);
+    _saveToFirestore(studentId);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
+  }
+
+  int getTotalGamesPlayed() {
+    return _timesPlayed.values.fold(0, (sum, value) => sum + value);
+  }
+
+  String getMostPlayedGame() {
+    if (_timesPlayed.isEmpty) {
+      return "N/A";
+    }
+    return _timesPlayed.entries.reduce((a, b) => a.value > b.value ? a : b).key;
   }
 }

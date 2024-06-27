@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:frenc_app/utils/user_tracking.dart';
 
 class GameViewModel extends ChangeNotifier {
   final List<String> _numbers = [
@@ -34,8 +36,12 @@ class GameViewModel extends ChangeNotifier {
   bool _isGameCompleted = false;
   final int totalLevels = 10;
 
-  GameViewModel() {
+  final UserTracking userTracking;
+  final String studentId;
+
+  GameViewModel(this.userTracking, this.studentId) {
     characterSlots = List<String?>.filled(_numbers[_currentIndex].length, null);
+    _incrementTimesPlayed(); // Incrementar contador de juegos jugados
   }
 
   List<String> get numbers => _numbers;
@@ -70,6 +76,7 @@ class GameViewModel extends ChangeNotifier {
       notifyListeners();
     } else {
       _isGameCompleted = true;
+      _incrementTimesCompleted(); // Incrementar contador de juegos completados
       notifyListeners();
     }
   }
@@ -92,5 +99,13 @@ class GameViewModel extends ChangeNotifier {
   void resetCharacterSlots() {
     characterSlots = List<String?>.filled(_numbers[_currentIndex].length, null);
     notifyListeners();
+  }
+
+  void _incrementTimesPlayed() {
+    userTracking.incrementTimesPlayed(studentId, 'bubble_numbers_game');
+  }
+
+  void _incrementTimesCompleted() {
+    userTracking.incrementTimesCompleted(studentId, 'bubble_numbers_game');
   }
 }

@@ -1,9 +1,8 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/user_provider.dart';
+import 'package:frenc_app/utils/user_tracking.dart'; // Importar UserTracking
 import 'package:frenc_app/view/game_selection.dart';
 import 'package:frenc_app/view_model/numbers/game2/game_provider.dart';
 import 'package:frenc_app/widgets/numbers/game2/numbers_options.dart';
@@ -44,8 +43,13 @@ class _TrainWagonNumbersGameState extends State<TrainWagonNumbersGame> {
 
   @override
   Widget build(BuildContext context) {
+    String? studentId = Provider.of<UserProvider>(context).currentStudentId;
+
     return ChangeNotifierProvider(
-      create: (context) => GameProvider(),
+      create: (context) => GameProvider(
+        Provider.of<UserTracking>(context, listen: false),
+        studentId!,
+      ),
       child: Scaffold(
         body: Stack(
           children: [

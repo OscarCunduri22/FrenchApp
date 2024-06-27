@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:frenc_app/utils/user_tracking.dart';
 
 class GameProvider with ChangeNotifier {
   List<int> options = [];
@@ -12,7 +14,11 @@ class GameProvider with ChangeNotifier {
   int currentLevel = 0;
   final int totalLevels = 5;
 
-  GameProvider() {
+  final UserTracking userTracking;
+  final String studentId;
+
+  GameProvider(this.userTracking, this.studentId) {
+    _incrementTimesPlayed(); // Incrementar contador de juegos jugados
     generateNewLevel();
   }
 
@@ -27,6 +33,7 @@ class GameProvider with ChangeNotifier {
         if (currentLevel < totalLevels) {
           generateNewLevel();
         } else {
+          _incrementTimesCompleted(); // Incrementar contador de juegos completados
           onComplete();
         }
         isCompleted = false;
@@ -64,4 +71,12 @@ class GameProvider with ChangeNotifier {
   }
 
   double get progressValue => currentLevel / totalLevels;
+
+  void _incrementTimesPlayed() {
+    userTracking.incrementTimesPlayed(studentId, 'train_wagon_numbers_game');
+  }
+
+  void _incrementTimesCompleted() {
+    userTracking.incrementTimesCompleted(studentId, 'train_wagon_numbers_game');
+  }
 }

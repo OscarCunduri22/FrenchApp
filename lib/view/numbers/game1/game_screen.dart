@@ -1,16 +1,14 @@
-import 'dart:async';
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-import 'package:confetti/confetti.dart';
-import 'package:frenc_app/view_model/numbers/game1/numbersgame1_viewmodel.dart';
-import 'package:frenc_app/repository/global.repository.dart';
-import 'package:frenc_app/utils/user_provider.dart';
-import 'package:frenc_app/view/game_selection.dart';
-import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:frenc_app/widgets/numbers/game1/character_box_widget.dart';
 import 'package:frenc_app/widgets/numbers/game1/disordered_characters_widget.dart';
 import 'package:frenc_app/widgets/numbers/game1/number_image_widget.dart';
+import 'package:provider/provider.dart';
+import 'package:frenc_app/utils/user_provider.dart';
+import 'package:frenc_app/utils/user_tracking.dart';
+import 'package:frenc_app/view_model/numbers/game1/numbersgame1_viewmodel.dart'; // Ajusta la ruta según sea necesario
+import 'package:frenc_app/widgets/progress_bar.dart';
 import 'dart:math';
 
 class BubbleNumbersGame extends StatefulWidget {
@@ -20,8 +18,7 @@ class BubbleNumbersGame extends StatefulWidget {
   _BubbleNumbersGameState createState() => _BubbleNumbersGameState();
 }
 
-class _BubbleNumbersGameState extends State<BubbleNumbersGame>
-    with TickerProviderStateMixin {
+class _BubbleNumbersGameState extends State<BubbleNumbersGame> with TickerProviderStateMixin {
   late ConfettiController _confettiController;
   late AnimationController _characterBoxController;
   late AnimationController _disorderedCharactersController;
@@ -29,13 +26,10 @@ class _BubbleNumbersGameState extends State<BubbleNumbersGame>
 
   bool _animationsInitialized = false;
 
-  final databaseRepository = DatabaseRepository();
-
   @override
   void initState() {
     super.initState();
-    _confettiController =
-        ConfettiController(duration: const Duration(seconds: 2));
+    _confettiController = ConfettiController(duration: const Duration(seconds: 2));
     _characterBoxController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 1),
@@ -80,29 +74,21 @@ class _BubbleNumbersGameState extends State<BubbleNumbersGame>
   }
 
   void _onGameComplete() async {
-    String? studentId =
-        Provider.of<UserProvider>(context, listen: false).currentStudentId;
-
+    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
-      await databaseRepository.updateGameCompletionStatus(
-        studentId,
-        'Nombres',
-        [true, true, true],
-      );
+      // Implementar lógica de finalización de juego específica para el estudiante
     }
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => GameSelectionScreen(category: 'Nombres'),
-      ),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
+    String? studentId = Provider.of<UserProvider>(context).currentStudentId;
+
     return ChangeNotifierProvider(
-      create: (_) => GameViewModel(),
+      create: (context) => GameViewModel(
+        Provider.of<UserTracking>(context, listen: false),
+        studentId!,
+      ),
       child: Scaffold(
         body: Consumer<GameViewModel>(
           builder: (context, viewModel, child) {
@@ -127,24 +113,20 @@ class _BubbleNumbersGameState extends State<BubbleNumbersGame>
                 Container(
                   decoration: const BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage(
-                          'assets/images/numbers/game1/fondo-marino.png'),
+                      image: AssetImage('assets/images/numbers/game1/fondo-marino.png'),
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
-                // Foreground Content
                 Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       ProgressBar(
-                        backgroundColor:
-                            const Color(0xF2005BA7).withOpacity(0.8),
+                        backgroundColor: const Color(0xF2005BA7).withOpacity(0.8),
                         progressBarColor: const Color(0xFF0BCC6C),
                         headerText: 'Completa la secuencia de números',
-                        progressValue:
-                            viewModel.currentIndex / viewModel.totalLevels,
+                        progressValue: viewModel.currentIndex / viewModel.totalLevels,
                         onBack: () {
                           Navigator.pop(context);
                         },
@@ -157,8 +139,7 @@ class _BubbleNumbersGameState extends State<BubbleNumbersGame>
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               NumberImageWidget(
-                                imagePath:
-                                    viewModel.images[viewModel.currentIndex],
+                                imagePath: viewModel.images[viewModel.currentIndex],
                               ),
                               const SizedBox(height: 10),
                               CharacterBoxWidget(

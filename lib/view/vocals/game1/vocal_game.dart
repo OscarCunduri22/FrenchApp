@@ -3,6 +3,7 @@ import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
 import 'package:frenc_app/utils/user_tracking.dart';
+import 'package:frenc_app/utils/user_provider.dart'; // Importar UserProvider
 
 class VocalGame extends StatefulWidget {
   const VocalGame({Key? key}) : super(key: key);
@@ -47,11 +48,17 @@ class _VocalGameState extends State<VocalGame> {
   }
 
   void _incrementTimesPlayed() {
-    Provider.of<UserTracking>(context, listen: false).incrementTimesPlayed('vocal_game');
+    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    if (studentId != null) {
+      Provider.of<UserTracking>(context, listen: false).incrementTimesPlayed(studentId, 'vocal_game');
+    }
   }
 
   void _incrementTimesCompleted() {
-    Provider.of<UserTracking>(context, listen: false).incrementTimesCompleted('vocal_game');
+    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    if (studentId != null) {
+      Provider.of<UserTracking>(context, listen: false).incrementTimesCompleted(studentId, 'vocal_game');
+    }
   }
 
   void _loadNewScene() {
@@ -114,7 +121,7 @@ class _VocalGameState extends State<VocalGame> {
             headerText: 'Sélectionnez l\'image qui ressemble à celle ci-dessus',
             progressValue: foundVowels / 6,
             onBack: () {
-              // Acción para retroceder
+              Navigator.pop(context);
             },
             onVolume: () {
               // Acción para controlar el volumen
