@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/audio_manager.dart';
+import 'package:frenc_app/utils/user_provider.dart';
+import 'package:frenc_app/view/game_selection.dart';
+import 'package:frenc_app/view/button.dart';
 import 'package:frenc_app/widgets/confetti_animation.dart';
 import 'package:frenc_app/widgets/replay_popup.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
+import 'package:provider/provider.dart';
 
 class MemoryGamePage extends StatefulWidget {
   const MemoryGamePage({Key? key}) : super(key: key);
@@ -15,6 +20,7 @@ class MemoryGamePage extends StatefulWidget {
 class _MemoryGamePageState extends State<MemoryGamePage>
     with TickerProviderStateMixin {
   bool _showConfetti = false;
+  bool isBusy = false;
 
   List<String> allImages = [
     'assets/images/family/game3/aunt.jpg',
@@ -38,6 +44,8 @@ class _MemoryGamePageState extends State<MemoryGamePage>
   late List<Animation<double>> _animations;
   bool _isLoading = true;
 
+  final databaseRepository = DatabaseRepository();
+
   @override
   void initState() {
     super.initState();
@@ -56,7 +64,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
   }
 
   Future<void> _loadGame() async {
-    await AudioManager.effects().play('sound/family/instruccionGame2.m4a');
+    await AudioManager.effects().play('sound/family/instruccionGame3.m4a');
     _newGame();
     setState(() {
       _isLoading = false;
@@ -70,6 +78,24 @@ class _MemoryGamePageState extends State<MemoryGamePage>
     }
     super.dispose();
     AudioManager.background().stop();
+  }
+
+  void _onGameComplete() async {
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
+
+    if (studentId != null) {
+      await databaseRepository
+          .updateGameCompletionStatus(studentId, 'Famille', [true, true, true]);
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => GameSelectionScreen(
+                category: 'Famille',
+              )),
+    );
   }
 
   Future<void> playSound(String card) async {
@@ -122,6 +148,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
       cardsFlipped = List<bool>.filled(cardImages.length, false);
       flippedIndices = [];
       _showConfetti = false;
+      isBusy = false;
       for (var controller in _controllers) {
         controller.reset();
       }
@@ -141,9 +168,13 @@ class _MemoryGamePageState extends State<MemoryGamePage>
             score: score,
             onReplay: () {
               setState(() {
-                score = 0;
                 _newGame();
+                score = 0;
               });
+            },
+            onQuit: () {
+              score = 0;
+              _onGameComplete();
             },
           ),
           if (_showConfetti) ConfettiAnimation(animate: _showConfetti),
@@ -153,7 +184,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
   }
 
   void onCardTap(int index) {
-    if (cardsFlipped[index]) return;
+    if (cardsFlipped[index] || isBusy) return;
 
     setState(() {
       cardsFlipped[index] = true;
@@ -161,6 +192,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
       _controllers[index].forward();
 
       if (flippedIndices.length == 2) {
+        isBusy = true;
         if (cardImages[flippedIndices[0]] != cardImages[flippedIndices[1]]) {
           Future.delayed(const Duration(seconds: 2), () {
             setState(() {
@@ -170,6 +202,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
               _controllers[flippedIndices[1]].reverse();
               flippedIndices.clear();
               AudioManager.effects().play('sound/incorrect.mp3');
+              isBusy = false;
               Future.delayed(const Duration(seconds: 2), () {
                 AudioManager.effects().stop();
               });
@@ -179,6 +212,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
           playSound(cardImages[flippedIndices[0]]);
           Future.delayed(const Duration(seconds: 2), () {
             AudioManager.effects().stop();
+            isBusy = false;
           });
           flippedIndices.clear();
         }
@@ -187,7 +221,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
       if (cardsFlipped.every((flipped) => flipped)) {
         score += 1;
         Future.delayed(const Duration(seconds: 2), () {
-          if (score < 2) {
+          if (score < 10) {
             _newGame();
           } else {
             _showWinDialog();
@@ -217,11 +251,10 @@ class _MemoryGamePageState extends State<MemoryGamePage>
                 ProgressBar(
                   backgroundColor: const Color(0xFF424141),
                   progressBarColor: const Color(0xFF8DB270),
-                  headerText:
-                      'Sélectionnez l\'image qui ressemble à celle ci-dessus',
+                  headerText: 'Retournez les cartes et trouvez les paires',
                   progressValue: score / 10,
                   onBack: () {
-                    // Acción para retroceder
+                    Navigator.pop(context);
                   },
                   onVolume: () {
                     // Acción para activar/desactivar el sonido
@@ -291,10 +324,11 @@ class _MemoryGamePageState extends State<MemoryGamePage>
               ],
             ),
           ),
-          if (_showConfetti)
-            Positioned.fill(
-              child: ConfettiAnimation(animate: _showConfetti),
-            ),
+          const MovableButtonScreen(),
+          // if (_showConfetti)
+          //   Positioned.fill(
+          //     child: ConfettiAnimation(animate: _showConfetti),
+          //   ),
         ],
       ),
     );
