@@ -7,6 +7,7 @@ import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/game_selection.dart';
 import 'package:frenc_app/view/button.dart';
+import 'package:frenc_app/widgets/character/gallo.dart';
 import 'package:frenc_app/widgets/confetti_animation.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:frenc_app/widgets/replay_popup.dart';
@@ -285,7 +286,12 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
                 ),
               ],
             ),
-            const MovableButtonScreen(),
+            const MovableButtonScreen(
+              spanishAudio: 'sound/family/instruccionGame1.m4a',
+              frenchAudio: 'sound/family/instruccionGame1.m4a',
+              rivePath: 'assets/RiveAssets/gallindo.riv',
+            )
+
             // if (_showConfetti)
             //   Positioned.fill(
             //     child: ConfettiAnimation(animate: _showConfetti),
