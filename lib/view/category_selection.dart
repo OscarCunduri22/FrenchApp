@@ -1,31 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:frenc_app/model/student.dart';
-import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/game_selection.dart';
-import 'package:frenc_app/view/numbers/game1/game_screen.dart';
-import 'package:frenc_app/view/vocals/tracing.dart';
 import 'package:frenc_app/widgets/character/button.dart';
-import 'package:frenc_app/view/start_screen.dart';
-import 'package:provider/provider.dart';
+import 'package:frenc_app/widgets/custom_theme_text.dart';
 
 class CategorySelectionScreen extends StatefulWidget {
   const CategorySelectionScreen({super.key});
 
   @override
-  _CategorySelectionScreenState createState() =>
+  State<CategorySelectionScreen> createState() =>
       _CategorySelectionScreenState();
 }
 
 class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: Stack(
         children: [
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/GameSelectionBg.jpg'),
+                image: AssetImage('assets/images/onlyBg.jpg'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -35,6 +32,18 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
               children: [
                 Row(
                   children: [
+                    Container(
+                      width: screenWidth *
+                          0.5, // La mitad del ancho de la pantalla
+                      alignment: Alignment.center,
+                      child: const CustomTextWidget(
+                        text: 'Escoge un juego',
+                        type: TextType.Title,
+                        fontSize: 44,
+                        fontWeight: FontWeight.w200,
+                        letterSpacing: 1.0,
+                      ),
+                    ),
                     const Spacer(),
                     Container(
                       width: 50,
@@ -70,6 +79,7 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
                     const SizedBox(width: 10),
                   ],
                 ),
+                const SizedBox(height: 15),
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
