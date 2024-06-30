@@ -116,8 +116,7 @@ class StartGame extends StatelessWidget {
                             children: [
                               ElevatedButton(
                                 onPressed: () {
-                                  GalloComponent.showPopup(context,
-                                      '¡Hola! Este es un mensaje emergente.');
+                                  GalloComponent.jumping();
                                 },
                                 child: Text('Mostrar Popup'),
                               ),

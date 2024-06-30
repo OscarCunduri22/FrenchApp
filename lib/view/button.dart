@@ -4,10 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:frenc_app/widgets/character/gallo.dart';
 
 class MovableButtonScreen extends StatefulWidget {
-  const MovableButtonScreen({super.key});
+  final String spanishAudio;
+  final String frenchAudio;
+  final String rivePath;
+
+  const MovableButtonScreen(
+      {super.key,
+      required this.spanishAudio,
+      required this.frenchAudio,
+      required this.rivePath});
 
   @override
-  _MovableButtonScreenState createState() => _MovableButtonScreenState();
+  State<MovableButtonScreen> createState() => _MovableButtonScreenState();
 }
 
 class _MovableButtonScreenState extends State<MovableButtonScreen> {
@@ -23,7 +31,8 @@ class _MovableButtonScreenState extends State<MovableButtonScreen> {
     setState(() {
       _isPressed = false;
     });
-    GalloComponent.showPopup(context, '¡Hola! Este es un mensaje emergente.');
+    GalloComponent.showPopup(
+        context, widget.spanishAudio, widget.frenchAudio, widget.rivePath);
   }
 
   void _onTapCancel() {

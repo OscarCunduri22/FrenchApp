@@ -324,7 +324,12 @@ class _MemoryGamePageState extends State<MemoryGamePage>
               ],
             ),
           ),
-          const MovableButtonScreen(),
+          const MovableButtonScreen(
+            spanishAudio: 'sound/family/instruccionGame1.m4a',
+            frenchAudio: 'sound/family/instruccionGame1.m4a',
+            rivePath: 'assets/RiveAssets/gallindo.riv',
+          )
+
           // if (_showConfetti)
           //   Positioned.fill(
           //     child: ConfettiAnimation(animate: _showConfetti),
