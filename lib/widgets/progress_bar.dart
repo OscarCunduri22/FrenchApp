@@ -29,13 +29,13 @@ class ProgressBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               GestureDetector(
-                onTap: onBack,
+                onTap: onVolume,
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 30),
                   child: Image.asset(
-                    'assets/images/icons/exit.png',
-                    width: 25,
-                    height: 25,
+                    'assets/images/icons/sonido.png',
+                    width: 32,
+                    height: 32,
                   ),
                 ),
               ),
@@ -59,13 +59,13 @@ class ProgressBar extends StatelessWidget {
                 ),
               ),
               GestureDetector(
-                onTap: onVolume,
+                onTap: onBack,
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 30),
                   child: Image.asset(
-                    'assets/images/icons/sonido.png',
-                    width: 25,
-                    height: 25,
+                    'assets/images/icons/exit.png',
+                    width: 32,
+                    height: 32,
                   ),
                 ),
               ),

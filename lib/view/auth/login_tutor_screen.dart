@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:frenc_app/repository/global.repository.dart';
+import 'package:frenc_app/utils/dialog_manager.dart';
 import 'package:frenc_app/utils/validator.dart';
 import 'package:frenc_app/view/auth/register_tutor.view.dart';
 import 'package:frenc_app/view/auth/tutor_dashboard.dart';
@@ -76,16 +77,6 @@ class _TutorLoginScreenState extends State<TutorLoginScreen> {
                     padding: const EdgeInsets.fromLTRB(8, 2, 8, 2),
                     child: Row(
                       children: [
-                        IconButton(
-                          icon: Image.asset(
-                            'assets/images/icons/hacia-atras.png',
-                            width: 32,
-                            height: 32,
-                          ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        ),
                         const Expanded(
                           child: Center(
                             child: CustomTextWidget(
@@ -96,6 +87,16 @@ class _TutorLoginScreenState extends State<TutorLoginScreen> {
                               letterSpacing: 1.0,
                             ),
                           ),
+                        ),
+                        IconButton(
+                          icon: Image.asset(
+                            'assets/images/icons/exit.png',
+                            width: 32,
+                            height: 32,
+                          ),
+                          onPressed: () {
+                            DialogManager.showExitConfirmationDialog(context);
+                          },
                         ),
                       ],
                     ),
@@ -252,7 +253,7 @@ class _TutorLoginScreenState extends State<TutorLoginScreen> {
                   Provider.of<UserProvider>(context, listen: false)
                       .setCurrentUser(tutor);
 
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (context) => TutorDashboardScreen(

@@ -80,9 +80,8 @@ class FruitGameScreen extends StatelessWidget {
                       const Text(
                         'Coloca la fruta en su lugar correspondiente',
                         style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.w900,
-                          fontFamily: 'ShortBabyFont',
+                          fontSize: 24,
+                          fontFamily: 'TitanOneFont',
                           color: Colors.brown,
                         ),
                       ),
@@ -138,8 +137,10 @@ class FruitGameScreen extends StatelessWidget {
                                     child: Image.asset(fruit.draggableImagePath,
                                         width: 80),
                                   ),
-                                  child: Image.asset(fruit.draggableImagePath,
-                                      width: 80),
+                                  child: Image.asset(
+                                    fruit.draggableImagePath,
+                                    width: 80,
+                                  ),
                                 ),
                               ),
                             );

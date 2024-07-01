@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:frenc_app/view/button.dart';
 import 'package:provider/provider.dart';
 import 'package:confetti/confetti.dart';
 import 'package:frenc_app/view_model/numbers/game1/numbersgame1_viewmodel.dart';
@@ -188,6 +189,11 @@ class _BubbleNumbersGameState extends State<BubbleNumbersGame>
                     ],
                   ),
                 ),
+                const MovableButtonScreen(
+                  spanishAudio: 'sound/family/instruccionGame1.m4a',
+                  frenchAudio: 'sound/family/instruccionGame1.m4a',
+                  rivePath: 'assets/RiveAssets/familygame3.riv',
+                )
               ],
             );
           },
