@@ -6,6 +6,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/game_selection.dart';
+import 'package:frenc_app/view/button.dart';
 import 'package:frenc_app/widgets/confetti_animation.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:frenc_app/widgets/replay_popup.dart';
@@ -49,7 +50,7 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
 
     if (studentId != null) {
       await databaseRepository.updateGameCompletionStatus(
-          studentId, 'Famille', [true, false, false]);
+          studentId, 'Famille', [true, true, false]);
     }
 
     Navigator.push(
@@ -97,7 +98,7 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
       Future.delayed(const Duration(seconds: 2), () {
         setState(() {
           score++;
-          if (score >= 10) {
+          if (score >= 3) {
             _showWinDialog();
           } else {
             newGame();
@@ -174,10 +175,13 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
             score: score,
             onReplay: () {
               setState(() {
-                /*newGame();*/
-                _onGameComplete();
+                newGame();
                 score = 0;
               });
+            },
+            onQuit: () {
+              score = 0;
+              _onGameComplete();
             },
           ),
           if (_showConfetti) ConfettiAnimation(animate: _showConfetti),
@@ -196,91 +200,101 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
             fit: BoxFit.cover,
           ),
         ),
-        child: Column(
+        child: Stack(
           children: [
-            ProgressBar(
-              backgroundColor: const Color.fromARGB(255, 36, 18, 58),
-              progressBarColor: const Color.fromARGB(255, 90, 65, 156),
-              headerText:
-                  'Sélectionnez la photo de famille comme celle ci-dessus',
-              progressValue: score / 10,
-              onBack: () {
-                // Acción para retroceder
-              },
-              onVolume: () {
-                // Acción para controlar el volumen
-              },
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            Column(
               children: [
-                if (selectedIncorrectCard == null)
-                  JelloIn(
-                    key: UniqueKey(),
-                    child: Container(
-                      width: 110,
-                      height: 110,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(cardUp),
-                          fit: BoxFit.cover,
-                        ),
-                        borderRadius: BorderRadius.circular(5.0),
-                      ),
-                    ),
-                  )
-                else
-                  Container(
-                    width: 110,
-                    height: 110,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(cardUp),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                const SizedBox(width: 20),
-                PlayButton(
-                  onPressed: () async {
-                    await playSound(cardUp);
+                ProgressBar(
+                  backgroundColor: const Color.fromARGB(255, 36, 18, 58),
+                  progressBarColor: const Color.fromARGB(255, 90, 65, 156),
+                  headerText:
+                      'Sélectionnez la photo de famille comme celle ci-dessus',
+                  progressValue: score / 10,
+                  onBack: () {
+                    Navigator.pop(context);
                   },
+                  onVolume: () {
+                    // Acción para controlar el volumen
+                  },
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (selectedIncorrectCard == null)
+                      JelloIn(
+                        key: UniqueKey(),
+                        child: Container(
+                          width: 110,
+                          height: 110,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(cardUp),
+                              fit: BoxFit.cover,
+                            ),
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                        ),
+                      )
+                    else
+                      Container(
+                        width: 110,
+                        height: 110,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(cardUp),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    const SizedBox(width: 20),
+                    PlayButton(
+                      onPressed: () async {
+                        await playSound(cardUp);
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: cardsDown.map((image) {
+                    Widget animatedImage;
+
+                    if (selectedIncorrectCard == image) {
+                      animatedImage = ShakeX(
+                        key: UniqueKey(),
+                        duration: const Duration(milliseconds: 500),
+                        from: Checkbox.width / 2,
+                        child: buildImageCard(image),
+                      );
+                    } else {
+                      animatedImage = showBounceAnimation
+                          ? JelloIn(
+                              key: UniqueKey(),
+                              child: buildImageCard(image),
+                            )
+                          : buildImageCard(image);
+                    }
+
+                    return GestureDetector(
+                      onTap: () => checkMatch(image),
+                      child: animatedImage,
+                    );
+                  }).toList(),
                 ),
               ],
             ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: cardsDown.map((image) {
-                Widget animatedImage;
+            const MovableButtonScreen(
+              spanishAudio: 'sound/family/instruccionGame1.m4a',
+              frenchAudio: 'sound/family/instruccionGame1.m4a',
+              rivePath: 'assets/RiveAssets/familygame1.riv',
+            )
 
-                if (selectedIncorrectCard == image) {
-                  animatedImage = ShakeX(
-                    key: UniqueKey(),
-                    duration: const Duration(milliseconds: 500),
-                    from: Checkbox.width / 2,
-                    child: buildImageCard(image),
-                  );
-                } else {
-                  animatedImage = showBounceAnimation
-                      ? JelloIn(
-                          key: UniqueKey(),
-                          child: buildImageCard(image),
-                        )
-                      : buildImageCard(image);
-                }
-
-                return GestureDetector(
-                  onTap: () => checkMatch(image),
-                  child: animatedImage,
-                );
-              }).toList(),
-            ),
-            if (_showConfetti)
-              Positioned.fill(
-                child: ConfettiAnimation(animate: _showConfetti),
-              ),
+            // if (_showConfetti)
+            //   Positioned.fill(
+            //     child: ConfettiAnimation(animate: _showConfetti),
+            //   ),
           ],
         ),
       ),

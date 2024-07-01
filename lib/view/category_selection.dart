@@ -7,8 +7,6 @@ import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/auth/tutor_dashboard.dart';
 import 'package:frenc_app/view/game_selection.dart';
 import 'package:frenc_app/widgets/auth/security_code_box.dart';
-import 'package:frenc_app/view/numbers/game1/game_screen.dart';
-import 'package:frenc_app/view/vocals/tracing.dart';
 import 'package:frenc_app/widgets/character/button.dart';
 import 'package:frenc_app/widgets/custom_theme_text.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +15,7 @@ class CategorySelectionScreen extends StatefulWidget {
   const CategorySelectionScreen({super.key});
 
   @override
-  _CategorySelectionScreenState createState() =>
+  State<CategorySelectionScreen> createState() =>
       _CategorySelectionScreenState();
 }
 

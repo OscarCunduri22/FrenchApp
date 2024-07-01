@@ -6,10 +6,12 @@ class ReplayPopup extends StatelessWidget {
     Key? key,
     required this.score,
     required this.onReplay,
+    required this.onQuit,
   }) : super(key: key);
 
   final int score;
   final VoidCallback onReplay;
+  final VoidCallback onQuit;
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +19,10 @@ class ReplayPopup extends StatelessWidget {
       contentPadding: const EdgeInsets.all(16),
       content: Row(
         children: [
-          const SizedBox(
+          SizedBox(
             width: 100, // Ajusta el ancho según sea necesario
             height: 100, // Ajusta la altura según sea necesario
-            child: GalloComponent(),
+            child: GalloComponent.dancing(),
           ),
           const SizedBox(width: 20),
           Expanded(
@@ -48,6 +50,7 @@ class ReplayPopup extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
+                    onQuit();
                     Navigator.of(context).pop();
                   },
                   child: const Text('Quitter'),

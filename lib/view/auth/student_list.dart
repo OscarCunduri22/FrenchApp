@@ -49,7 +49,10 @@ class _StudentListScreenState extends State<StudentListScreen> {
 
   Future<void> _preloadImage(String imageUrl) {
     Completer<void> completer = Completer();
-    Image.network(imageUrl).image.resolve(ImageConfiguration()).addListener(
+    Image.network(imageUrl)
+        .image
+        .resolve(const ImageConfiguration())
+        .addListener(
       ImageStreamListener((ImageInfo image, bool synchronousCall) {
         completer.complete();
       }),
@@ -77,6 +80,9 @@ class _StudentListScreenState extends State<StudentListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return WillPopScope(
       onWillPop: () async {
         _showSecurityCodeDialog(() {
@@ -119,74 +125,58 @@ class _StudentListScreenState extends State<StudentListScreen> {
                         ),
                       ),
                     ),
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: FractionallySizedBox(
-                        widthFactor: 0.9,
-                        heightFactor: 0.8,
+                    Center(
+                      child: Container(
+                        width: screenWidth * 0.8,
+                        height: screenHeight * 0.75,
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('assets/images/auth/pizarra.png'),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Container(
-                              width: 600,
-                              height: 300,
-                              padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                              decoration: const BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage(
-                                      'assets/images/auth/pizarra.png'),
-                                  fit: BoxFit.cover,
+                            const Padding(
+                              padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
+                              child: Text(
+                                'Lista de estudiantes',
+                                style: TextStyle(
+                                  fontFamily: 'LoveDaysLoveFont',
+                                  fontSize: 32,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              child: Column(
-                                children: [
-                                  const Padding(
-                                    padding: EdgeInsets.fromLTRB(8, 32, 8, 8),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          'Lista de estudiantes',
-                                          style: TextStyle(
-                                            fontFamily: 'LoveDaysLoveFont',
-                                            fontSize: 32,
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Padding(
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 24.0),
+                                child: ListView.builder(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(20, 0, 20, 10),
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: studentsDocs.length,
+                                  itemBuilder: (context, index) {
+                                    final studentData =
+                                        studentsDocs[index]['data'];
+                                    final studentId = studentsDocs[index]['id'];
+                                    final student =
+                                        Student.fromJson(studentData);
+                                    return Padding(
                                       padding: const EdgeInsets.symmetric(
-                                          horizontal: 24.0),
-                                      child: ListView.builder(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            20, 0, 20, 10),
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: studentsDocs.length,
-                                        itemBuilder: (context, index) {
-                                          final studentData =
-                                              studentsDocs[index]['data'];
-                                          final studentId =
-                                              studentsDocs[index]['id'];
-                                          final student =
-                                              Student.fromJson(studentData);
-                                          return Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                24, 0, 8, 0),
-                                            child: StudentCard(
-                                              student: student,
-                                              onTap: handleStudentTap,
-                                              studentId: studentId,
-                                            ),
-                                          );
-                                        },
+                                          horizontal: 4.0, vertical: 32),
+                                      child: StudentCard(
+                                        student: student,
+                                        onTap: handleStudentTap,
+                                        studentId: studentId,
                                       ),
-                                    ),
-                                  ),
-                                ],
+                                    );
+                                  },
+                                ),
                               ),
                             ),
                           ],
@@ -197,10 +187,10 @@ class _StudentListScreenState extends State<StudentListScreen> {
                       top: 10,
                       right: 10,
                       child: IconButton(
-                        icon: const Icon(
-                          Icons.exit_to_app,
-                          color: Colors.white,
-                          size: 32,
+                        icon: Image.asset(
+                          'assets/images/icons/exit.png',
+                          width: 64,
+                          height: 64,
                         ),
                         onPressed: () {
                           _showSecurityCodeDialog(() {
@@ -209,13 +199,13 @@ class _StudentListScreenState extends State<StudentListScreen> {
                         },
                       ),
                     ),
-                    const Positioned(
+                    Positioned(
                       bottom: 16,
                       right: 12,
                       child: SizedBox(
                         height: 230,
                         width: 230,
-                        child: GalloComponent(),
+                        child: GalloComponent.dancing(),
                       ),
                     ),
                   ],

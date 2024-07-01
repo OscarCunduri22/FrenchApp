@@ -33,7 +33,7 @@ class ProgressBar extends StatelessWidget {
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 30),
                   child: Image.asset(
-                    'assets/images/icons/hacia-atras.png',
+                    'assets/images/icons/exit.png',
                     width: 25,
                     height: 25,
                   ),

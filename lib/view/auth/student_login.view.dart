@@ -151,6 +151,23 @@ class FruitGameScreen extends StatelessWidget {
                 );
               },
             ),
+            Positioned(
+              top: 10,
+              right: 10,
+              child: IconButton(
+                icon: Image.asset(
+                  'assets/images/icons/exit.png',
+                  width: 64,
+                  height: 64,
+                ),
+                onPressed: () {
+                  /*_showSecurityCodeDialog(() {
+                            Navigator.of(context).pop();
+                          });*/
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
           ],
         ),
       ),

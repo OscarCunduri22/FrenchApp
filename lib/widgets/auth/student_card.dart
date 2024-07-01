@@ -1,4 +1,3 @@
-// widgets/student_card.dart
 import 'package:flutter/material.dart';
 import 'package:frenc_app/model/student.dart';
 
@@ -25,48 +24,39 @@ class StudentCard extends StatelessWidget {
         ),
         color: Colors.transparent,
         child: Container(
-          width: 125,
-          height: 210,
+          padding: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(
-            image: const DecorationImage(
-              image: AssetImage('assets/images/auth/cardbg1.png'),
-              fit: BoxFit.cover,
-            ),
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(4, 0, 4, 2),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ClipOval(
-                  child: Image.network(
-                    student.imageUrl,
-                    width: 60,
-                    height: 60,
-                    fit: BoxFit.cover,
-                  ),
+              borderRadius: BorderRadius.circular(10.0), color: Colors.white),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ClipOval(
+                child: Image.network(
+                  student.imageUrl,
+                  width: 60,
+                  height: 60,
+                  fit: BoxFit.cover,
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  student.name,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'ShortBabyFont',
-                    color: Color(0xFF016171),
-                  ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                student.name,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'LoveDaysLoveFont',
+                  color: Color(0xFF016171),
                 ),
-                Text(
-                  student.group,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontFamily: 'LoveDaysLoveFont',
-                    color: Color(0xFFF15E2F),
-                  ),
+              ),
+              Text(
+                student.group,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontFamily: 'LoveDaysLoveFont',
+                  color: Color(0xFFF15E2F),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
