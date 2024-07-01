@@ -288,7 +288,7 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
             const MovableButtonScreen(
               spanishAudio: 'sound/family/instruccionGame1.m4a',
               frenchAudio: 'sound/family/instruccionGame1.m4a',
-              rivePath: 'assets/RiveAssets/gallindo.riv',
+              rivePath: 'assets/RiveAssets/familygame1.riv',
             )
 
             // if (_showConfetti)

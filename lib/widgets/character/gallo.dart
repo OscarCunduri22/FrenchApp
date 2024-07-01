@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frenc_app/utils/audio_manager.dart';
+import 'package:frenc_app/widgets/animated_button.dart';
 import 'package:frenc_app/widgets/animated_rive.dart';
 import 'package:rive/rive.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -44,13 +45,11 @@ class GalloComponent extends StatefulWidget {
       context: context,
       builder: (BuildContext context) {
         return Dialog(
-          backgroundColor: Colors.transparent,
           child: Stack(
             clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
               Container(
-                margin: const EdgeInsets.only(left: 50.0, top: 20.0),
                 padding: const EdgeInsets.all(16.0),
                 decoration: const BoxDecoration(
                   color: Colors.white,
@@ -68,38 +67,20 @@ class GalloComponent extends StatefulWidget {
                         width: 200,
                         height: 200,
                         child: AnimatedRive(rivePath: rivePath)),
+                    const SizedBox(width: 30),
                     Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        GestureDetector(
-                          onTap: () {
-                            AudioManager.playEffect(spanishAudio);
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 30),
-                            child: Image.asset(
-                              'assets/images/icons/sonido.png',
-                              width: 50,
-                              height: 50,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        GestureDetector(
-                          onTap: () {
-                            AudioManager.playEffect(frenchAudio);
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 30),
-                            child: Image.asset(
-                              'assets/images/icons/sonido.png',
-                              width: 50,
-                              height: 50,
-                            ),
-                          ),
-                        ),
+                        AnimatedButton(
+                            imagePath: 'assets/images/icons/ecuador.png',
+                            onTap: () => AudioManager.playEffect(spanishAudio)),
+                        const SizedBox(height: 20),
+                        AnimatedButton(
+                            imagePath: 'assets/images/icons/francia.png',
+                            onTap: () => AudioManager.playEffect(frenchAudio)),
                       ],
-                    )
+                    ),
+                    const SizedBox(width: 30),
                   ],
                 ),
               ),
@@ -111,8 +92,8 @@ class GalloComponent extends StatefulWidget {
                 ),
               ),
               Positioned(
-                left: 420,
-                top: 50,
+                left: 400,
+                top: 90,
                 child: Image.asset(
                   'assets/images/gallo.png',
                   height: 250,
@@ -175,6 +156,7 @@ class _GalloComponentState extends State<GalloComponent> {
         break;
       case 'Speaking':
         isSpeaking?.fire();
+        _playSound();
         break;
       case 'Walking':
         isWalking?.fire();
@@ -185,7 +167,6 @@ class _GalloComponentState extends State<GalloComponent> {
       default:
         break;
     }
-    _playSound();
   }
 
   @override

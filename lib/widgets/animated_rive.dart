@@ -47,8 +47,16 @@ class _AnimatedRiveState extends State<AnimatedRive> {
       padding: widget.padding,
       child: riveArtboard == null
           ? const SizedBox()
-          : Rive(
-              artboard: riveArtboard!,
+          : ClipRRect(
+              borderRadius: BorderRadius.circular(15.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                child: Rive(
+                  artboard: riveArtboard!,
+                ),
+              ),
             ),
     );
   }
