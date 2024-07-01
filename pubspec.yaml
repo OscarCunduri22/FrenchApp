@@ -95,6 +95,7 @@ flutter:
     - assets/images/vocals/vocal/
     - assets/images/vocals/game3/animals/
     - assets/images/vocals/game3/background/
+    - assets/images/vocals/game2/
     - assets/images/global/
     - assets/images/auth/fruits/
 

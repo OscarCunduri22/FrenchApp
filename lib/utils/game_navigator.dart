@@ -6,6 +6,7 @@ import 'package:frenc_app/view/numbers/game1/game_screen.dart';
 import 'package:frenc_app/view/numbers/game2/game_screen.dart';
 import 'package:frenc_app/view/numbers/game3/game_screen.dart';
 import 'package:frenc_app/view/vocals/game1/vocal_game.dart';
+import 'package:frenc_app/view/vocals/game2/vocal_card_game.dart';
 import 'package:frenc_app/view/vocals/game3/animal_name_game.dart';
 
 Widget getGameScreen(String category, int gameNumber) {
@@ -26,7 +27,7 @@ Widget getGameScreen(String category, int gameNumber) {
         case 1:
           return const VocalGame();
         case 2:
-          return Container();
+          return const VocalMemoryPage();
         case 3:
           return const AnimalNameGame();
         default:
