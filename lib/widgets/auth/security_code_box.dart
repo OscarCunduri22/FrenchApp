@@ -13,32 +13,62 @@ class SecurityCodeDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text(
-        'Security Code',
-        style: TextStyle(color: Color(0xFF4A90E2)), // Lingokids blue
-      ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text(
-            'Please enter the 4-digit security code to proceed.',
-            style: TextStyle(color: Color(0xFF4A90E2)), // Lingokids blue
+      contentPadding: EdgeInsets.zero,
+      content: Container(
+        decoration: BoxDecoration(
+          image: const DecorationImage(
+            image: AssetImage('assets/images/auth/security_code.png'),
+            fit: BoxFit.cover,
           ),
-          const SizedBox(height: 16),
-          SecurityCodeInput(onSuccess: onSuccess),
-        ],
-      ),
-      actions: [
-        TextButton(
-          child: const Text(
-            'Cancel',
-            style: TextStyle(color: Color(0xFF4A90E2)), // Lingokids blue
-          ),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+          borderRadius: BorderRadius.circular(10),
         ),
-      ],
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Código de seguridad',
+                style: TextStyle(
+                  fontFamily: "TitanOneFont",
+                  fontSize: 24,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Ingresa tu código de acceso al área de tutores.',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(height: 16),
+              SecurityCodeInput(onSuccess: onSuccess),
+              const SizedBox(height: 16),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: TextButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: const Text(
+                    'Cancelar',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      backgroundColor: Colors.transparent,
     );
   }
 }
@@ -65,13 +95,13 @@ class _SecurityCodeInputState extends State<SecurityCodeInput> {
         widget.onSuccess();
       } else {
         setState(() {
-          _errorMessage = 'Invalid code. Please try again.';
+          _errorMessage = 'Código inválido. Por favor, inténtelo de nuevo.';
         });
         _controller.clear();
       }
     } else {
       setState(() {
-        _errorMessage = 'Please enter a valid 4-digit code.';
+        _errorMessage = 'Ingresa un código de 4 dígitos válido.';
       });
       _controller.clear();
     }
@@ -80,12 +110,14 @@ class _SecurityCodeInputState extends State<SecurityCodeInput> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: MainAxisSize.max,
       children: [
         PinCodeTextField(
           appContext: context,
           length: 4,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           controller: _controller,
+          keyboardType: TextInputType.number,
           onChanged: (value) {},
           onCompleted: _validateCode,
           pinTheme: PinTheme(
@@ -93,19 +125,23 @@ class _SecurityCodeInputState extends State<SecurityCodeInput> {
             borderRadius: BorderRadius.circular(5),
             fieldHeight: 50,
             fieldWidth: 40,
-            activeFillColor: Colors.yellow,
-            selectedFillColor: Colors.yellow,
+            activeFillColor: Colors.white,
+            selectedFillColor: Colors.white,
             inactiveFillColor: Colors.white,
-            activeColor: Color(0xFF4A90E2),
-            selectedColor: Color(0xFF4A90E2),
-            inactiveColor: Color(0xFF4A90E2),
+            activeColor: Colors.white,
+            selectedColor: Colors.orange,
+            inactiveColor: Colors.white,
           ),
+          backgroundColor: Colors.transparent,
+          enableActiveFill: true,
+          textStyle: const TextStyle(color: Colors.black),
+          cursorColor: Colors.black,
         ),
         if (_errorMessage != null) ...[
           const SizedBox(height: 8),
           Row(
             children: [
-              Icon(Icons.error, color: Colors.red),
+              const Icon(Icons.error, color: Colors.red),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
