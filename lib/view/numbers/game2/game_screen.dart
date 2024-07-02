@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/user_provider.dart';
+import 'package:frenc_app/view/button.dart';
 import 'package:frenc_app/view/game_selection.dart';
 import 'package:frenc_app/view_model/numbers/game2/game_provider.dart';
 import 'package:frenc_app/widgets/numbers/game2/numbers_options.dart';
@@ -160,6 +161,11 @@ class _TrainWagonNumbersGameState extends State<TrainWagonNumbersGame> {
                 );
               },
             ),
+            const MovableButtonScreen(
+              spanishAudio: 'sound/family/instruccionGame1.m4a',
+              frenchAudio: 'sound/family/instruccionGame1.m4a',
+              rivePath: 'assets/RiveAssets/familygame3.riv',
+            )
           ],
         ),
       ),

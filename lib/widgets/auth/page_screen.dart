@@ -266,6 +266,8 @@ class _PageScreenState extends State<PageScreen> {
                           labelStyle: const TextStyle(color: Colors.grey),
                           filled: true,
                           fillColor: Colors.white,
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 16),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                                 color: isNameValid ? Colors.black : Colors.red),
@@ -284,6 +286,8 @@ class _PageScreenState extends State<PageScreen> {
                           labelStyle: const TextStyle(color: Colors.grey),
                           filled: true,
                           fillColor: Colors.white,
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 16),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                                 color: isUsernameValid
@@ -303,6 +307,8 @@ class _PageScreenState extends State<PageScreen> {
                         controller: widget.emailController,
                         decoration: InputDecoration(
                           labelText: 'Correo Electrónico',
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 16),
                           labelStyle: const TextStyle(color: Colors.grey),
                           filled: true,
                           fillColor: Colors.white,
