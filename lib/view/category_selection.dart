@@ -1,7 +1,17 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/widgets/character/button.dart';
+import 'package:frenc_app/model/tutor.dart';
+import 'package:frenc_app/model/tutor.dart';
+import 'package:frenc_app/utils/user_provider.dart';
+import 'package:frenc_app/view/auth/tutor_dashboard.dart';
+import 'package:frenc_app/view/game_selection.dart';
+import 'package:frenc_app/widgets/auth/security_code_box.dart';
+import 'package:frenc_app/widgets/character/button.dart';
+import 'package:frenc_app/widgets/custom_theme_text.dart';
 import 'package:provider/provider.dart';
 import 'package:frenc_app/view/game_selection.dart';
 
@@ -9,11 +19,20 @@ class CategorySelectionScreen extends StatefulWidget {
   const CategorySelectionScreen({super.key});
 
   @override
-  _CategorySelectionScreenState createState() =>
+  State<CategorySelectionScreen> createState() =>
       _CategorySelectionScreenState();
 }
 
 class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
+  void _showSecurityCodeDialog(Function onSuccess) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SecurityCodeDialog(onSuccess: onSuccess);
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -38,96 +57,119 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final currentStudentId = Provider.of<UserProvider>(context).currentStudentId;
-    final currentStudent = Provider.of<UserProvider>(context).currentStudent;
+    double screenWidth = MediaQuery.of(context).size.width;
 
-    if (currentStudentId == null || currentStudent == null) {
-      return Scaffold(
-        body: Center(
-          child: Text('No student selected'),
-        ),
-      );
-    }
+    Tutor? currentUser = Provider.of<UserProvider>(context).currentUser;
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/GameSelectionBg.jpg'),
-                fit: BoxFit.cover,
+    return WillPopScope(
+        onWillPop: () async {
+          _showSecurityCodeDialog(() {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TutorDashboardScreen(
+                    tutorName: currentUser!.name),
               ),
-            ),
-          ),
-          SafeArea(
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    const Spacer(),
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF016171),
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: IconButton(
-                        icon: const Icon(Icons.person),
-                        iconSize: 36,
-                        color: Colors.white,
-                        onPressed: () {},
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF016171),
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: IconButton(
-                        icon: const Icon(Icons.person),
-                        iconSize: 36,
-                        color: Colors.white,
-                        onPressed: () {},
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                  ],
-                ),
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      GameOption(
-                          title: 'Voyelles',
-                          imagePath: 'assets/images/gameSelection/voyelles.jpg',
-                          targetView:
-                              GameSelectionScreen(category: 'Voyelles')),
-                      GameOption(
-                        title: 'Nombres',
-                        imagePath: 'assets/images/gameSelection/nombres.jpg',
-                        targetView: GameSelectionScreen(category: 'Nombres'),
-                      ),
-                      GameOption(
-                        title: 'Famille',
-                        imagePath: 'assets/images/gameSelection/famille.jpg',
-                        targetView: GameSelectionScreen(category: 'Famille'),
-                      ),
-                    ],
+            );
+          });
+          return false;
+        },
+        child: Scaffold(
+          body: Stack(
+            children: [
+              Container(
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/onlyBg.jpg'),
+                    fit: BoxFit.cover,
                   ),
                 ),
-              ],
-            ),
+              ),
+              SafeArea(
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          width: screenWidth * 0.5,
+                          alignment: Alignment.center,
+                          child: const CustomTextWidget(
+                            text: 'Escoge un juego',
+                            type: TextType.Title,
+                            fontSize: 44,
+                            fontWeight: FontWeight.w200,
+                            letterSpacing: 1.0,
+                          ),
+                        ),
+                        const Spacer(),
+                        Container(
+                          width: 50,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF016171),
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.person),
+                            iconSize: 36,
+                            color: Colors.white,
+                            onPressed: () {},
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Container(
+                          width: 50,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF016171),
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.person),
+                            iconSize: 36,
+                            color: Colors.white,
+                            onPressed: () {},
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                      ],
+                    ),
+                    const SizedBox(height: 15),
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          GameOption(
+                              title: 'Voyelles',
+                              imagePath:
+                                  'assets/images/gameSelection/voyelles.jpg',
+                              targetView:
+                                  GameSelectionScreen(category: 'Voyelles')),
+                          GameOption(
+                            title: 'Nombres',
+                            imagePath:
+                                'assets/images/gameSelection/nombres.jpg',
+                            targetView:
+                                GameSelectionScreen(category: 'Nombres'),
+                          ),
+                          GameOption(
+                            title: 'Famille',
+                            imagePath:
+                                'assets/images/gameSelection/famille.jpg',
+                            targetView:
+                                GameSelectionScreen(category: 'Famille'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-    );
+        ));
   }
 }
 

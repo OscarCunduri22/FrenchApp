@@ -285,7 +285,12 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
                 ),
               ],
             ),
-            const MovableButtonScreen(),
+            const MovableButtonScreen(
+              spanishAudio: 'sound/family/instruccionGame1.m4a',
+              frenchAudio: 'sound/family/instruccionGame1.m4a',
+              rivePath: 'assets/RiveAssets/familygame1.riv',
+            )
+
             // if (_showConfetti)
             //   Positioned.fill(
             //     child: ConfettiAnimation(animate: _showConfetti),

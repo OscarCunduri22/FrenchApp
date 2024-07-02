@@ -8,17 +8,33 @@ import 'package:frenc_app/view/numbers/game3/game_screen.dart';
 import 'package:frenc_app/view/vocals/game1/vocal_game.dart';
 import 'package:frenc_app/view/vocals/game2/vocal_card_game.dart';
 import 'package:frenc_app/view/vocals/game3/animal_name_game.dart';
+import 'package:frenc_app/view/start_game.dart';
 
 Widget getGameScreen(String category, int gameNumber) {
   switch (category) {
     case 'Nombres':
       switch (gameNumber) {
         case 1:
-          return TrainWagonNumbersGame();
+          return StartGame(
+            title: 'Trouvez votre famille',
+            buttons: [
+              ButtonData(text: 'Commencer', widget: TrainWagonNumbersGame()),
+            ],
+          );
         case 2:
-          return MemoryNumbersGame();
+          return StartGame(
+            title: 'Trouvez votre famille',
+            buttons: [
+              ButtonData(text: 'Commencer', widget: MemoryNumbersGame()),
+            ],
+          );
         case 3:
-          return const BubbleNumbersGame();
+          return StartGame(
+            title: 'Trouvez votre famille',
+            buttons: [
+              ButtonData(text: 'Commencer', widget: const BubbleNumbersGame()),
+            ],
+          );
         default:
           return Container();
       }
@@ -36,11 +52,26 @@ Widget getGameScreen(String category, int gameNumber) {
     case 'Famille':
       switch (gameNumber) {
         case 1:
-          return const FindFamilyGame();
+          return StartGame(
+            title: 'Trouvez votre famille',
+            buttons: [
+              ButtonData(text: 'Commencer', widget: const FindFamilyGame()),
+            ],
+          );
         case 2:
-          return const GatherFamilyGame();
+          return StartGame(
+            title: 'Trouvez votre famille',
+            buttons: [
+              ButtonData(text: 'Commencer', widget: const GatherFamilyGame()),
+            ],
+          );
         case 3:
-          return const MemoryGamePage();
+          return StartGame(
+            title: 'Trouvez votre famille',
+            buttons: [
+              ButtonData(text: 'Commencer', widget: const MemoryGamePage()),
+            ],
+          );
         default:
           return Container();
       }

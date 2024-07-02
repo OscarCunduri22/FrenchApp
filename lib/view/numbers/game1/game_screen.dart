@@ -1,6 +1,7 @@
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:frenc_app/view/button.dart';
 import 'package:frenc_app/widgets/numbers/game1/character_box_widget.dart';
 import 'package:frenc_app/widgets/numbers/game1/disordered_characters_widget.dart';
 import 'package:frenc_app/widgets/numbers/game1/number_image_widget.dart';
@@ -169,6 +170,11 @@ class _BubbleNumbersGameState extends State<BubbleNumbersGame> with TickerProvid
                     ],
                   ),
                 ),
+                const MovableButtonScreen(
+                  spanishAudio: 'sound/family/instruccionGame1.m4a',
+                  frenchAudio: 'sound/family/instruccionGame1.m4a',
+                  rivePath: 'assets/RiveAssets/familygame3.riv',
+                )
               ],
             );
           },

@@ -313,7 +313,7 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
               ],
             ),
           ),
-          const MovableButtonScreen(),
+          const MovableButtonScreen(spanishAudio: "", frenchAudio: "", rivePath: "",),
         ],
       ),
     );

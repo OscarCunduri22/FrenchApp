@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:frenc_app/model/tutor.dart';
 import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:frenc_app/utils/dialog_manager.dart';
 import 'dart:ui';
 import 'package:frenc_app/view/auth/create_student.dart'; // Importar la pantalla de creación de usuario
 import 'package:frenc_app/widgets/auth/student_card.dart'; // Importar el widget StudentCard
@@ -103,10 +105,14 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
   Widget build(BuildContext context) {
     Tutor? currentUser = Provider.of<UserProvider>(context).currentUser;
     if (currentUser == null) {
-      return const Scaffold(
+      return Scaffold(
         body: Center(
-          child: Text('No user logged in'),
-        ),
+            child: Container(
+          color: Colors.white,
+          child: const CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+          ),
+        )),
       );
     }
 
@@ -308,6 +314,16 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                                     },
                                   ),
                                 ),
+                                IconButton(
+                          icon: Image.asset(
+                            'assets/images/icons/exit.png',
+                            width: 32,
+                            height: 32,
+                          ),
+                          onPressed: () {
+                            DialogManager.showExitConfirmationDialog(context);
+                          },
+                        ), 
                             ],
                           );
                         },

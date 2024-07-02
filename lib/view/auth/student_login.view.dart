@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors_in_immutables, use_build_context_synchronously
+
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/model/fruit.dart';
@@ -7,7 +9,6 @@ import 'package:frenc_app/view/category_selection.dart';
 import 'package:frenc_app/view_model/auth/student_login.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
-import 'package:frenc_app/model/student.dart';
 
 class FruitGameScreen extends StatelessWidget {
   final String studentId;
@@ -22,11 +23,6 @@ class FruitGameScreen extends StatelessWidget {
       Provider.of<UserProvider>(context, listen: false)
           .setCurrentStudent(studentId, student);
     }
-
-    print('Student ID: $studentId');
-    final studentToPrint =
-        Provider.of<UserProvider>(context, listen: false).currentStudent;
-    print('Student: $studentToPrint');
   }
 
   @override
@@ -82,11 +78,10 @@ class FruitGameScreen extends StatelessWidget {
                     children: [
                       const SizedBox(height: 32),
                       const Text(
-                        'Place the Fruits in the Correct Baskets',
+                        'Coloca la fruta en su lugar correspondiente',
                         style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.w900,
-                          fontFamily: 'ShortBabyFont',
+                          fontSize: 24,
+                          fontFamily: 'TitanOneFont',
                           color: Colors.brown,
                         ),
                       ),
@@ -142,8 +137,10 @@ class FruitGameScreen extends StatelessWidget {
                                     child: Image.asset(fruit.draggableImagePath,
                                         width: 80),
                                   ),
-                                  child: Image.asset(fruit.draggableImagePath,
-                                      width: 80),
+                                  child: Image.asset(
+                                    fruit.draggableImagePath,
+                                    width: 80,
+                                  ),
                                 ),
                               ),
                             );
@@ -154,6 +151,23 @@ class FruitGameScreen extends StatelessWidget {
                   ),
                 );
               },
+            ),
+            Positioned(
+              top: 10,
+              right: 10,
+              child: IconButton(
+                icon: Image.asset(
+                  'assets/images/icons/exit.png',
+                  width: 64,
+                  height: 64,
+                ),
+                onPressed: () {
+                  /*_showSecurityCodeDialog(() {
+                            Navigator.of(context).pop();
+                          });*/
+                  Navigator.of(context).pop();
+                },
+              ),
             ),
           ],
         ),

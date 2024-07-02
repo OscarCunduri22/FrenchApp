@@ -55,11 +55,23 @@ class _RegisterPageState extends State<RegisterPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  CustomTextWidget(
+                  IconButton(
+                    icon: Image.asset(
+                      'assets/images/icons/hacia-atras.png',
+                      width: 32,
+                      height: 32,
+                    ),
+                    alignment: Alignment.centerLeft,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  const SizedBox(width: 256),
+                  const CustomTextWidget(
                     text: "Registrarse",
                     type: TextType.Title,
                     fontSize: 44,

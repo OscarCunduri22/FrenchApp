@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:frenc_app/utils/audio_manager.dart';
+import 'package:frenc_app/widgets/animated_button.dart';
+import 'package:frenc_app/widgets/animated_rive.dart';
 import 'package:rive/rive.dart';
 import 'package:audioplayers/audioplayers.dart';
 
@@ -36,20 +39,19 @@ class GalloComponent extends StatefulWidget {
     return GalloComponent(animationType: 'Jumping', padding: padding);
   }
 
-  static void showPopup(BuildContext context, String message) {
+  static void showPopup(BuildContext context, String spanishAudio,
+      String frenchAudio, String rivePath) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return Dialog(
-          backgroundColor: Colors.transparent,
           child: Stack(
             clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
               Container(
-                margin: EdgeInsets.only(left: 90.0, top: 20.0),
-                padding: EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
+                padding: const EdgeInsets.all(16.0),
+                decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(15.0),
@@ -57,21 +59,28 @@ class GalloComponent extends StatefulWidget {
                     bottomLeft: Radius.circular(15.0),
                   ),
                 ),
-                child: Column(
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      message,
-                      style: TextStyle(fontSize: 18.0),
-                      textAlign: TextAlign.center,
+                    SizedBox(
+                        width: 200,
+                        height: 200,
+                        child: AnimatedRive(rivePath: rivePath)),
+                    const SizedBox(width: 30),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        AnimatedButton(
+                            imagePath: 'assets/images/icons/ecuador.png',
+                            onTap: () => AudioManager.playEffect(spanishAudio)),
+                        const SizedBox(height: 20),
+                        AnimatedButton(
+                            imagePath: 'assets/images/icons/francia.png',
+                            onTap: () => AudioManager.playEffect(frenchAudio)),
+                      ],
                     ),
-                    SizedBox(height: 20.0),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text('Cerrar'),
-                    ),
+                    const SizedBox(width: 30),
                   ],
                 ),
               ),
@@ -83,8 +92,8 @@ class GalloComponent extends StatefulWidget {
                 ),
               ),
               Positioned(
-                left: 420,
-                top: 50,
+                left: 400,
+                top: 90,
                 child: Image.asset(
                   'assets/images/gallo.png',
                   height: 250,
@@ -147,6 +156,7 @@ class _GalloComponentState extends State<GalloComponent> {
         break;
       case 'Speaking':
         isSpeaking?.fire();
+        _playSound();
         break;
       case 'Walking':
         isWalking?.fire();
@@ -157,7 +167,6 @@ class _GalloComponentState extends State<GalloComponent> {
       default:
         break;
     }
-    _playSound();
   }
 
   @override

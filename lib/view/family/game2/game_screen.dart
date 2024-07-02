@@ -182,7 +182,11 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
                     ],
                   ),
                   ...buildRemainingDraggableImages(),
-                  const MovableButtonScreen(),
+                  const MovableButtonScreen(
+                    spanishAudio: 'sound/family/instruccionGame1.m4a',
+                    frenchAudio: 'sound/family/instruccionGame1.m4a',
+                    rivePath: 'assets/RiveAssets/familygame2.riv',
+                  )
                 ],
               ),
             ),
