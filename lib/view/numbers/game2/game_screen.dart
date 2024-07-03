@@ -12,6 +12,7 @@ import 'package:frenc_app/widgets/numbers/game2/train_cart.dart';
 import 'package:frenc_app/widgets/numbers/game2/train_engine.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:frenc_app/view/button.dart';
 
 class TrainWagonNumbersGame extends StatefulWidget {
   @override
@@ -164,7 +165,7 @@ class _TrainWagonNumbersGameState extends State<TrainWagonNumbersGame> {
             const MovableButtonScreen(
               spanishAudio: 'sound/family/instruccionGame1.m4a',
               frenchAudio: 'sound/family/instruccionGame1.m4a',
-              rivePath: 'assets/RiveAssets/familygame3.riv',
+              rivePath: 'assets/RiveAssets/nombresgame2.riv',
             )
           ],
         ),
