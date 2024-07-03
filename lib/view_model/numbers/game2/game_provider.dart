@@ -17,13 +17,14 @@ class GameProvider with ChangeNotifier {
     generateNewLevel();
   }
 
-  void selectOption(int option, VoidCallback onComplete) {
+  void selectOption(int option, VoidCallback onComplete) async {
     selectedOption = option;
     if (checkAnswer()) {
       isCompleted = true;
       notifyListeners();
       _playCorrectAnswerSounds(onComplete);
     } else {
+      await AudioManager.effects().play('sound/incorrect.mp3');
       selectedOption = null;
       notifyListeners();
     }
