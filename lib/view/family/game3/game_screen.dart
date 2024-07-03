@@ -9,6 +9,7 @@ import 'package:frenc_app/widgets/confetti_animation.dart';
 import 'package:frenc_app/widgets/replay_popup.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:frenc_app/utils/user_tracking.dart'; // Importar UserTracking
 
 class MemoryGamePage extends StatefulWidget {
   const MemoryGamePage({Key? key}) : super(key: key);
@@ -61,6 +62,21 @@ class _MemoryGamePageState extends State<MemoryGamePage>
     }).toList();
 
     _loadGame();
+    _incrementTimesPlayed(); // Incrementar contador de juegos jugados
+  }
+
+  void _incrementTimesPlayed() {
+    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    if (studentId != null) {
+      Provider.of<UserTracking>(context, listen: false).incrementTimesPlayed(studentId, 'memory_game');
+    }
+  }
+
+  void _incrementTimesCompleted() {
+    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    if (studentId != null) {
+      Provider.of<UserTracking>(context, listen: false).incrementTimesCompleted(studentId, 'memory_game');
+    }
   }
 
   Future<void> _loadGame() async {
@@ -87,6 +103,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
     if (studentId != null) {
       await databaseRepository
           .updateGameCompletionStatus(studentId, 'Famille', [true, true, true]);
+      _incrementTimesCompleted(); // Incrementar contador de juegos completados
     }
 
     Navigator.push(
@@ -329,11 +346,6 @@ class _MemoryGamePageState extends State<MemoryGamePage>
             frenchAudio: 'sound/family/instruccionGame1.m4a',
             rivePath: 'assets/RiveAssets/familygame3.riv',
           )
-
-          // if (_showConfetti)
-          //   Positioned.fill(
-          //     child: ConfettiAnimation(animate: _showConfetti),
-          //   ),
         ],
       ),
     );

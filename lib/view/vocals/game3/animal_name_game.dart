@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
+import 'package:provider/provider.dart';
+import 'package:frenc_app/utils/user_tracking.dart';
+import 'package:frenc_app/utils/user_provider.dart'; // Importar UserProvider
 
 class AnimalNameGame extends StatefulWidget {
   const AnimalNameGame({Key? key}) : super(key: key);
@@ -21,6 +24,45 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
   int currentAnimalIndex = 0;
   String missingVowel = "_";
   bool isCorrect = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _incrementTimesPlayed();
+  }
+
+  void _incrementTimesPlayed() {
+    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    if (studentId != null) {
+      Provider.of<UserTracking>(context, listen: false).incrementTimesPlayed(studentId, 'animal_name_game');
+    }
+  }
+
+  void _incrementTimesCompleted() {
+    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    if (studentId != null) {
+      Provider.of<UserTracking>(context, listen: false).incrementTimesCompleted(studentId, 'animal_name_game');
+    }
+  }
+
+  void _showWinDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("¡Felicidades!"),
+        content: const Text("Has completado el juego."),
+        actions: [
+          TextButton(
+            onPressed: () {
+              _incrementTimesCompleted(); // Incrementar contador de juegos completados
+              Navigator.pop(context);
+            },
+            child: const Text("OK"),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,22 +149,7 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
                                   missingVowel = "_";
                                   isCorrect = false;
                                 } else {
-                                  // Game completed, show winning message
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                      title: const Text("¡Felicidades!"),
-                                      content: const Text("Has completado el juego."),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: const Text("OK"),
-                                        ),
-                                      ],
-                                    ),
-                                  );
+                                  _showWinDialog(); // Juego completado, mostrar mensaje de victoria
                                 }
                               });
                             });
@@ -141,7 +168,7 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
                 ),
                 const SizedBox(height: 15),
                 const Wrap(
-                  spacing: 20, // Adjust the spacing as needed
+                  spacing: 20, // Ajustar el espaciado según sea necesario
                   alignment: WrapAlignment.center,
                   children: [
                     VowelTile(letter: 'A'),

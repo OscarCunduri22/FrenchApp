@@ -10,6 +10,7 @@ import 'package:frenc_app/widgets/replay_popup.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
+import 'package:frenc_app/utils/user_tracking.dart'; // Importar UserTracking
 
 class VocalMemoryPage extends StatefulWidget {
   const VocalMemoryPage({Key? key}) : super(key: key);
@@ -18,8 +19,7 @@ class VocalMemoryPage extends StatefulWidget {
   State<VocalMemoryPage> createState() => _VocalMemoryPageState();
 }
 
-class _VocalMemoryPageState extends State<VocalMemoryPage>
-    with TickerProviderStateMixin {
+class _VocalMemoryPageState extends State<VocalMemoryPage> with TickerProviderStateMixin {
   bool _showConfetti = false;
   bool isBusy = false;
 
@@ -58,6 +58,7 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
       return Tween<double>(begin: 0, end: 1).animate(controller);
     }).toList();
 
+    _incrementTimesPlayed(); // Incrementar contador de juegos jugados
     _loadGame();
   }
 
@@ -77,13 +78,24 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
     AudioManager.background().stop();
   }
 
-  void _onGameComplete() async {
-    String? studentId =
-        Provider.of<UserProvider>(context, listen: false).currentStudentId;
-
+  void _incrementTimesPlayed() {
+    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
-      await databaseRepository
-          .updateGameCompletionStatus(studentId, 'Voyelles', [true, true, true]);
+      Provider.of<UserTracking>(context, listen: false).incrementTimesPlayed(studentId, 'vocal_memory');
+    }
+  }
+
+  void _incrementTimesCompleted() {
+    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    if (studentId != null) {
+      Provider.of<UserTracking>(context, listen: false).incrementTimesCompleted(studentId, 'vocal_memory');
+    }
+  }
+
+  void _onGameComplete() async {
+    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    if (studentId != null) {
+      _incrementTimesCompleted(); // Incrementar contador de juegos completados
     }
 
     Navigator.push(
