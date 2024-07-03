@@ -264,24 +264,35 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame>
           ),
         ),
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Stack(
             children: [
-              ProgressBar(
-                backgroundColor: const Color(0xFFFF5F01),
-                progressBarColor: const Color(0xFF8DB270),
-                headerText: 'Completa la secuencia de números',
-                progressValue: (level - 1) / maxLevel,
-                onBack: () {
-                  Navigator.pop(context);
-                },
-                onVolume: () {},
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ProgressBar(
+                    backgroundColor: const Color(0xFFFF5F01),
+                    progressBarColor: const Color(0xFF8DB270),
+                    headerText: 'Completa la secuencia de números',
+                    progressValue: (level - 1) / maxLevel,
+                    onBack: () {
+                      Navigator.pop(context);
+                    },
+                    onVolume: () {},
+                  ),
+                  ...buildRows(),
+                ],
               ),
-              ...buildRows(),
-              const MovableButtonScreen(
-                spanishAudio: 'sound/family/instruccionGame1.m4a',
-                frenchAudio: 'sound/family/instruccionGame1.m4a',
-                rivePath: 'assets/RiveAssets/nombresgame3.riv',
+              const Positioned(
+                bottom: 20,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: MovableButtonScreen(
+                    spanishAudio: 'sound/family/instruccionGame1.m4a',
+                    frenchAudio: 'sound/family/instruccionGame1.m4a',
+                    rivePath: 'assets/RiveAssets/nombresgame3.riv',
+                  ),
+                ),
               ),
             ],
           ),

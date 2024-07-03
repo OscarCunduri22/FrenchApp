@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:frenc_app/model/tutor.dart';
-import 'package:frenc_app/model/tutor.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/auth/tutor_dashboard.dart';
 import 'package:frenc_app/view/game_selection.dart';
@@ -38,7 +37,7 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
     return WillPopScope(
         onWillPop: () async {
           _showSecurityCodeDialog(() {
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (context) => TutorDashboardScreen(
