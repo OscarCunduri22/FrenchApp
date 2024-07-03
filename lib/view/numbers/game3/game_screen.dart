@@ -9,6 +9,10 @@ import 'package:frenc_app/view/game_selection.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:frenc_app/widgets/confetti_animation.dart';
 import 'package:frenc_app/widgets/replay_popup.dart';
+import 'package:provider/provider.dart';
+import 'package:frenc_app/view/button.dart';
+
+/* Checked */
 import 'package:frenc_app/utils/user_tracking.dart'; // Importar UserTracking
 
 class MemoryNumbersGame extends StatefulWidget {
@@ -263,44 +267,36 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame> with TickerProvid
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/numbers/game3/gamebg.png'),
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ProgressBar(
-                    backgroundColor: const Color(0xFFFF5F01),
-                    progressBarColor: const Color(0xFF8DB270),
-                    headerText: 'Completa la secuencia de números',
-                    progressValue: (level - 1) / maxLevel,
-                    onBack: () {
-                      Navigator.pop(context);
-                    },
-                    onVolume: () {},
-                  ),
-                  ...buildRows(),
-                ],
-              ),
-            ),
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/numbers/game3/gamebg.png'),
+            fit: BoxFit.cover,
           ),
-          if (_showConfetti)
-            Positioned.fill(
-              child: ConfettiAnimation(animate: _showConfetti),
-            ),
-          const MovableButtonScreen(
-            spanishAudio: 'sound/family/instruccionGame1.m4a',
-            frenchAudio: 'sound/family/instruccionGame1.m4a',
-            rivePath: 'assets/RiveAssets/familygame3.riv',
-          )
-        ],
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ProgressBar(
+                backgroundColor: const Color(0xFFFF5F01),
+                progressBarColor: const Color(0xFF8DB270),
+                headerText: 'Completa la secuencia de números',
+                progressValue: (level - 1) / maxLevel,
+                onBack: () {
+                  Navigator.pop(context);
+                },
+                onVolume: () {},
+              ),
+              ...buildRows(),
+              const MovableButtonScreen(
+                spanishAudio: 'sound/family/instruccionGame1.m4a',
+                frenchAudio: 'sound/family/instruccionGame1.m4a',
+                rivePath: 'assets/RiveAssets/nombresgame3.riv',
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

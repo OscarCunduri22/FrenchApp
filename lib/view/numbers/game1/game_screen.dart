@@ -173,7 +173,7 @@ class _BubbleNumbersGameState extends State<BubbleNumbersGame> with TickerProvid
                 const MovableButtonScreen(
                   spanishAudio: 'sound/family/instruccionGame1.m4a',
                   frenchAudio: 'sound/family/instruccionGame1.m4a',
-                  rivePath: 'assets/RiveAssets/familygame3.riv',
+                  rivePath: 'assets/RiveAssets/nombresgame1.riv',
                 )
               ],
             );
