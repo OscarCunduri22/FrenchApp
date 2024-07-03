@@ -119,7 +119,7 @@ class _StudentListScreenState extends State<StudentListScreen> {
                       height: double.infinity,
                       decoration: BoxDecoration(
                         image: const DecorationImage(
-                          image: AssetImage('assets/images/auth/aula.png'),
+                          image: AssetImage('assets/images/onlyBg.jpg'),
                           fit: BoxFit.cover,
                         ),
                         color: Colors.white.withOpacity(0.9),
