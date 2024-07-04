@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:frenc_app/view/button.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
 import 'package:frenc_app/utils/user_tracking.dart';
-import 'package:frenc_app/utils/user_provider.dart'; // Importar UserProvider
+import 'package:frenc_app/utils/user_provider.dart';
+import 'package:frenc_app/view/game_selection.dart';
+import 'package:frenc_app/widgets/confetti_animation.dart';
+import 'package:frenc_app/widgets/replay_popup.dart';
+import 'package:frenc_app/utils/audio_manager.dart';
+import 'package:frenc_app/repository/global.repository.dart'; // Importar DatabaseRepository
 
 class VocalGame extends StatefulWidget {
   const VocalGame({Key? key}) : super(key: key);
@@ -33,6 +39,9 @@ class _VocalGameState extends State<VocalGame> {
   String currentBackground = "";
   double vowelPositionX = 0;
   double vowelPositionY = 0;
+  bool _showConfetti = false;
+
+  final databaseRepository = DatabaseRepository();
 
   @override
   void initState() {
@@ -59,6 +68,24 @@ class _VocalGameState extends State<VocalGame> {
     if (studentId != null) {
       Provider.of<UserTracking>(context, listen: false).incrementTimesCompleted(studentId, 'vocal_game');
     }
+  }
+
+  Future<void> _onGameComplete() async {
+    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+
+    if (studentId != null) {
+      await databaseRepository.updateGameCompletionStatus(
+          studentId, 'Voyelles', [true, true, false]); // Actualizar estado de juego
+      _incrementTimesCompleted(); // Incrementar contador de juegos completados
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => GameSelectionScreen(
+                category: 'Voyelles',
+              )),
+    );
   }
 
   void _loadNewScene() {
@@ -89,22 +116,28 @@ class _VocalGameState extends State<VocalGame> {
   }
 
   void _showWinDialog() {
+    setState(() {
+      _showConfetti = true;
+    });
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('¡Ganaste!'),
-        content: Text('Has encontrado las 6 vocales.'),
-        actions: [
-          TextButton(
-            onPressed: () {
+      builder: (context) => Stack(
+        children: [
+          ReplayPopup(
+            score: foundVowels,
+            onReplay: () {
               setState(() {
                 foundVowels = 0;
                 _loadNewScene();
                 Navigator.of(context).pop();
               });
             },
-            child: Text('Jugar de nuevo'),
+            onQuit: () {
+              foundVowels = 0;
+              _onGameComplete();
+            },
           ),
+          if (_showConfetti) ConfettiAnimation(animate: _showConfetti),
         ],
       ),
     );
@@ -113,43 +146,56 @@ class _VocalGameState extends State<VocalGame> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: Stack(
         children: [
-          ProgressBar(
-            backgroundColor: const Color(0xFF424141),
-            progressBarColor: const Color(0xFFD67171),
-            headerText: 'Sélectionnez l\'image qui ressemble à celle ci-dessus',
-            progressValue: foundVowels / 6,
-            onBack: () {
-              Navigator.pop(context);
-            },
-            onVolume: () {
-              // Acción para controlar el volumen
-            },
-          ),
-          Expanded(
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: Image.asset(
-                    currentBackground,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                if (foundVowels < vocals.length)
-                  Positioned(
-                    left: vowelPositionX,
-                    top: vowelPositionY,
-                    child: GestureDetector(
-                      onTap: _onVowelTapped,
-                      child: SizedBox(
-                        width: 100,
-                        height: 100,
-                        child: Image.asset(vocals[foundVowels]),
+          Column(
+            children: [
+              ProgressBar(
+                backgroundColor: const Color(0xFF424141),
+                progressBarColor: const Color(0xFFD67171),
+                headerText: 'Sélectionnez l\'image qui ressemble à celle ci-dessus',
+                progressValue: foundVowels / 6,
+                onBack: () {
+                  Navigator.pop(context);
+                },
+                onVolume: () {
+                  // Acción para controlar el volumen
+                },
+              ),
+              Expanded(
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: Image.asset(
+                        currentBackground,
+                        fit: BoxFit.cover,
                       ),
                     ),
-                  ),
-              ],
+                    if (foundVowels < vocals.length)
+                      Positioned(
+                        left: vowelPositionX,
+                        top: vowelPositionY,
+                        child: GestureDetector(
+                          onTap: _onVowelTapped,
+                          child: SizedBox(
+                            width: 100,
+                            height: 100,
+                            child: Image.asset(vocals[foundVowels]),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Positioned(
+            bottom: 10,
+            right: 10,
+            child: MovableButtonScreen(
+              spanishAudio: 'sound/family/instruccionGame1.m4a',
+              frenchAudio: 'sound/family/instruccionGame1.m4a',
+              rivePath: 'assets/RiveAssets/vocalsgame1.riv',
             ),
           ),
         ],

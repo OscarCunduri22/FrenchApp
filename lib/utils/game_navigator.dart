@@ -41,11 +41,11 @@ Widget getGameScreen(String category, int gameNumber) {
     case 'Voyelles':
       switch (gameNumber) {
         case 1:
-          return const VocalGame();
+          return StartGame(title: 'Attrapez la voyelle', buttons: [ButtonData(text: 'Commencer', widget: const VocalGame())]);
         case 2:
-          return const VocalMemoryPage();
+          return StartGame(title: 'Faites correspondre les voyelles', buttons: [ButtonData(text: 'Commencer', widget:const VocalMemoryPage())]);
         case 3:
-          return const AnimalNameGame();
+          return StartGame(title: 'Complétez le nom', buttons: [ButtonData(text: 'Commencer', widget: const AnimalNameGame())]);
         default:
           return Container();
       }

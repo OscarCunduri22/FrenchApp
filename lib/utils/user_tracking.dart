@@ -78,10 +78,57 @@ class UserTracking extends ChangeNotifier {
     return _timesPlayed.values.fold(0, (sum, value) => sum + value);
   }
 
-  String getMostPlayedGame() {
-    if (_timesPlayed.isEmpty) {
-      return "N/A";
+  String getMostPlayedCategory() {
+    final Map<String, List<String>> categoryMap = {
+      'voyelles': ['vocal_game', 'vocal_memory_game'],
+      'nombres': ['bubble_numbers_game', 'train_wagon_numbers_game', 'memory_numbers_game'],
+      'famille': ['find_family_game', 'gather_family_game', 'memory_family_game'],
+    };
+
+    final Map<String, int> categoryCount = {};
+
+    _timesPlayed.forEach((game, count) {
+      categoryMap.forEach((category, games) {
+        if (games.contains(game)) {
+          categoryCount[category] = (categoryCount[category] ?? 0) + count;
+        }
+      });
+    });
+
+    if (categoryCount.isEmpty) {
+      return 'N/A';
     }
-    return _timesPlayed.entries.reduce((a, b) => a.value > b.value ? a : b).key;
+
+    return categoryCount.entries.reduce((a, b) => a.value > b.value ? a : b).key;
+  }
+
+  Map<String, int> getGamesPlayedPerCategory() {
+    final Map<String, List<String>> categoryMap = {
+      'voyelles': ['vocal_game', 'vocal_memory_game'],
+      'nombres': ['bubble_numbers_game', 'train_wagon_numbers_game', 'memory_numbers_game'],
+      'famille': ['find_family_game', 'gather_family_game', 'memory_family_game'],
+    };
+
+    final Map<String, int> categoryCount = {
+      'voyelles': 0,
+      'nombres': 0,
+      'famille': 0,
+    };
+
+    _timesPlayed.forEach((game, count) {
+      categoryMap.forEach((category, games) {
+        if (games.contains(game)) {
+          categoryCount[category] = (categoryCount[category] ?? 0) + 1;
+        }
+      });
+    });
+
+    return categoryCount;
+  }
+
+  List<MapEntry<String, int>> getTopThreeGames() {
+    return _timesPlayed.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value))
+      ..sublist(0, _timesPlayed.length < 3 ? _timesPlayed.length : 3);
   }
 }

@@ -95,6 +95,8 @@ class _VocalMemoryPageState extends State<VocalMemoryPage> with TickerProviderSt
   void _onGameComplete() async {
     String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
+      await databaseRepository.updateGameCompletionStatus(
+          studentId, 'Voyelles', [true, true, false]); // Actualizar estado de juego
       _incrementTimesCompleted(); // Incrementar contador de juegos completados
     }
 

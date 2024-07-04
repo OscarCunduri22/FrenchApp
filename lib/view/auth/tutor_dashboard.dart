@@ -308,13 +308,6 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                                   top: 8,
                                   right: 8,
                                   child: IconButton(
-                                    icon: const Icon(Icons.close, color: Colors.red),
-                                    onPressed: () async {
-                                      await confirmDeleteStudent(studentId, student.name);
-                                    },
-                                  ),
-                                ),
-                                IconButton(
                           icon: Image.asset(
                             'assets/images/icons/exit.png',
                             width: 32,
@@ -324,6 +317,8 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                             DialogManager.showExitConfirmationDialog(context);
                           },
                         ), 
+                                ),
+                                
                             ],
                           );
                         },
