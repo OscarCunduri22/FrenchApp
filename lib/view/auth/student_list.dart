@@ -125,7 +125,7 @@ class _StudentListScreenState extends State<StudentListScreen> {
                         color: Colors.white.withOpacity(0.9),
                       ),
                       child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 1.5, sigmaY: 1.5),
+                        filter: ImageFilter.blur(sigmaX: 0, sigmaY: 0),
                         child: Container(
                           color: Colors.black.withOpacity(0.1),
                         ),

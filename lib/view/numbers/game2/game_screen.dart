@@ -27,7 +27,7 @@ class _TrainWagonNumbersGameState extends State<TrainWagonNumbersGame> {
   final databaseRepository = DatabaseRepository();
 
   void _onGameComplete() async {
-    AudioManager.effects().play('sound/level_win.m4a');
+    AudioManager.effects().play('sound/level_win.mp3');
     String? studentId =
         Provider.of<UserProvider>(context, listen: false).currentStudentId;
 
