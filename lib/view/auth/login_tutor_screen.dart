@@ -252,7 +252,8 @@ class _TutorLoginScreenState extends State<TutorLoginScreen> {
                 if (mounted) {
                   Provider.of<UserProvider>(context, listen: false)
                       .setCurrentUser(tutor);
-
+                  Provider.of<UserProvider>(context, listen: false)
+                      .setCurrentUserId(tutorId);
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(

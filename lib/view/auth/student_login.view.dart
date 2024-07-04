@@ -31,7 +31,6 @@ class FruitGameScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     _setStudentIdInProvider(context);
 
-    // Set preferred orientation to landscape
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,

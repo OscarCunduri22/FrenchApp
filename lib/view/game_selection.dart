@@ -2,6 +2,7 @@
 
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/game_navigator.dart';
 import 'package:frenc_app/utils/user_provider.dart';
@@ -29,6 +30,7 @@ class _GameSelectionScreenState extends State<GameSelectionScreen> {
   @override
   void initState() {
     super.initState();
+
     _fetchGameCompletionStatus();
   }
 
@@ -66,6 +68,10 @@ class _GameSelectionScreenState extends State<GameSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
     return WillPopScope(
         onWillPop: () async {
           Navigator.pushReplacement(
