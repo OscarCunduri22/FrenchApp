@@ -5,6 +5,7 @@ import 'package:frenc_app/model/tutor.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/auth/tutor_dashboard.dart';
 import 'package:frenc_app/view/game_selection.dart';
+import 'package:frenc_app/view/montessori/montessori_screen.dart';
 import 'package:frenc_app/widgets/auth/security_code_box.dart';
 import 'package:frenc_app/widgets/character/button.dart';
 import 'package:frenc_app/widgets/custom_theme_text.dart';
@@ -100,10 +101,17 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           child: IconButton(
-                            icon: const Icon(Icons.person),
+                            icon: const Icon(Icons.info),
                             iconSize: 36,
                             color: Colors.white,
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const MontessoriScreen()),
+                              );
+                            },
                           ),
                         ),
                         const SizedBox(width: 10),

@@ -19,7 +19,7 @@ class MontessoriScreen extends StatelessWidget {
               color: Colors.white.withOpacity(0.5),
               child: const Center(
                 child: Text(
-                  "Metodología Montessori",
+                  "Método Montessori",
                   style: TextStyle(
                       color: Colors.black,
                       fontSize: 30,
@@ -30,29 +30,62 @@ class MontessoriScreen extends StatelessWidget {
           ),
         ),
         centerTitle: true,
+        // actions: [
+        //   GestureDetector(
+        //     onTap: () {
+        //       Navigator.of(context).pop();
+        //     },
+        //     child: Container(
+        //       margin: const EdgeInsets.symmetric(horizontal: 30),
+        //       child: Image.asset(
+        //         'assets/images/icons/exit.png',
+        //         width: 32,
+        //         height: 32,
+        //       ),
+        //     ),
+        //   ),
+        // ],
       ),
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage(
-                "assets/images/montessoribg.jpg"), // Reemplaza con tu imagen de fondo
+            image: AssetImage("assets/images/montessoribg2.jpg"),
             fit: BoxFit.cover,
           ),
         ),
-        child: const SingleChildScrollView(
-          padding: EdgeInsets.all(16),
+        child: SingleChildScrollView(
+          padding:
+              const EdgeInsets.only(top: 80, left: 16, right: 16, bottom: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "La metodología Montessori es un enfoque educativo centrado en el niño, que fomenta el aprendizaje a través del juego y la exploración.",
-                style: TextStyle(fontSize: 16),
-                textAlign: TextAlign.center,
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Text(
+                  "La metodología Montessori es un enfoque educativo centrado en el niño, que fomenta el aprendizaje a través del juego y la exploración.",
+                  style: TextStyle(fontSize: 18),
+                  textAlign: TextAlign.center,
+                ),
               ),
-              SizedBox(height: 20),
-              Text("Principios Clave:",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              Row(
+              const SizedBox(height: 20),
+              const Padding(
+                padding: EdgeInsets.only(left: 30.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 20),
+                    Text("Principios clave",
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 20),
+                  ],
+                ),
+              ),
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   PrincipleCard(
@@ -81,14 +114,25 @@ class MontessoriScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 20),
-              Text("Beneficios:",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              Row(
+              const SizedBox(height: 20),
+              const Padding(
+                padding: EdgeInsets.only(left: 30.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 20),
+                    Text("Beneficios",
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 20),
+                  ],
+                ),
+              ),
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   BenefitItem(
-                      icon: Icons.person,
+                      icon: Icons.school,
                       text:
                           "Desarrollo de habilidades cognitivas, sociales y emocionales."),
                   BenefitItem(
@@ -99,27 +143,61 @@ class MontessoriScreen extends StatelessWidget {
                       text: "Construcción de confianza y auto-estima."),
                 ],
               ),
-              SizedBox(height: 20),
-              Text("Montessori en nuestra Aplicación:",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              Row(
+              const SizedBox(height: 20),
+              const Padding(
+                padding: EdgeInsets.only(left: 30.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 20),
+                    Text("Montessori en nuestra Aplicación:",
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 20),
+                  ],
+                ),
+              ),
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ExampleItem(
-                    icon: Icons.edit,
-                    title: "Juego de trazo de números y letras",
+                    icon: Icons.format_list_numbered,
+                    title: "Aprender Números",
                     description:
-                        "Diseñado para desarrollar la motricidad fina y el reconocimiento de símbolos.",
+                        "Juegos interactivos para aprender a contar y reconocer números en francés con la ayuda del español.",
                   ),
                   ExampleItem(
-                    icon: Icons.local_activity,
-                    title: "Actividades prácticas",
+                    icon: Icons.videogame_asset,
+                    title: "Vocales Divertidas",
                     description:
-                        "Juegos que simulan actividades del día a día para fomentar la independencia.",
+                        "Actividades para aprender las vocales en francés, utilizando audio y juegos.",
+                  ),
+                  ExampleItem(
+                    icon: Icons.family_restroom,
+                    title: "Conoce la Familia",
+                    description:
+                        "Juegos que enseñan los nombres de los miembros de la familia en francés, fomentando la memoria y la asociación.",
+                  )
+                ],
+              ),
+              const SizedBox(height: 20),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ExampleItem(
+                    icon: Icons.record_voice_over,
+                    title: "Audio Guía",
+                    description:
+                        "Todos los juegos incluyen audio en francés y español para facilitar el aprendizaje.",
+                  ),
+                  ExampleItem(
+                    icon: Icons.person_pin,
+                    title: "Personaje Guía",
+                    description:
+                        "Un personaje amigable guía a los niños a través de todas las actividades, haciendo el aprendizaje más divertido.",
                   ),
                 ],
               ),
-              SizedBox(height: 20),
             ],
           ),
         ),
@@ -143,7 +221,7 @@ class PrincipleCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: 200,
-      height: 220,
+      height: 250,
       child: Card(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -152,9 +230,14 @@ class PrincipleCard extends StatelessWidget {
             children: [
               Icon(icon, size: 40, color: Colors.lightGreen),
               const SizedBox(height: 10),
-              Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text(title,
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center),
               const SizedBox(height: 10),
-              Text(description, textAlign: TextAlign.center),
+              Text(description,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 16)),
             ],
           ),
         ),
@@ -172,7 +255,7 @@ class BenefitItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 150,
+      width: 250,
       height: 200,
       child: Card(
         child: Padding(
@@ -182,7 +265,9 @@ class BenefitItem extends StatelessWidget {
             children: [
               Icon(icon, size: 40, color: Colors.lightGreen),
               const SizedBox(height: 10),
-              Text(text, textAlign: TextAlign.center),
+              Text(text,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 16)),
             ],
           ),
         ),
@@ -205,8 +290,8 @@ class ExampleItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 350,
-      height: 200,
+      width: 250,
+      height: 250,
       child: Card(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -215,9 +300,14 @@ class ExampleItem extends StatelessWidget {
             children: [
               Icon(icon, size: 40, color: Colors.lightGreen),
               const SizedBox(height: 10),
-              Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text(title,
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center),
               const SizedBox(height: 10),
-              Text(description, textAlign: TextAlign.center),
+              Text(description,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 16)),
             ],
           ),
         ),
