@@ -1,20 +1,16 @@
-// ignore_for_file: library_private_types_in_public_api, deprecated_member_use
-
 import 'package:flutter/material.dart';
 import 'package:frenc_app/utils/dialog_manager.dart';
 import 'package:frenc_app/view/auth/login_tutor_screen.dart';
 import 'package:frenc_app/utils/audio_manager.dart';
-import 'package:frenc_app/view/category_selection.dart';
-import 'package:provider/provider.dart';
-import 'package:frenc_app/utils/user_provider.dart';
-import 'package:frenc_app/view/auth/tutor_dashboard.dart';
+import 'package:frenc_app/widgets/custom_theme_text.dart';
+
 import 'package:rive/rive.dart';
 
 class StartScreen extends StatefulWidget {
   const StartScreen({Key? key}) : super(key: key);
 
   @override
-  _StartScreenState createState() => _StartScreenState();
+  State<StartScreen> createState() => _StartScreenState();
 }
 
 class _StartScreenState extends State<StartScreen> {
@@ -39,12 +35,80 @@ class _StartScreenState extends State<StartScreen> {
       },
       child: Scaffold(
         extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 16.0, top: 8.0),
+        body: Stack(
+          children: <Widget>[
+            const Positioned.fill(
+              child: RiveAnimation.asset(
+                'assets/RiveAssets/firstscreen.riv',
+                fit: BoxFit.fill,
+              ),
+            ),
+            SafeArea(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Image.asset(
+                            'assets/images/EPN.png',
+                            height: 80,
+                            width: 80,
+                          ),
+                          const CustomTextWidget(
+                            text: 'LudoFrench',
+                            type: TextType.Title,
+                            fontSize: 44,
+                            fontWeight: FontWeight.w200,
+                            letterSpacing: 1.0,
+                          ),
+                          Image.asset(
+                            'assets/images/ludolab.png',
+                            height: 50,
+                            width: 50,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Center(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF016171),
+                  foregroundColor: Colors.white,
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 16,
+                  ),
+                  textStyle: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  animationDuration: const Duration(milliseconds: 200),
+                ),
+                onPressed: () {
+                  AudioManager.background().stop();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => TutorLoginScreen()),
+                  );
+                },
+                child: const Text('Iniciar Sesión'),
+              ),
+            ),
+            Positioned(
+              left: 16.0,
+              bottom: 16.0,
               child: IconButton(
                 onPressed: () async {
                   if (await AudioManager.background().isPlaying()) {
@@ -53,58 +117,10 @@ class _StartScreenState extends State<StartScreen> {
                     AudioManager.background().play('sound/start_page.mp3');
                   }
                 },
-                icon: const Icon(Icons.volume_up),
-              ),
-            ),
-          ],
-        ),
-        body: Stack(
-          children: [
-            const Positioned.fill(
-              child: RiveAnimation.asset(
-                'assets/RiveAssets/solofondo.riv',
-                fit: BoxFit.cover,
-              ),
-            ),
-            SafeArea(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'FrenchApp',
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        AudioManager.background().stop();
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => TutorLoginScreen()),
-                        );
-                      },
-                      child: const Text('Iniciar Sesión'),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        AudioManager.background().stop();
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const CategorySelectionScreen()),
-                        );
-                      },
-                      child: const Text('Jugar como Invitado'),
-                    ),
-                  ],
+                icon: Image.asset(
+                  'assets/images/icons/sonido.png',
+                  width: 50,
+                  height: 50,
                 ),
               ),
             ),

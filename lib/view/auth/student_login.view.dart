@@ -7,6 +7,7 @@ import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/category_selection.dart';
 import 'package:frenc_app/view_model/auth/student_login.dart';
+import 'package:frenc_app/widgets/custom_theme_text.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
 
@@ -39,7 +40,7 @@ class FruitGameScreen extends StatelessWidget {
               height: double.infinity,
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/images/auth/fruitsbg2.jpg'),
+                  image: AssetImage('assets/images/onlyBg.jpg'),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -77,12 +78,40 @@ class FruitGameScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       const SizedBox(height: 32),
-                      const Text(
-                        'Coloca la fruta en su lugar correspondiente',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontFamily: 'TitanOneFont',
-                          color: Colors.brown,
+                      const CustomTextWidget(
+                        text: 'Busca la silueta correcta',
+                        type: TextType.Subtitle,
+                        fontSize: 36,
+                        color: ColorType.Secondary,
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: draggableFruits.map((fruit) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ShakeWidget(
+                                interval:
+                                    Duration(seconds: 2 + Random().nextInt(3)),
+                                child: Draggable<Fruit>(
+                                  data: fruit,
+                                  feedback: Image.asset(
+                                      fruit.draggableImagePath,
+                                      width: 80),
+                                  childWhenDragging: Opacity(
+                                    opacity: 0.5,
+                                    child: Image.asset(fruit.draggableImagePath,
+                                        width: 80),
+                                  ),
+                                  child: Image.asset(
+                                    fruit.draggableImagePath,
+                                    width: 80,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }).toList(),
                         ),
                       ),
                       Expanded(
@@ -117,36 +146,6 @@ class FruitGameScreen extends StatelessWidget {
                           }).toList(),
                         ),
                       ),
-                      Expanded(
-                        flex: 1,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: draggableFruits.map((fruit) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: ShakeWidget(
-                                interval:
-                                    Duration(seconds: 2 + Random().nextInt(3)),
-                                child: Draggable<Fruit>(
-                                  data: fruit,
-                                  feedback: Image.asset(
-                                      fruit.draggableImagePath,
-                                      width: 80),
-                                  childWhenDragging: Opacity(
-                                    opacity: 0.5,
-                                    child: Image.asset(fruit.draggableImagePath,
-                                        width: 80),
-                                  ),
-                                  child: Image.asset(
-                                    fruit.draggableImagePath,
-                                    width: 80,
-                                  ),
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ),
                     ],
                   ),
                 );
@@ -162,9 +161,6 @@ class FruitGameScreen extends StatelessWidget {
                   height: 64,
                 ),
                 onPressed: () {
-                  /*_showSecurityCodeDialog(() {
-                            Navigator.of(context).pop();
-                          });*/
                   Navigator.of(context).pop();
                 },
               ),
