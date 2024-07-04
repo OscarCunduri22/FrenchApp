@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frenc_app/view/auth/student_login.view.dart';
 import 'package:provider/provider.dart';
 import 'package:frenc_app/model/student.dart';
 import 'package:frenc_app/widgets/auth/common_button_styles.dart';
@@ -74,7 +75,7 @@ class StudentDetailScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => CategorySelectionScreen(),
+                          builder: (context) => FruitGameScreen(studentId: studentId),
                         ),
                       );
                     },
