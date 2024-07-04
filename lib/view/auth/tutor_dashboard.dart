@@ -39,7 +39,7 @@ class TutorDashboardScreen extends StatelessWidget {
 
     return WillPopScope(
       onWillPop: () async {
-        DialogManager.showExitAndLogoutDialog(context);
+        DialogManager.showExitConfirmationDialog(context);
         return false;
       },
       child: Scaffold(

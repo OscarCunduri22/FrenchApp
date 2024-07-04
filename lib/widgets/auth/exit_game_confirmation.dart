@@ -23,7 +23,7 @@ class ExitConfirmationDialog extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                'Salir',
+                'Confirmación de salida',
                 style: TextStyle(
                   fontFamily: "TitanOneFont",
                   fontSize: 24,
@@ -44,7 +44,7 @@ class ExitConfirmationDialog extends StatelessWidget {
                 children: [
                   TextButton(
                     style: TextButton.styleFrom(
-                      backgroundColor: Colors.red,
+                      backgroundColor: Colors.grey,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),

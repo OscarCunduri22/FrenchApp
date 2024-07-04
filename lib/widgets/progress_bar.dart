@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frenc_app/widgets/auth/exit_game_box.dart';
 
 class ProgressBar extends StatelessWidget {
   final Color backgroundColor;
@@ -17,6 +18,17 @@ class ProgressBar extends StatelessWidget {
     required this.onVolume,
     Key? key,
   }) : super(key: key);
+
+  void _showExitConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ExitConfirmationDialog(
+          onExitConfirmed: onBack,
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +71,7 @@ class ProgressBar extends StatelessWidget {
                 ),
               ),
               GestureDetector(
-                onTap: onBack,
+                onTap: () => _showExitConfirmationDialog(context),
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 30),
                   child: Image.asset(
