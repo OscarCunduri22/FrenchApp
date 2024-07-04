@@ -141,7 +141,7 @@ class TutorDashboardScreen extends StatelessWidget {
                           onTap: () async {
                             String? tutorId = await _databaseRepository
                                 .getTutorId(currentUser.email);
-                            Navigator.push(
+                            Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>

@@ -1,4 +1,5 @@
-import 'dart:async';
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frenc_app/view/button.dart';
@@ -134,61 +135,76 @@ class _BubbleNumbersGameState extends State<BubbleNumbersGame>
                     ),
                   ),
                 ),
-                // Foreground Content
-                Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ProgressBar(
-                        backgroundColor:
-                            const Color(0xF2005BA7).withOpacity(0.8),
-                        progressBarColor: const Color(0xFF0BCC6C),
-                        headerText: 'Completa la secuencia de números',
-                        progressValue:
-                            viewModel.currentIndex / viewModel.totalLevels,
-                        onBack: () {
-                          Navigator.pop(context);
-                        },
-                        onVolume: () {},
-                      ),
-                      if (viewModel.currentIndex < viewModel.totalLevels)
-                        ScaleTransition(
-                          scale: _wordChangeController,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              NumberImageWidget(
-                                imagePath:
-                                    viewModel.images[viewModel.currentIndex],
-                              ),
-                              const SizedBox(height: 10),
-                              CharacterBoxWidget(
-                                word: viewModel.numbers[viewModel.currentIndex],
-                              ),
-                            ],
-                          ),
+                Opacity(
+                  opacity: viewModel.isPlayingSound ? 0.3 : 1.0,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ProgressBar(
+                          backgroundColor:
+                              const Color(0xF2005BA7).withOpacity(0.8),
+                          progressBarColor: const Color(0xFF0BCC6C),
+                          headerText: 'Completa la secuencia de números',
+                          progressValue:
+                              viewModel.currentIndex / viewModel.totalLevels,
+                          onBack: () {
+                            Navigator.pop(context);
+                          },
+                          onVolume: () {},
                         ),
-                      const SizedBox(height: 10),
-                      if (viewModel.currentIndex < viewModel.totalLevels)
-                        ScaleTransition(
-                          scale: _disorderedCharactersController,
-                          child: DisorderedCharactersWidget(
-                            word: viewModel.numbers[viewModel.currentIndex],
-                            onCorrect: () {
-                              _confettiController.play();
-                            },
+                        if (viewModel.currentIndex < viewModel.totalLevels)
+                          ScaleTransition(
+                            scale: _wordChangeController,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                NumberImageWidget(
+                                  imagePath:
+                                      viewModel.images[viewModel.currentIndex],
+                                ),
+                                const SizedBox(height: 10),
+                                CharacterBoxWidget(
+                                  word:
+                                      viewModel.numbers[viewModel.currentIndex],
+                                ),
+                              ],
+                            ),
                           ),
+                        const SizedBox(height: 10),
+                        if (viewModel.currentIndex < viewModel.totalLevels)
+                          ScaleTransition(
+                            scale: _disorderedCharactersController,
+                            child: DisorderedCharactersWidget(
+                              word: viewModel.numbers[viewModel.currentIndex],
+                              onCorrect: () {
+                                _confettiController.play();
+                                viewModel.markAsCorrect();
+                              },
+                            ),
+                          ),
+                        ConfettiWidget(
+                          confettiController: _confettiController,
+                          blastDirection: pi / 2,
+                          emissionFrequency: 0.05,
+                          numberOfParticles: 10,
+                          gravity: 0.1,
                         ),
-                      ConfettiWidget(
-                        confettiController: _confettiController,
-                        blastDirection: pi / 2,
-                        emissionFrequency: 0.05,
-                        numberOfParticles: 10,
-                        gravity: 0.1,
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
+                if (viewModel.isPlayingSound)
+                  Container(
+                    color: Colors.black.withOpacity(0.8),
+                    child: const Center(
+                      child: Icon(
+                        Icons.volume_up,
+                        size: 100,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
                 const MovableButtonScreen(
                   spanishAudio: 'sound/family/instruccionGame1.m4a',
                   frenchAudio: 'sound/family/instruccionGame1.m4a',

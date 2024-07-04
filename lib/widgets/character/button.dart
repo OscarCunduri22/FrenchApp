@@ -35,7 +35,7 @@ class CustomButton extends StatelessWidget {
         if (onPressed != null) {
           onPressed!();
         } else if (targetView != null) {
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => targetView!),
           );

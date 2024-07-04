@@ -49,7 +49,6 @@ class StartGame extends StatelessWidget {
                         Center(
                           child: Stack(
                             children: [
-                              // Text with white border
                               Text(
                                 title,
                                 style: TextStyle(
@@ -96,7 +95,7 @@ class StartGame extends StatelessWidget {
                                     width: 2,
                                   ),
                                   onPressed: () {
-                                    Navigator.of(context).push(
+                                    Navigator.of(context).pushReplacement(
                                       MaterialPageRoute(
                                         builder: (context) => buttonData.widget,
                                       ),
