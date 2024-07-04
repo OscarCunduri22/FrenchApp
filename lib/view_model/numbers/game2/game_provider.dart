@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:frenc_app/utils/user_tracking.dart';
+import 'package:frenc_app/utils/audio_manager.dart';
 
 class GameProvider with ChangeNotifier {
   List<int> options = [];
@@ -22,24 +21,14 @@ class GameProvider with ChangeNotifier {
     generateNewLevel();
   }
 
-  void selectOption(int option, VoidCallback onComplete) {
+  void selectOption(int option, VoidCallback onComplete) async {
     selectedOption = option;
     if (checkAnswer()) {
       isCompleted = true;
       notifyListeners();
-      Timer(const Duration(seconds: 2), () {
-        selectedOption = null;
-        currentLevel++;
-        if (currentLevel < totalLevels) {
-          generateNewLevel();
-        } else {
-          _incrementTimesCompleted(); // Incrementar contador de juegos completados
-          onComplete();
-        }
-        isCompleted = false;
-        notifyListeners();
-      });
+      _playCorrectAnswerSounds(onComplete);
     } else {
+      await AudioManager.effects().play('sound/incorrect.mp3');
       selectedOption = null;
       notifyListeners();
     }
@@ -49,7 +38,7 @@ class GameProvider with ChangeNotifier {
     return selectedOption == correctAnswer;
   }
 
-  void generateNewLevel() {
+  void generateNewLevel() async {
     Random random = Random();
     List<int?> newSequence;
     do {
@@ -72,11 +61,25 @@ class GameProvider with ChangeNotifier {
 
   double get progressValue => currentLevel / totalLevels;
 
-  void _incrementTimesPlayed() {
-    userTracking.incrementTimesPlayed(studentId, 'train_wagon_numbers_game');
-  }
+  void _playCorrectAnswerSounds(VoidCallback onComplete) async {
+    await AudioManager.effects().play('sound/numbers/yeahf.mp3');
+    await Future.delayed(const Duration(seconds: 1));
+    await AudioManager.effects().play('sound/numbers/repetir.m4a');
+    await Future.delayed(const Duration(seconds: 2));
+    await AudioManager.effects().play('sound/numbers/$correctAnswer.m4a');
+    await Future.delayed(const Duration(seconds: 2));
+    await AudioManager.effects().play('sound/numbers/$correctAnswer.m4a');
+    await Future.delayed(const Duration(seconds: 1));
 
-  void _incrementTimesCompleted() {
-    userTracking.incrementTimesCompleted(studentId, 'train_wagon_numbers_game');
+    isCompleted = false;
+    notifyListeners();
+
+    selectedOption = null;
+    currentLevel++;
+    if (currentLevel < totalLevels) {
+      generateNewLevel();
+    } else {
+      onComplete();
+    }
   }
 }

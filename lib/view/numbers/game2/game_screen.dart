@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/repository/global.repository.dart';
+import 'package:frenc_app/utils/audio_manager.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/utils/user_tracking.dart'; // Importar UserTracking
 import 'package:frenc_app/view/button.dart';
@@ -11,7 +12,6 @@ import 'package:frenc_app/widgets/numbers/game2/train_cart.dart';
 import 'package:frenc_app/widgets/numbers/game2/train_engine.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:provider/provider.dart';
-import 'package:frenc_app/view/button.dart';
 
 class TrainWagonNumbersGame extends StatefulWidget {
   @override
@@ -22,10 +22,13 @@ class _TrainWagonNumbersGameState extends State<TrainWagonNumbersGame> {
   bool isOffScreenLeft = false;
   bool isOffScreenRight = false;
   bool isVisible = true;
+  String soundInPath = 'assets/sound/in1.mp3';
+  String soundOutPath = 'assets/sound/out.mp3';
 
   final databaseRepository = DatabaseRepository();
 
   void _onGameComplete() async {
+    AudioManager.effects().play('sound/level_win.mp3');
     String? studentId =
         Provider.of<UserProvider>(context, listen: false).currentStudentId;
 
@@ -34,7 +37,7 @@ class _TrainWagonNumbersGameState extends State<TrainWagonNumbersGame> {
           studentId, 'Nombres', [true, false, false]);
     }
 
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(
           builder: (context) => GameSelectionScreen(
@@ -69,28 +72,7 @@ class _TrainWagonNumbersGameState extends State<TrainWagonNumbersGame> {
               builder: (context, gameProvider, child) {
                 if (gameProvider.isCompleted) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
-                    setState(() {
-                      isOffScreenLeft = true;
-                      isVisible = false;
-                    });
-                    Timer(const Duration(seconds: 1), () {
-                      setState(() {
-                        isVisible = false;
-                        isOffScreenLeft = false;
-                      });
-                      Timer(const Duration(seconds: 1), () {
-                        setState(() {
-                          isVisible = false;
-                          isOffScreenRight = true;
-                        });
-                        Timer(const Duration(seconds: 1), () {
-                          setState(() {
-                            isVisible = true;
-                            isOffScreenRight = false;
-                          });
-                        });
-                      });
-                    });
+                    _handleGameCompletion();
                   });
                 }
                 return Column(
@@ -103,7 +85,13 @@ class _TrainWagonNumbersGameState extends State<TrainWagonNumbersGame> {
                       headerText: 'Completa la secuencia de números',
                       progressValue: gameProvider.progressValue,
                       onBack: () {
-                        Navigator.pop(context);
+                        Navigator.pushReplacement(context, MaterialPageRoute(
+                          builder: (context) {
+                            return GameSelectionScreen(
+                              category: 'Nombres',
+                            );
+                          },
+                        ));
                       },
                       onVolume: () {},
                     ),
@@ -167,13 +155,39 @@ class _TrainWagonNumbersGameState extends State<TrainWagonNumbersGame> {
               },
             ),
             const MovableButtonScreen(
-              spanishAudio: 'sound/family/instruccionGame1.m4a',
-              frenchAudio: 'sound/family/instruccionGame1.m4a',
+              spanishAudio: 'assets/sound/family/instruccionGame1.m4a',
+              frenchAudio: 'assets/sound/family/instruccionGame1.m4a',
               rivePath: 'assets/RiveAssets/nombresgame2.riv',
             )
           ],
         ),
       ),
     );
+  }
+
+  void _handleGameCompletion() async {
+    await Future.delayed(const Duration(seconds: 7));
+    setState(() {
+      isOffScreenLeft = true;
+      isVisible = false;
+    });
+    Timer(const Duration(seconds: 1), () {
+      setState(() {
+        isVisible = false;
+        isOffScreenLeft = false;
+      });
+      Timer(const Duration(seconds: 1), () {
+        setState(() {
+          isVisible = false;
+          isOffScreenRight = true;
+        });
+        Timer(const Duration(seconds: 1), () {
+          setState(() {
+            isVisible = true;
+            isOffScreenRight = false;
+          });
+        });
+      });
+    });
   }
 }

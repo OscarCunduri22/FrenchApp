@@ -7,6 +7,7 @@ import 'package:frenc_app/model/student.dart';
 import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/audio_manager.dart';
 import 'package:frenc_app/view/auth/student_login.view.dart';
+import 'package:frenc_app/view/auth/tutor_dashboard.dart';
 import 'package:frenc_app/widgets/auth/security_code_box.dart';
 import 'package:frenc_app/widgets/auth/student_card.dart';
 import 'package:frenc_app/widgets/character/gallo.dart';
@@ -86,7 +87,12 @@ class _StudentListScreenState extends State<StudentListScreen> {
     return WillPopScope(
       onWillPop: () async {
         _showSecurityCodeDialog(() {
-          Navigator.of(context).pop();
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    TutorDashboardScreen(tutorName: '', studentCount: 2),
+              ));
         });
         return false;
       },
@@ -113,13 +119,13 @@ class _StudentListScreenState extends State<StudentListScreen> {
                       height: double.infinity,
                       decoration: BoxDecoration(
                         image: const DecorationImage(
-                          image: AssetImage('assets/images/auth/aula.png'),
+                          image: AssetImage('assets/images/onlyBg.jpg'),
                           fit: BoxFit.cover,
                         ),
                         color: Colors.white.withOpacity(0.9),
                       ),
                       child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 1.5, sigmaY: 1.5),
+                        filter: ImageFilter.blur(sigmaX: 0, sigmaY: 0),
                         child: Container(
                           color: Colors.black.withOpacity(0.1),
                         ),
@@ -194,7 +200,12 @@ class _StudentListScreenState extends State<StudentListScreen> {
                         ),
                         onPressed: () {
                           _showSecurityCodeDialog(() {
-                            Navigator.of(context).pop();
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => TutorDashboardScreen(
+                                      tutorName: '', studentCount: 2),
+                                ));
                           });
                         },
                       ),

@@ -1,8 +1,11 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/game_navigator.dart';
 import 'package:frenc_app/utils/user_provider.dart';
+import 'package:frenc_app/view/category_selection.dart';
 import 'package:frenc_app/widgets/custom_theme_text.dart';
 import 'package:frenc_app/widgets/game_selection_card.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +30,6 @@ class _GameSelectionScreenState extends State<GameSelectionScreen> {
   void initState() {
     super.initState();
     _fetchGameCompletionStatus();
-    print('GameSelectionScreen: ${widget.category}');
   }
 
   Future<void> _fetchGameCompletionStatus() async {
@@ -64,97 +66,117 @@ class _GameSelectionScreenState extends State<GameSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : errorMessage.isNotEmpty
-              ? Center(child: Text(errorMessage))
-              : Stack(
-                  children: [
-                    Positioned.fill(
-                      child: Image.asset(
-                        'assets/images/global/cloudsbg.png',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+    return WillPopScope(
+        onWillPop: () async {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const CategorySelectionScreen(),
+            ),
+          );
+          return false;
+        },
+        child: Scaffold(
+          body: isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : errorMessage.isNotEmpty
+                  ? Center(child: Text(errorMessage))
+                  : Stack(
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Stack(
-                            children: [
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: IconButton(
-                                  icon: Image.asset(
-                                    'assets/images/icons/hacia-atras.png',
-                                    width: 32,
-                                    height: 32,
-                                  ),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                              ),
-                              Align(
-                                alignment: Alignment.center,
-                                child: CustomTextWidget(
-                                  text: widget.category,
-                                  type: TextType.Subtitle,
-                                  fontSize: 48,
-                                  color: ColorType.Secondary,
-                                ),
-                              ),
-                            ],
+                        Positioned.fill(
+                          child: Image.asset(
+                            'assets/images/global/cloudsbg.png',
+                            fit: BoxFit.cover,
                           ),
                         ),
-                        Expanded(
-                          child: Center(
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: List.generate(3, (index) {
-                                  bool isUnlocked = (index == 0) ||
-                                      (index == 1 && gameCompletionStatus[0]) ||
-                                      (index == 2 &&
-                                          gameCompletionStatus[0] &&
-                                          gameCompletionStatus[1]);
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 32.0),
-                                    child: GameCard(
-                                      category: widget.category,
-                                      gameNumber: index + 1,
-                                      isUnlocked: isUnlocked,
-                                      onPlayPressed: () async {
-                                        if (isUnlocked) {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) {
-                                                return getGameScreen(
-                                                    widget.category, index + 1);
-                                              },
-                                            ),
-                                          );
-                                        }
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16.0),
+                              child: Stack(
+                                children: [
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: IconButton(
+                                      icon: Image.asset(
+                                        'assets/images/icons/hacia-atras.png',
+                                        width: 32,
+                                        height: 32,
+                                      ),
+                                      onPressed: () {
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const CategorySelectionScreen(),
+                                          ),
+                                        );
                                       },
                                     ),
-                                  );
-                                }),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.center,
+                                    child: CustomTextWidget(
+                                      text: widget.category,
+                                      type: TextType.Subtitle,
+                                      fontSize: 48,
+                                      color: ColorType.Secondary,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ),
+                            Expanded(
+                              child: Center(
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: List.generate(3, (index) {
+                                      bool isUnlocked = (index == 0) ||
+                                          (index == 1 &&
+                                              gameCompletionStatus[0]) ||
+                                          (index == 2 &&
+                                              gameCompletionStatus[0] &&
+                                              gameCompletionStatus[1]);
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 32.0),
+                                        child: GameCard(
+                                          category: widget.category,
+                                          gameNumber: index + 1,
+                                          isUnlocked: isUnlocked,
+                                          onPlayPressed: () async {
+                                            if (isUnlocked) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) {
+                                                    return getGameScreen(
+                                                        widget.category,
+                                                        index + 1);
+                                                  },
+                                                ),
+                                              );
+                                            }
+                                          },
+                                        ),
+                                      );
+                                    }),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
-                ),
-    );
+        ));
   }
 }

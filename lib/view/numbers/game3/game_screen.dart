@@ -4,16 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:frenc_app/view/button.dart';
 import 'package:provider/provider.dart';
 import 'package:frenc_app/repository/global.repository.dart';
+import 'package:frenc_app/utils/audio_manager.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/game_selection.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:frenc_app/widgets/confetti_animation.dart';
 import 'package:frenc_app/widgets/replay_popup.dart';
-import 'package:provider/provider.dart';
-import 'package:frenc_app/view/button.dart';
-
-/* Checked */
-import 'package:frenc_app/utils/user_tracking.dart'; // Importar UserTracking
 
 class MemoryNumbersGame extends StatefulWidget {
   @override
@@ -30,6 +26,7 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame> with TickerProvid
   int pairsFound = 0;
   int maxLevel = 3;
   bool _showConfetti = false;
+  bool _isPlayingSound = false;
   final databaseRepository = DatabaseRepository();
   late List<AnimationController> _controllers;
   late List<Animation<double>> _animations;
@@ -117,7 +114,7 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame> with TickerProvid
     return images;
   }
 
-  void onCardTap(int index) {
+  void onCardTap(int index) async {
     if (allowFlip &&
         !cardFlips[index] &&
         selectedCards.length < 2 &&
@@ -141,11 +138,13 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame> with TickerProvid
             cardMatched[secondIndex] = true;
             pairsFound++;
             selectedCards.clear();
+            _playCorrectAnswerSounds(firstImage);
             if (pairsFound == cardImages.length ~/ 2) {
               Timer(Duration(seconds: 2), levelUp);
             }
           });
         } else {
+          await AudioManager.effects().play('sound/incorrect.mp3');
           Timer(Duration(seconds: 1), () {
             setState(() {
               cardFlips[firstIndex] = false;
@@ -196,6 +195,28 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame> with TickerProvid
         ],
       ),
     );
+  }
+
+  Future<void> _playCorrectAnswerSounds(String imagePath) async {
+    setState(() {
+      _isPlayingSound = true;
+    });
+
+    String number =
+        imagePath.split('/').last.replaceAll(RegExp(r'number|-pair|\.png'), '');
+
+    await AudioManager.effects().play('sound/numbers/yeahf.mp3');
+    await Future.delayed(const Duration(seconds: 1));
+    await AudioManager.effects().play('sound/numbers/repetir.m4a');
+    await Future.delayed(const Duration(seconds: 2));
+    await AudioManager.effects().play('sound/numbers/$number.m4a');
+    await Future.delayed(const Duration(seconds: 2));
+    await AudioManager.effects().play('sound/numbers/$number.m4a');
+    await Future.delayed(const Duration(seconds: 1));
+
+    setState(() {
+      _isPlayingSound = false;
+    });
   }
 
   List<Widget> buildRows() {
@@ -267,36 +288,65 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame> with TickerProvid
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/numbers/game3/gamebg.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ProgressBar(
-                backgroundColor: const Color(0xFFFF5F01),
-                progressBarColor: const Color(0xFF8DB270),
-                headerText: 'Completa la secuencia de números',
-                progressValue: (level - 1) / maxLevel,
-                onBack: () {
-                  Navigator.pop(context);
-                },
-                onVolume: () {},
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/numbers/game3/gamebg.png'),
+                fit: BoxFit.cover,
               ),
-              ...buildRows(),
-              const MovableButtonScreen(
-                spanishAudio: 'sound/family/instruccionGame1.m4a',
-                frenchAudio: 'sound/family/instruccionGame1.m4a',
-                rivePath: 'assets/RiveAssets/nombresgame3.riv',
-              ),
-            ],
+            ),
           ),
-        ),
+          Center(
+            child: Stack(
+              children: [
+                Opacity(
+                  opacity: _isPlayingSound ? 0.3 : 1.0,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ProgressBar(
+                        backgroundColor: const Color(0xFFFF5F01),
+                        progressBarColor: const Color(0xFF8DB270),
+                        headerText: 'Completa la secuencia de números',
+                        progressValue: (level - 1) / maxLevel,
+                        onBack: () {
+                          Navigator.pop(context);
+                        },
+                        onVolume: () {},
+                      ),
+                      ...buildRows(),
+                    ],
+                  ),
+                ),
+                const Positioned(
+                  bottom: 20,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: MovableButtonScreen(
+                      spanishAudio: 'sound/family/instruccionGame1.m4a',
+                      frenchAudio: 'sound/family/instruccionGame1.m4a',
+                      rivePath: 'assets/RiveAssets/nombresgame3.riv',
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (_isPlayingSound)
+            Container(
+              color: Colors.black.withOpacity(0.8),
+              child: const Center(
+                child: Icon(
+                  Icons.volume_up,
+                  color: Colors.white,
+                  size: 100,
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
