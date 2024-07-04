@@ -9,38 +9,35 @@ import 'package:frenc_app/widgets/confetti_animation.dart';
 import 'package:frenc_app/widgets/replay_popup.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:provider/provider.dart';
+import 'dart:math';
 import 'package:frenc_app/utils/user_tracking.dart'; // Importar UserTracking
 
-class MemoryGamePage extends StatefulWidget {
-  const MemoryGamePage({Key? key}) : super(key: key);
+class VocalMemoryPage extends StatefulWidget {
+  const VocalMemoryPage({Key? key}) : super(key: key);
 
   @override
-  State<MemoryGamePage> createState() => _MemoryGamePageState();
+  State<VocalMemoryPage> createState() => _VocalMemoryPageState();
 }
 
-class _MemoryGamePageState extends State<MemoryGamePage>
-    with TickerProviderStateMixin {
+class _VocalMemoryPageState extends State<VocalMemoryPage> with TickerProviderStateMixin {
   bool _showConfetti = false;
   bool isBusy = false;
 
   List<String> allImages = [
-    'assets/images/family/game3/aunt.jpg',
-    'assets/images/family/game3/baby.jpg',
-    'assets/images/family/game3/brother.jpg',
-    'assets/images/family/game3/cousin.jpg',
-    'assets/images/family/game3/cousinw.jpg',
-    'assets/images/family/game3/father.jpg',
-    'assets/images/family/game3/grandfather.jpg',
-    'assets/images/family/game3/grandmother.jpg',
-    'assets/images/family/game3/mother.jpg',
-    'assets/images/family/game3/sister.jpg',
-    'assets/images/family/game3/uncle.jpg',
+    'assets/images/vocals/vocal/a.png',
+    'assets/images/vocals/vocal/e.png',
+    'assets/images/vocals/vocal/i.png',
+    'assets/images/vocals/vocal/o.png',
+    'assets/images/vocals/vocal/u.png',
+    'assets/images/vocals/vocal/y.png',
   ];
 
   late List<String> cardImages;
   List<bool> cardsFlipped = [];
   List<int> flippedIndices = [];
   int score = 0;
+  int round = 0;
+  static const int totalRounds = 4;
   late List<AnimationController> _controllers;
   late List<Animation<double>> _animations;
   bool _isLoading = true;
@@ -50,7 +47,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
   @override
   void initState() {
     super.initState();
-    _controllers = List.generate(allImages.length, (index) {
+    _controllers = List.generate(8, (index) {
       return AnimationController(
         duration: const Duration(seconds: 1),
         vsync: this,
@@ -61,26 +58,11 @@ class _MemoryGamePageState extends State<MemoryGamePage>
       return Tween<double>(begin: 0, end: 1).animate(controller);
     }).toList();
 
-    _loadGame();
     _incrementTimesPlayed(); // Incrementar contador de juegos jugados
-  }
-
-  void _incrementTimesPlayed() {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
-    if (studentId != null) {
-      Provider.of<UserTracking>(context, listen: false).incrementTimesPlayed(studentId, 'memory_game');
-    }
-  }
-
-  void _incrementTimesCompleted() {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
-    if (studentId != null) {
-      Provider.of<UserTracking>(context, listen: false).incrementTimesCompleted(studentId, 'memory_game');
-    }
+    _loadGame();
   }
 
   Future<void> _loadGame() async {
-    await AudioManager.effects().play('sound/family/instruccionGame3.m4a');
     _newGame();
     setState(() {
       _isLoading = false;
@@ -96,13 +78,25 @@ class _MemoryGamePageState extends State<MemoryGamePage>
     AudioManager.background().stop();
   }
 
-  void _onGameComplete() async {
-    String? studentId =
-        Provider.of<UserProvider>(context, listen: false).currentStudentId;
-
+  void _incrementTimesPlayed() {
+    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
-      await databaseRepository
-          .updateGameCompletionStatus(studentId, 'Famille', [true, true, true]);
+      Provider.of<UserTracking>(context, listen: false).incrementTimesPlayed(studentId, 'vocal_memory');
+    }
+  }
+
+  void _incrementTimesCompleted() {
+    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    if (studentId != null) {
+      Provider.of<UserTracking>(context, listen: false).incrementTimesCompleted(studentId, 'vocal_memory');
+    }
+  }
+
+  void _onGameComplete() async {
+    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    if (studentId != null) {
+      await databaseRepository.updateGameCompletionStatus(
+          studentId, 'Voyelles', [true, true, false]); // Actualizar estado de juego
       _incrementTimesCompleted(); // Incrementar contador de juegos completados
     }
 
@@ -110,7 +104,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
       context,
       MaterialPageRoute(
           builder: (context) => GameSelectionScreen(
-                category: 'Famille',
+                category: 'Voyelles',
               )),
     );
   }
@@ -118,38 +112,23 @@ class _MemoryGamePageState extends State<MemoryGamePage>
   Future<void> playSound(String card) async {
     String soundPath;
     switch (card) {
-      case 'assets/images/family/game3/mother.jpg':
+      case 'assets/images/vocals/vocal/a.png':
         soundPath = 'sound/family/mere.m4a';
         break;
-      case 'assets/images/family/game3/father.jpg':
-        soundPath = 'sound/family/pere.m4a';
+      case 'assets/images/vocals/vocal/e.png':
+        soundPath = 'sound/family/mere.m4a';
         break;
-      case 'assets/images/family/game3/brother.jpg':
-        soundPath = 'sound/family/frere.m4a';
+      case 'assets/images/vocals/vocal/i.png':
+        soundPath = 'sound/family/mere.m4a';
         break;
-      case 'assets/images/family/game3/grandfather.jpg':
-        soundPath = 'sound/family/grandpere.m4a';
+      case 'assets/images/vocals/vocal/o.png':
+        soundPath = 'sound/family/mere.m4a';
         break;
-      case 'assets/images/family/game3/grandmother.jpg':
-        soundPath = 'sound/family/grandmere.m4a';
+      case 'assets/images/vocals/vocal/u.png':
+        soundPath = 'sound/family/mere.m4a';
         break;
-      case 'assets/images/family/game3/sister.jpg':
-        soundPath = 'sound/family/soeur.m4a';
-        break;
-      case 'assets/images/family/game3/uncle.jpg':
-        soundPath = 'sound/family/oncle.m4a';
-        break;
-      case 'assets/images/family/game3/aunt.jpg':
-        soundPath = 'sound/family/tante.m4a';
-        break;
-      case 'assets/images/family/game3/baby.jpg':
-        soundPath = 'sound/family/bebe.m4a';
-        break;
-      case 'assets/images/family/game3/cousin.jpg':
-        soundPath = 'sound/family/cousin.m4a';
-        break;
-      case 'assets/images/family/game3/cousinw.jpg':
-        soundPath = 'sound/family/cousine.m4a';
+      case 'assets/images/vocals/vocal/y.png':
+        soundPath = 'sound/family/mere.m4a';
         break;
       default:
         soundPath = 'sound/correct.mp3';
@@ -159,23 +138,33 @@ class _MemoryGamePageState extends State<MemoryGamePage>
 
   void _newGame() {
     setState(() {
-      cardImages = (allImages..shuffle()).take(4).toList();
-      cardImages = List.from(cardImages)..addAll(cardImages);
-      cardImages.shuffle();
-      cardsFlipped = List<bool>.filled(cardImages.length, false);
-      flippedIndices = [];
-      _showConfetti = false;
-      isBusy = false;
-      for (var controller in _controllers) {
-        controller.reset();
+      if (round < totalRounds) {
+        round++;
+        cardImages = _getRandomImages();
+        cardImages.shuffle();
+        cardsFlipped = List<bool>.filled(cardImages.length, false);
+        flippedIndices = [];
+        _showConfetti = false;
+        isBusy = false;
+        for (var controller in _controllers) {
+          controller.reset();
+        }
+      } else {
+        _showWinDialog();
       }
     });
+  }
+
+  List<String> _getRandomImages() {
+    final random = Random();
+    final selectedImages = (allImages.toList()..shuffle(random)).take(4).toList();
+    return List.from(selectedImages)..addAll(selectedImages);
   }
 
   void _showWinDialog() {
     setState(() {
       _showConfetti = true;
-      AudioManager.effects().play('sound/family/level_win.mp3');
+      AudioManager.effects().play('sound/vocals/level_win.mp3');
     });
     showDialog(
       context: context,
@@ -185,8 +174,9 @@ class _MemoryGamePageState extends State<MemoryGamePage>
             score: score,
             onReplay: () {
               setState(() {
-                _newGame();
+                round = 0;
                 score = 0;
+                _newGame();
               });
             },
             onQuit: () {
@@ -238,11 +228,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
       if (cardsFlipped.every((flipped) => flipped)) {
         score += 1;
         Future.delayed(const Duration(seconds: 2), () {
-          if (score < 10) {
-            _newGame();
-          } else {
-            _showWinDialog();
-          }
+          _newGame();
         });
       }
     });
@@ -269,16 +255,9 @@ class _MemoryGamePageState extends State<MemoryGamePage>
                   backgroundColor: const Color(0xFF424141),
                   progressBarColor: const Color(0xFF8DB270),
                   headerText: 'Retournez les cartes et trouvez les paires',
-                  progressValue: score / 10,
+                  progressValue: round / totalRounds,
                   onBack: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => GameSelectionScreen(
-                          category: 'Famille',
-                        ),
-                      ),
-                    );
+                    Navigator.pop(context);
                   },
                   onVolume: () {
                     // Acción para activar/desactivar el sonido
@@ -348,11 +327,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
               ],
             ),
           ),
-          const MovableButtonScreen(
-            spanishAudio: 'sound/family/instruccionGame1.m4a',
-            frenchAudio: 'sound/family/instruccionGame1.m4a',
-            rivePath: 'assets/RiveAssets/familygame3.riv',
-          )
+          const MovableButtonScreen(spanishAudio: "", frenchAudio: "", rivePath: "",),
         ],
       ),
     );

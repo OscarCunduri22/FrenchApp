@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:frenc_app/utils/user_tracking.dart';
 import 'package:frenc_app/view/button.dart';
 import 'package:provider/provider.dart';
 import 'package:frenc_app/repository/global.repository.dart';
@@ -16,8 +17,7 @@ class MemoryNumbersGame extends StatefulWidget {
   _MemoryNumbersGameState createState() => _MemoryNumbersGameState();
 }
 
-class _MemoryNumbersGameState extends State<MemoryNumbersGame>
-    with TickerProviderStateMixin {
+class _MemoryNumbersGameState extends State<MemoryNumbersGame> with TickerProviderStateMixin {
   List<String> cardImages = [];
   List<bool> cardFlips = [];
   List<bool> cardMatched = [];
@@ -46,16 +46,29 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame>
       return Tween<double>(begin: 0, end: 1).animate(controller);
     }).toList();
 
+    _incrementTimesPlayed();
     startLevel();
   }
 
+  void _incrementTimesPlayed() {
+    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    if (studentId != null) {
+      Provider.of<UserTracking>(context, listen: false).incrementTimesPlayed(studentId, 'memory_numbers_game');
+    }
+  }
+
+  void _incrementTimesCompleted() {
+    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    if (studentId != null) {
+      Provider.of<UserTracking>(context, listen: false).incrementTimesCompleted(studentId, 'memory_numbers_game');
+    }
+  }
+
   void _onGameComplete() async {
-    String? studentId =
-        Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
 
     if (studentId != null) {
-      await databaseRepository.updateGameCompletionStatus(
-          studentId, 'Nombres', [true, true, false]);
+      _incrementTimesCompleted();
     }
 
     Navigator.push(
@@ -222,8 +235,7 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame>
       rows.add(
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: buildRow(i, min(cardsPerRow, cardImages.length - i),
-              cardWidth, cardHeight),
+          children: buildRow(i, min(cardsPerRow, cardImages.length - i), cardWidth, cardHeight),
         ),
       );
       rows.add(const SizedBox(height: 10));
@@ -231,8 +243,7 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame>
     return rows;
   }
 
-  List<Widget> buildRow(
-      int startIndex, int count, double cardWidth, double cardHeight) {
+  List<Widget> buildRow(int startIndex, int count, double cardWidth, double cardHeight) {
     List<Widget> rowChildren = [];
     for (int i = startIndex; i < startIndex + count; i++) {
       rowChildren.add(

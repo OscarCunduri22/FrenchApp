@@ -91,7 +91,7 @@ class _StudentListScreenState extends State<StudentListScreen> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    TutorDashboardScreen(tutorName: '', studentCount: 2),
+                    TutorDashboardScreen(tutorName: ''),
               ));
         });
         return false;
@@ -204,7 +204,7 @@ class _StudentListScreenState extends State<StudentListScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => TutorDashboardScreen(
-                                      tutorName: '', studentCount: 2),
+                                      tutorName: ''),
                                 ));
                           });
                         },

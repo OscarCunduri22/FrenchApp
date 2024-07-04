@@ -1,10 +1,17 @@
+//MAIN
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:frenc_app/firebase_options.dart';
 import 'package:frenc_app/utils/user_provider.dart';
+import 'package:frenc_app/view/numbers/game3/game_screen.dart';
+import 'package:frenc_app/utils/user_tracking.dart';
 import 'package:frenc_app/view/start_screen.dart';
+import 'package:frenc_app/view/vocals/game1/vocal_game.dart';
+import 'package:frenc_app/view/vocals/game3/animal_name_game.dart';
+import 'package:frenc_app/view/vocals/game2/vocal_card_game.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -15,8 +22,11 @@ void main() async {
   FirebaseFirestore.instance.settings =
       const Settings(persistenceEnabled: false);
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => UserProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => UserProvider()),
+        ChangeNotifierProvider(create: (context) => UserTracking()),
+      ],
       child: const MyApp(),
     ),
   );
@@ -28,12 +38,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.teal,
-      ),
-      home: const StartScreen(),
-    );
+        debugShowCheckedModeBanner: false,
+        title: 'LudoFrench',
+        theme: ThemeData(
+          primarySwatch: Colors.teal,
+        ),
+        home: const StartScreen(),
+        );
   }
 }

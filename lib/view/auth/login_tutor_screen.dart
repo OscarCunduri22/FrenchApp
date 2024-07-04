@@ -258,7 +258,6 @@ class _TutorLoginScreenState extends State<TutorLoginScreen> {
                     MaterialPageRoute(
                       builder: (context) => TutorDashboardScreen(
                         tutorName: tutor.name,
-                        studentCount: studentCount ?? 0,
                       ),
                     ),
                   );

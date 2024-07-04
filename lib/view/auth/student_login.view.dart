@@ -2,6 +2,7 @@
 
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:frenc_app/model/fruit.dart';
 import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/user_provider.dart';
@@ -29,6 +30,12 @@ class FruitGameScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _setStudentIdInProvider(context);
+
+    // Set preferred orientation to landscape
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
 
     return ChangeNotifierProvider(
       create: (_) => FruitGameViewModel(),
@@ -221,6 +228,10 @@ class _ShakeWidgetState extends State<ShakeWidget>
   @override
   void dispose() {
     _controller.dispose();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]); // Restablecer orientación a vertical al eliminar la pantalla
     super.dispose();
   }
 

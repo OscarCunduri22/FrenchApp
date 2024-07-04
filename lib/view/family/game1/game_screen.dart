@@ -12,6 +12,7 @@ import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:frenc_app/widgets/replay_popup.dart';
 import 'package:frenc_app/utils/audio_manager.dart';
 import 'package:provider/provider.dart';
+import 'package:frenc_app/utils/user_tracking.dart'; // Importar UserTracking
 
 class FindFamilyGame extends StatefulWidget {
   const FindFamilyGame({super.key});
@@ -34,8 +35,23 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
   @override
   void initState() {
     super.initState();
+    _incrementTimesPlayed(); // Incrementar contador de juegos jugados
     newGame();
     AudioManager.effects().play('sound/family/instruccionGame1.m4a');
+  }
+
+  void _incrementTimesPlayed() {
+    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    if (studentId != null) {
+      Provider.of<UserTracking>(context, listen: false).incrementTimesPlayed(studentId, 'find_family_game');
+    }
+  }
+
+  void _incrementTimesCompleted() {
+    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    if (studentId != null) {
+      Provider.of<UserTracking>(context, listen: false).incrementTimesCompleted(studentId, 'find_family_game');
+    }
   }
 
   @override
@@ -45,12 +61,12 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
   }
 
   void _onGameComplete() async {
-    String? studentId =
-        Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
 
     if (studentId != null) {
       await databaseRepository.updateGameCompletionStatus(
           studentId, 'Famille', [true, true, false]);
+      _incrementTimesCompleted(); // Incrementar contador de juegos completados
     }
 
     Navigator.push(
@@ -207,8 +223,7 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
                 ProgressBar(
                   backgroundColor: const Color.fromARGB(255, 36, 18, 58),
                   progressBarColor: const Color.fromARGB(255, 90, 65, 156),
-                  headerText:
-                      'Sélectionnez la photo de famille comme celle ci-dessus',
+                  headerText: 'Sélectionnez la photo de famille comme celle ci-dessus',
                   progressValue: score / 10,
                   onBack: () {
                     Navigator.pushReplacement(

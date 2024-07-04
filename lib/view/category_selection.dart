@@ -1,6 +1,9 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:frenc_app/utils/user_provider.dart';
+import 'package:frenc_app/widgets/character/button.dart';
 import 'package:frenc_app/model/tutor.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/auth/tutor_dashboard.dart';
@@ -10,6 +13,7 @@ import 'package:frenc_app/widgets/auth/security_code_box.dart';
 import 'package:frenc_app/widgets/character/button.dart';
 import 'package:frenc_app/widgets/custom_theme_text.dart';
 import 'package:provider/provider.dart';
+import 'package:frenc_app/view/game_selection.dart';
 
 class CategorySelectionScreen extends StatefulWidget {
   const CategorySelectionScreen({super.key});
@@ -30,6 +34,28 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    // Establecer la orientación horizontal
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+    ]);
+  }
+
+  @override
+  void dispose() {
+    // Restaurar la orientación predeterminada (ambas orientaciones)
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
 
@@ -42,7 +68,7 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
               context,
               MaterialPageRoute(
                 builder: (context) => TutorDashboardScreen(
-                    tutorName: currentUser!.name, studentCount: 2),
+                    tutorName: currentUser!.name),
               ),
             );
           });

@@ -4,60 +4,60 @@ import 'package:frenc_app/model/student.dart';
 class StudentCard extends StatelessWidget {
   final Student student;
   final String studentId;
-  final Function(String) onTap;
+  final void Function(String studentId) onTap;
 
   const StudentCard({
-    Key? key,
     required this.student,
     required this.studentId,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => onTap(studentId),
       child: Card(
-        elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
+          borderRadius: BorderRadius.circular(10),
         ),
-        color: Colors.transparent,
-        child: Container(
-          padding: const EdgeInsets.all(8.0),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.0), color: Colors.white),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ClipOval(
-                child: Image.network(
-                  student.imageUrl,
-                  width: 60,
-                  height: 60,
-                  fit: BoxFit.cover,
+        elevation: 4,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: 150,
+              child: Center(
+                child: ClipOval(
+                  child: Image.network(
+                    student.imageUrl,
+                    height: 100, // Adjust height and width as needed
+                    width: 100,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
-              const SizedBox(height: 8),
-              Text(
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
                 student.name,
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  fontFamily: 'LoveDaysLoveFont',
-                  color: Color(0xFF016171),
                 ),
               ),
-              Text(
-                student.group,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Group: ${student.group}',
                 style: const TextStyle(
-                  fontSize: 12,
-                  fontFamily: 'LoveDaysLoveFont',
-                  color: Color(0xFFF15E2F),
+                  fontSize: 14,
+                  color: Colors.grey,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -1,9 +1,10 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, use_key_in_widget_constructors
 
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:frenc_app/model/student.dart';
 import 'package:frenc_app/widgets/custom_theme_text.dart';
 import 'package:image_picker/image_picker.dart';
@@ -15,12 +16,10 @@ class CreateStudentScreenHorizontal extends StatefulWidget {
   CreateStudentScreenHorizontal({required this.tutorId});
 
   @override
-  _CreateStudentScreenHorizontalState createState() =>
-      _CreateStudentScreenHorizontalState();
+  _CreateStudentScreenHorizontalState createState() => _CreateStudentScreenHorizontalState();
 }
 
-class _CreateStudentScreenHorizontalState
-    extends State<CreateStudentScreenHorizontal> {
+class _CreateStudentScreenHorizontalState extends State<CreateStudentScreenHorizontal> {
   final TextEditingController _nameController = TextEditingController();
   String? _selectedGroup;
   XFile? _imageFile;
@@ -28,9 +27,30 @@ class _CreateStudentScreenHorizontalState
 
   final ImagePicker _picker = ImagePicker();
 
+  @override
+  void initState() {
+    super.initState();
+    // Establecer la orientación horizontal
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+  }
+
+  @override
+  void dispose() {
+    // Restaurar la orientación predeterminada
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+    super.dispose();
+  }
+
   Future<void> _pickImage() async {
-    final XFile? pickedFile =
-        await _picker.pickImage(source: ImageSource.gallery);
+    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     setState(() {
       _imageFile = pickedFile;
     });
@@ -47,7 +67,7 @@ class _CreateStudentScreenHorizontalState
   }
 
   Future<void> _createStudent() async {
-    if (_nameController.text.isEmpty || _imageFile == null) {
+    if (_nameController.text.isEmpty || _imageFile == null || _selectedGroup == null) {
       showSnackBar(
           context,
           'Error',
@@ -88,7 +108,7 @@ class _CreateStudentScreenHorizontalState
     showSnackBar(context, 'Success', 'Student created successfully.',
         ContentType.success);
     await Future.delayed(const Duration(seconds: 2));
-    Navigator.pop(context);
+    Navigator.pop(context, student); // Pasar el nuevo estudiante de regreso
   }
 
   void showSnackBar(
@@ -221,8 +241,7 @@ class _CreateStudentScreenHorizontalState
                                 ),
                               ),
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(
                                     child: ListTile(
