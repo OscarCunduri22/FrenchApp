@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:frenc_app/model/tutor.dart';
 import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/user_provider.dart';
+import 'package:frenc_app/view/auth/login_tutor_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:frenc_app/utils/dialog_manager.dart';
 import 'dart:ui';
@@ -13,6 +13,7 @@ import 'package:frenc_app/model/student.dart'; // Importar el modelo Student
 import 'package:frenc_app/view/auth/edit_profile.dart'; // Importar la pantalla de edición de perfil
 import 'package:frenc_app/view/auth/student_detail_screen.dart'; // Importar la pantalla de detalles del estudiante
 import 'package:frenc_app/widgets/auth/common_button_styles.dart'; // Importar estilos de botones comunes
+import 'package:frenc_app/view/auth/login_tutor_screen.dart'; // Importar la pantalla de inicio de sesión de tutor
 
 class TutorDashboardScreen extends StatefulWidget {
   final String tutorName;
@@ -327,6 +328,34 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                   ),
                 ),
               ],
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => TutorLoginScreen()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: const Text(
+                  'Cerrar sesión',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                  ),
+                ),
+              ),
             ),
           ),
         ],
