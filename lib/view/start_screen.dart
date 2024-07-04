@@ -47,63 +47,74 @@ class _StartScreenState extends State<StartScreen> {
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start, // Alinea al inicio
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 16.0),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Image.asset(
-                            'assets/images/EPN.png',
-                            height: 80,
-                            width: 80,
-                          ),
                           const CustomTextWidget(
                             text: 'LudoFrench',
                             type: TextType.Title,
-                            fontSize: 44,
+                            fontSize: 70,
                             fontWeight: FontWeight.w200,
                             letterSpacing: 1.0,
                           ),
-                          Image.asset(
-                            'assets/images/ludolab.png',
-                            height: 50,
-                            width: 50,
+                          Row(
+                            children: [
+                              Image.asset(
+                                'assets/images/EPN.png',
+                                height: 80,
+                                width: 80,
+                              ),
+                              SizedBox(width: 16),
+                              Image.asset(
+                                'assets/images/ludolab.png',
+                                height: 50,
+                                width: 50,
+                              ),
+                            ],
                           ),
                         ],
                       ),
                     ),
+                    const SizedBox(height: 120),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 150.0),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF016171),
+                          foregroundColor: Colors.white,
+                          elevation: 5,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 32,
+                            vertical: 16,
+                          ),
+                          textStyle: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          animationDuration: const Duration(milliseconds: 200),
+                        ),
+                        onPressed: () {
+                          AudioManager.background().stop();
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => TutorLoginScreen()),
+                          );
+                        },
+                        child: const Text('Iniciar Sesión'),
+                      ),
+                    ),
                   ],
                 ),
-              ),
-            ),
-            Center(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF016171),
-                  foregroundColor: Colors.white,
-                  elevation: 5,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 16,
-                  ),
-                  textStyle: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  animationDuration: const Duration(milliseconds: 200),
-                ),
-                onPressed: () {
-                  AudioManager.background().stop();
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => TutorLoginScreen()),
-                  );
-                },
-                child: const Text('Iniciar Sesión'),
               ),
             ),
             Positioned(
