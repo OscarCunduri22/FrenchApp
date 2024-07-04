@@ -191,11 +191,15 @@ class _BubbleNumbersGameState extends State<BubbleNumbersGame> with TickerProvid
                       ),
                     ),
                   ),
-                const MovableButtonScreen(
-                  spanishAudio: 'sound/family/instruccionGame1.m4a',
-                  frenchAudio: 'sound/family/instruccionGame1.m4a',
-                  rivePath: 'assets/RiveAssets/nombresgame1.riv',
-                )
+                Positioned(
+                  bottom: 20,
+                  right: 20,
+                  child: const MovableButtonScreen(
+                    spanishAudio: 'sound/family/instruccionGame1.m4a',
+                    frenchAudio: 'sound/family/instruccionGame1.m4a',
+                    rivePath: 'assets/RiveAssets/nombresgame1.riv',
+                  ),
+                ),
               ],
             );
           },

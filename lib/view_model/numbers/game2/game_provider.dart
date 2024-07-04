@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/utils/audio_manager.dart';
+import 'package:frenc_app/utils/user_tracking.dart';
 
 class GameProvider with ChangeNotifier {
   List<int> options = [];
@@ -80,6 +81,15 @@ class GameProvider with ChangeNotifier {
       generateNewLevel();
     } else {
       onComplete();
+      _incrementTimesCompleted(); // Incrementar contador de juegos completados
     }
+  }
+
+  void _incrementTimesPlayed() {
+    userTracking.incrementTimesPlayed(studentId, 'train_wagon_numbers_game'); // Reemplaza 'train_wagon_numbers_game' con el nombre específico del juego
+  }
+
+  void _incrementTimesCompleted() {
+    userTracking.incrementTimesCompleted(studentId, 'train_wagon_numbers_game'); // Reemplaza 'train_wagon_numbers_game' con el nombre específico del juego
   }
 }

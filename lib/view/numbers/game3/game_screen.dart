@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:frenc_app/utils/user_tracking.dart';
 import 'package:frenc_app/view/button.dart';
 import 'package:provider/provider.dart';
 import 'package:frenc_app/repository/global.repository.dart';

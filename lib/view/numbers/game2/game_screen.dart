@@ -26,24 +26,32 @@ class _TrainWagonNumbersGameState extends State<TrainWagonNumbersGame> {
   String soundOutPath = 'assets/sound/out.mp3';
 
   final databaseRepository = DatabaseRepository();
+  Timer? _completionTimer;
 
   void _onGameComplete() async {
     AudioManager.effects().play('sound/level_win.mp3');
-    String? studentId =
-        Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
 
     if (studentId != null) {
       await databaseRepository.updateGameCompletionStatus(
           studentId, 'Nombres', [true, false, false]);
     }
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-          builder: (context) => GameSelectionScreen(
-                category: 'Nombres',
-              )),
-    );
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => GameSelectionScreen(
+                  category: 'Nombres',
+                )),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _completionTimer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -61,8 +69,7 @@ class _TrainWagonNumbersGameState extends State<TrainWagonNumbersGame> {
             Container(
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(
-                      'assets/images/numbers/game2/trainstation_bg.png'),
+                  image: AssetImage('assets/images/numbers/game2/trainstation_bg.png'),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -167,21 +174,25 @@ class _TrainWagonNumbersGameState extends State<TrainWagonNumbersGame> {
 
   void _handleGameCompletion() async {
     await Future.delayed(const Duration(seconds: 7));
+    if (!mounted) return;
     setState(() {
       isOffScreenLeft = true;
       isVisible = false;
     });
-    Timer(const Duration(seconds: 1), () {
+    _completionTimer = Timer(const Duration(seconds: 1), () {
+      if (!mounted) return;
       setState(() {
         isVisible = false;
         isOffScreenLeft = false;
       });
-      Timer(const Duration(seconds: 1), () {
+      _completionTimer = Timer(const Duration(seconds: 1), () {
+        if (!mounted) return;
         setState(() {
           isVisible = false;
           isOffScreenRight = true;
         });
-        Timer(const Duration(seconds: 1), () {
+        _completionTimer = Timer(const Duration(seconds: 1), () {
+          if (!mounted) return;
           setState(() {
             isVisible = true;
             isOffScreenRight = false;

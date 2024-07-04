@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/utils/audio_manager.dart';
+import 'package:frenc_app/utils/user_tracking.dart';
 
 class GameViewModel extends ChangeNotifier {
   final List<String> _numbers = [
@@ -146,5 +147,13 @@ class GameViewModel extends ChangeNotifier {
 
   Future<void> _playIncorrectLetterSound() async {
     await AudioManager.effects().play('sound/incorrect.mp3');
+  }
+
+  void _incrementTimesPlayed() {
+    userTracking.incrementTimesPlayed(studentId, 'bubble_numbers_game');
+  }
+
+  void _incrementTimesCompleted() {
+    userTracking.incrementTimesCompleted(studentId, 'bubble_numbers_game');
   }
 }
