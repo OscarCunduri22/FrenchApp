@@ -6,12 +6,14 @@ import 'dart:convert';
 
 class UserProvider with ChangeNotifier {
   Tutor? _currentUser;
+  String? _currentUserId;
   Student? _currentStudent;
   String? _currentStudentId;
 
   Tutor? get currentUser => _currentUser;
   Student? get currentStudent => _currentStudent;
   String? get currentStudentId => _currentStudentId;
+  String? get currentUserId => _currentUserId;
 
   UserProvider() {
     loadUserFromPreferences();
@@ -20,7 +22,11 @@ class UserProvider with ChangeNotifier {
   void setCurrentUser(Tutor? user) {
     _currentUser = user;
     notifyListeners();
-    _saveUserToPreferences(user);
+  }
+
+  void setCurrentUserId(String tutorId) {
+    _currentUserId = tutorId;
+    notifyListeners();
   }
 
   void setCurrentStudent(String studentId, Student student) {
@@ -31,6 +37,7 @@ class UserProvider with ChangeNotifier {
 
   void clearUser() {
     _currentUser = null;
+    _currentUserId = null;
     notifyListeners();
     _clearUserPreferences();
   }

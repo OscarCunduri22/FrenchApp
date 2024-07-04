@@ -36,23 +36,10 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
   @override
   void initState() {
     super.initState();
-    // Establecer la orientación horizontal
     SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
-    ]);
-  }
-
-  @override
-  void dispose() {
-    // Restaurar la orientación predeterminada (ambas orientaciones)
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
-    super.dispose();
   }
 
   @override
@@ -61,14 +48,19 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
 
     Tutor? currentUser = Provider.of<UserProvider>(context).currentUser;
 
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+
     return WillPopScope(
         onWillPop: () async {
           _showSecurityCodeDialog(() {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => TutorDashboardScreen(
-                    tutorName: currentUser!.name),
+                builder: (context) =>
+                    TutorDashboardScreen(tutorName: currentUser!.name),
               ),
             );
           });
