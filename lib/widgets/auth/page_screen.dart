@@ -180,7 +180,6 @@ class _PageScreenState extends State<PageScreen> {
 
     bool success = await databaseRepository.addTutor(
       Tutor(
-        id: '', // Dejar vacío ya que se genera automáticamente en Firestore
         name: widget.nameController.text,
         username: widget.usernameController.text,
         email: widget.emailController.text,

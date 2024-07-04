@@ -35,16 +35,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Future<void> _saveProfile() async {
     if (_formKey.currentState?.validate() ?? false) {
       Tutor updatedTutor = Tutor(
-        id: widget.tutor.id, // Asegúrate de pasar el id
         name: _nameController.text,
         username: _usernameController.text,
         email: _emailController.text,
         password: _passwordController.text,
-        code: widget.tutor.code, // Asegúrate de pasar el código
+        code: widget.tutor.code,
       );
 
       await _databaseRepository.updateTutor(updatedTutor);
-      Provider.of<UserProvider>(context, listen: false).setCurrentUser(updatedTutor);
+      Provider.of<UserProvider>(context, listen: false)
+          .setCurrentUser(updatedTutor);
 
       Navigator.pop(context);
     }

@@ -16,10 +16,12 @@ class CreateStudentScreenHorizontal extends StatefulWidget {
   CreateStudentScreenHorizontal({required this.tutorId});
 
   @override
-  _CreateStudentScreenHorizontalState createState() => _CreateStudentScreenHorizontalState();
+  _CreateStudentScreenHorizontalState createState() =>
+      _CreateStudentScreenHorizontalState();
 }
 
-class _CreateStudentScreenHorizontalState extends State<CreateStudentScreenHorizontal> {
+class _CreateStudentScreenHorizontalState
+    extends State<CreateStudentScreenHorizontal> {
   final TextEditingController _nameController = TextEditingController();
   String? _selectedGroup;
   XFile? _imageFile;
@@ -30,7 +32,6 @@ class _CreateStudentScreenHorizontalState extends State<CreateStudentScreenHoriz
   @override
   void initState() {
     super.initState();
-    // Establecer la orientación horizontal
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
@@ -39,7 +40,6 @@ class _CreateStudentScreenHorizontalState extends State<CreateStudentScreenHoriz
 
   @override
   void dispose() {
-    // Restaurar la orientación predeterminada
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -50,7 +50,8 @@ class _CreateStudentScreenHorizontalState extends State<CreateStudentScreenHoriz
   }
 
   Future<void> _pickImage() async {
-    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    final XFile? pickedFile =
+        await _picker.pickImage(source: ImageSource.gallery);
     setState(() {
       _imageFile = pickedFile;
     });
@@ -67,7 +68,9 @@ class _CreateStudentScreenHorizontalState extends State<CreateStudentScreenHoriz
   }
 
   Future<void> _createStudent() async {
-    if (_nameController.text.isEmpty || _imageFile == null || _selectedGroup == null) {
+    if (_nameController.text.isEmpty ||
+        _imageFile == null ||
+        _selectedGroup == null) {
       showSnackBar(
           context,
           'Error',
@@ -241,7 +244,8 @@ class _CreateStudentScreenHorizontalState extends State<CreateStudentScreenHoriz
                                 ),
                               ),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(
                                     child: ListTile(

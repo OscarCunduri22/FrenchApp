@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frenc_app/model/tutor.dart';
@@ -32,7 +34,6 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
   @override
   void initState() {
     super.initState();
-    // Establecer la orientación vertical
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -42,7 +43,6 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
 
   @override
   void dispose() {
-    // Restaurar la orientación vertical predeterminada
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -51,12 +51,17 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
   }
 
   Future<void> _loadStudentCount() async {
-    Tutor? currentUser = Provider.of<UserProvider>(context, listen: false).currentUser;
+    Tutor? currentUser =
+        Provider.of<UserProvider>(context, listen: false).currentUser;
     if (currentUser != null) {
-      List<Map<String, dynamic>> students = await _databaseRepository.getStudentsByTutorId(currentUser.email);
-      setState(() {
-        studentCount = students.length;
-      });
+      String? tutorId = await _databaseRepository.getTutorId(currentUser.email);
+      if (tutorId != null) {
+        int? count =
+            await _databaseRepository.getStudentsCountByTutorId(tutorId);
+        setState(() {
+          studentCount = count!;
+        });
+      }
     }
   }
 
@@ -72,7 +77,8 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
     setState(() {});
   }
 
-  Future<void> confirmDeleteStudent(String studentId, String studentName) async {
+  Future<void> confirmDeleteStudent(
+      String studentId, String studentName) async {
     bool? shouldDelete = await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -105,6 +111,7 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
   @override
   Widget build(BuildContext context) {
     Tutor? currentUser = Provider.of<UserProvider>(context).currentUser;
+    String? tutorId = Provider.of<UserProvider>(context).currentUserId;
     if (currentUser == null) {
       return Scaffold(
         body: Center(
@@ -117,249 +124,244 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
       );
     }
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/montessoribg.jpg'),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
-            child: Container(
-              color: Colors.black.withOpacity(0.1),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 32),
-                Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+    return WillPopScope(
+        onWillPop: () async {
+          DialogManager.showExitConfirmationDialog(context);
+          return false;
+        },
+        child: Scaffold(
+          body: Stack(
+            children: [
+              Container(
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/montessoribg.jpg'),
+                    fit: BoxFit.cover,
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
+                ),
+              ),
+              BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
+                child: Container(
+                  color: Colors.black.withOpacity(0.1),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 32),
+                    Card(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            CircleAvatar(
-                              backgroundImage: AssetImage('assets/images/gallo.png'),
-                              radius: 40,
-                            ),
-                            const SizedBox(width: 16),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            Row(
                               children: [
-                                Text(
-                                  currentUser.name,
-                                  style: const TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                CircleAvatar(
+                                  backgroundImage:
+                                      AssetImage('assets/images/gallo.png'),
+                                  radius: 40,
                                 ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Estudiantes: $studentCount',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.grey,
+                                const SizedBox(width: 16),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      currentUser.name,
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      'Estudiantes: $studentCount',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                Container(
+                                  width: 77.6,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              EditProfileScreen(
+                                                  tutor: currentUser),
+                                        ),
+                                      );
+                                    },
+                                    style:
+                                        CommonButtonStyles.primaryButtonStyle,
+                                    child: const Text(
+                                      'Editar',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 11,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                           ],
                         ),
-                        Column(
-                          children: [
-                            Container(
-                              width: 77.6, // Ancho ajustado restando 2.4 píxeles del tamaño original (80)
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => EditProfileScreen(tutor: currentUser),
-                                    ),
-                                  );
-                                },
-                                style: CommonButtonStyles.primaryButtonStyle,
-                                child: const Text(
-                                  'Editar',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 11,
-                                  ),
-                                ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Alumnos',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 0, 0, 0),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    CreateStudentScreenHorizontal(
+                                        tutorId: tutorId!),
                               ),
+                            );
+                            _loadStudentCount();
+                          },
+                          style: CommonButtonStyles.primaryButtonStyle,
+                          child: const Text(
+                            'Crear Alumno',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
                             ),
-                          ],
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        ElevatedButton(
+                          onPressed: toggleDeleteButtons,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: const Text(
+                            'Eliminar Alumno',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Alumnos',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Color.fromARGB(255, 0, 0, 0),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () async {
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CreateStudentScreenHorizontal(tutorId: currentUser.email), // Usar email en lugar de id
-                          ),
-                        );
-                        _loadStudentCount();
-                      },
-                      style: CommonButtonStyles.primaryButtonStyle,
-                      child: const Text(
-                        'Crear Alumno',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    ElevatedButton(
-                      onPressed: toggleDeleteButtons,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: const Text(
-                        'Eliminar Alumno',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
+                    const SizedBox(height: 10),
+                    Expanded(
+                      child: FutureBuilder<List<Map<String, dynamic>>>(
+                        future:
+                            _databaseRepository.getStudentsByTutorId(tutorId!),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return const Center(
+                                child: Text('Error al cargar alumnos'));
+                          } else if (!snapshot.hasData ||
+                              snapshot.data!.isEmpty) {
+                            return const Center(
+                                child: Text('No hay alumnos registrados'));
+                          }
+
+                          final alumnos = snapshot.data!;
+                          return GridView.builder(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2, // Número de columnas
+                              mainAxisSpacing: 10.0,
+                              crossAxisSpacing: 10.0,
+                              childAspectRatio: 0.75,
+                            ),
+                            itemCount: alumnos.length,
+                            itemBuilder: (context, index) {
+                              final studentData = alumnos[index]['data'];
+                              final studentId = alumnos[index]['id'];
+                              final student = Student.fromJson(studentData);
+                              return Stack(
+                                children: [
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                                    child: GestureDetector(
+                                      child: StudentCard(
+                                        student: student,
+                                        studentId: studentId,
+                                        onTap: (id) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  StudentDetailScreen(
+                                                      student: student,
+                                                      studentId: studentId),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  if (showDeleteButtons)
+                                    Positioned(
+                                      top: 8,
+                                      right: 8,
+                                      child: IconButton(
+                                        icon: Image.asset(
+                                          'assets/images/icons/exit.png',
+                                          width: 32,
+                                          height: 32,
+                                        ),
+                                        onPressed: () {
+                                          DialogManager
+                                              .showExitConfirmationDialog(
+                                                  context);
+                                        },
+                                      ),
+                                    ),
+                                ],
+                              );
+                            },
+                          );
+                        },
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
-                Expanded(
-                  child: FutureBuilder<List<Map<String, dynamic>>>(
-                    future: _databaseRepository.getStudentsByTutorId(currentUser.email),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return const Center(child: Text('Error al cargar alumnos'));
-                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return const Center(child: Text('No hay alumnos registrados'));
-                      }
-
-                      final alumnos = snapshot.data!;
-                      return GridView.builder(
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2, // Número de columnas
-                          mainAxisSpacing: 10.0,
-                          crossAxisSpacing: 10.0,
-                          childAspectRatio: 0.75,
-                        ),
-                        itemCount: alumnos.length,
-                        itemBuilder: (context, index) {
-                          final studentData = alumnos[index]['data'];
-                          final studentId = alumnos[index]['id'];
-                          final student = Student.fromJson(studentData);
-                          return Stack(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                                child: GestureDetector(
-                                  child: StudentCard(
-                                    student: student,
-                                    studentId: studentId,
-                                    onTap: (id) {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => StudentDetailScreen(student: student, studentId: studentId),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                              if (showDeleteButtons)
-                                Positioned(
-                                  top: 8,
-                                  right: 8,
-                                  child: IconButton(
-                          icon: Image.asset(
-                            'assets/images/icons/exit.png',
-                            width: 32,
-                            height: 32,
-                          ),
-                          onPressed: () {
-                            DialogManager.showExitConfirmationDialog(context);
-                          },
-                        ), 
-                                ),
-                                
-                            ],
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 16.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => TutorLoginScreen()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                child: const Text(
-                  'Cerrar sesión',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                  ),
-                ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
-    );
+        ));
   }
 }

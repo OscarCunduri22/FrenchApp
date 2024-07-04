@@ -16,7 +16,8 @@ class DatabaseRepository {
 
   DatabaseRepository() {
     _tutorRef = _firestore.collection(TUTOR_COLLECTION).withConverter<Tutor>(
-        fromFirestore: (snapshots, _) => Tutor.fromJson(snapshots.data()!..['id'] = snapshots.id),
+        fromFirestore: (snapshots, _) =>
+            Tutor.fromJson(snapshots.data()!..['id'] = snapshots.id),
         toFirestore: (tutor, _) => tutor.toJson());
     _gameResultRef =
         _firestore.collection(GAME_RESULT_COLLECTION).withConverter<GameResult>(
@@ -70,7 +71,10 @@ class DatabaseRepository {
   }
 
   Future<void> updateTutor(Tutor tutor) async {
-    await _tutorRef.doc(tutor.id).set(tutor.toJson());
+    String? tutorId = await getTutorId(tutor.email);
+    if (tutorId != null) {
+      await _tutorRef.doc(tutorId).update(tutor.toJson());
+    }
   }
 
   Future<int?> getStudentsCountByTutorId(String tutorId) async {
@@ -81,7 +85,8 @@ class DatabaseRepository {
     return students.docs.length;
   }
 
-  Future<List<Map<String, dynamic>>> getStudentsByTutorId(String tutorId) async {
+  Future<List<Map<String, dynamic>>> getStudentsByTutorId(
+      String tutorId) async {
     final students = await _firestore
         .collection(STUDENT_COLLECTION)
         .where('tutorId', isEqualTo: tutorId)
@@ -115,7 +120,8 @@ class DatabaseRepository {
     return null;
   }
 
-  Future<List<bool>> getGameCompletionStatusByCategory(String studentId, String category) async {
+  Future<List<bool>> getGameCompletionStatusByCategory(
+      String studentId, String category) async {
     final doc = await _gameResultRef.doc(studentId).get();
     if (doc.exists) {
       final gameResult = doc.data() as GameResult;
@@ -134,7 +140,8 @@ class DatabaseRepository {
     }
   }
 
-  Future<void> updateGameCompletionStatus(String studentId, String category, List<bool> newStatus) async {
+  Future<void> updateGameCompletionStatus(
+      String studentId, String category, List<bool> newStatus) async {
     final doc = await _gameResultRef.doc(studentId).get();
     if (doc.exists) {
       final gameResult = doc.data() as GameResult;
