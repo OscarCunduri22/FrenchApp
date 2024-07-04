@@ -211,7 +211,14 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
                       'Sélectionnez la photo de famille comme celle ci-dessus',
                   progressValue: score / 10,
                   onBack: () {
-                    Navigator.pop(context);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => GameSelectionScreen(
+                          category: 'Famille',
+                        ),
+                      ),
+                    );
                   },
                   onVolume: () {
                     // Acción para controlar el volumen

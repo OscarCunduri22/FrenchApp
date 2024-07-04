@@ -254,7 +254,14 @@ class _MemoryGamePageState extends State<MemoryGamePage>
                   headerText: 'Retournez les cartes et trouvez les paires',
                   progressValue: score / 10,
                   onBack: () {
-                    Navigator.pop(context);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => GameSelectionScreen(
+                          category: 'Famille',
+                        ),
+                      ),
+                    );
                   },
                   onVolume: () {
                     // Acción para activar/desactivar el sonido
