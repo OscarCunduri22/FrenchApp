@@ -41,16 +41,20 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
   }
 
   void _incrementTimesPlayed() {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
-      Provider.of<UserTracking>(context, listen: false).incrementTimesPlayed(studentId, 'find_family_game');
+      Provider.of<UserTracking>(context, listen: false)
+          .incrementTimesPlayed(studentId, 'find_family_game');
     }
   }
 
   void _incrementTimesCompleted() {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
-      Provider.of<UserTracking>(context, listen: false).incrementTimesCompleted(studentId, 'find_family_game');
+      Provider.of<UserTracking>(context, listen: false)
+          .incrementTimesCompleted(studentId, 'find_family_game');
     }
   }
 
@@ -61,7 +65,8 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
   }
 
   void _onGameComplete() async {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
 
     if (studentId != null) {
       await databaseRepository.updateGameCompletionStatus(
@@ -72,7 +77,7 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => GameSelectionScreen(
+          builder: (context) => const GameSelectionScreen(
                 category: 'Famille',
               )),
     );
@@ -223,13 +228,14 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
                 ProgressBar(
                   backgroundColor: const Color.fromARGB(255, 36, 18, 58),
                   progressBarColor: const Color.fromARGB(255, 90, 65, 156),
-                  headerText: 'Sélectionnez la photo de famille comme celle ci-dessus',
+                  headerText:
+                      'Sélectionnez la photo de famille comme celle ci-dessus',
                   progressValue: score / 10,
                   onBack: () {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => GameSelectionScreen(
+                        builder: (context) => const GameSelectionScreen(
                           category: 'Famille',
                         ),
                       ),

@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors_in_immutables
+
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/widgets/custom_theme_text.dart';
@@ -9,6 +11,7 @@ class GameCard extends StatelessWidget {
   final VoidCallback onPlayPressed;
 
   GameCard({
+    super.key,
     required this.category,
     required this.gameNumber,
     required this.isUnlocked,

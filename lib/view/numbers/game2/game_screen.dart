@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/repository/global.repository.dart';
@@ -14,6 +16,8 @@ import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:provider/provider.dart';
 
 class TrainWagonNumbersGame extends StatefulWidget {
+  const TrainWagonNumbersGame({super.key});
+
   @override
   _TrainWagonNumbersGameState createState() => _TrainWagonNumbersGameState();
 }
@@ -30,7 +34,8 @@ class _TrainWagonNumbersGameState extends State<TrainWagonNumbersGame> {
 
   void _onGameComplete() async {
     AudioManager.effects().play('sound/level_win.mp3');
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
 
     if (studentId != null) {
       await databaseRepository.updateGameCompletionStatus(
@@ -41,7 +46,7 @@ class _TrainWagonNumbersGameState extends State<TrainWagonNumbersGame> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => GameSelectionScreen(
+            builder: (context) => const GameSelectionScreen(
                   category: 'Nombres',
                 )),
       );
@@ -69,7 +74,8 @@ class _TrainWagonNumbersGameState extends State<TrainWagonNumbersGame> {
             Container(
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/images/numbers/game2/trainstation_bg.png'),
+                  image: AssetImage(
+                      'assets/images/numbers/game2/trainstation_bg.png'),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -94,7 +100,7 @@ class _TrainWagonNumbersGameState extends State<TrainWagonNumbersGame> {
                       onBack: () {
                         Navigator.pushReplacement(context, MaterialPageRoute(
                           builder: (context) {
-                            return GameSelectionScreen(
+                            return const GameSelectionScreen(
                               category: 'Nombres',
                             );
                           },

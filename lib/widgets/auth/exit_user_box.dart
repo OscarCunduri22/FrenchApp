@@ -5,6 +5,7 @@ class ExitAndLogoutDialog extends StatelessWidget {
   final VoidCallback onLogoutAndExitConfirmed;
 
   const ExitAndLogoutDialog({
+    super.key,
     required this.onExitConfirmed,
     required this.onLogoutAndExitConfirmed,
   });

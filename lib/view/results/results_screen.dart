@@ -11,14 +11,14 @@ class ResultsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Resultados del Usuario'),
+        title: const Text('Resultados del Usuario'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Veces jugadas:',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
@@ -26,8 +26,8 @@ class ResultsScreen extends StatelessWidget {
                   title: Text(entry.key),
                   trailing: Text('${entry.value}'),
                 )),
-            SizedBox(height: 16),
-            Text(
+            const SizedBox(height: 16),
+            const Text(
               'Veces completadas:',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, deprecated_member_use
+
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/repository/global.repository.dart';
@@ -63,16 +65,20 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
   }
 
   void _incrementTimesPlayed() {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
-      Provider.of<UserTracking>(context, listen: false).incrementTimesPlayed(studentId, 'gather_family_game');
+      Provider.of<UserTracking>(context, listen: false)
+          .incrementTimesPlayed(studentId, 'gather_family_game');
     }
   }
 
   void _incrementTimesCompleted() {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
-      Provider.of<UserTracking>(context, listen: false).incrementTimesCompleted(studentId, 'gather_family_game');
+      Provider.of<UserTracking>(context, listen: false)
+          .incrementTimesCompleted(studentId, 'gather_family_game');
     }
   }
 
@@ -83,7 +89,8 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
   }
 
   void _onGameComplete() async {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
 
     if (studentId != null) {
       await databaseRepository
@@ -94,7 +101,7 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => GameSelectionScreen(
+          builder: (context) => const GameSelectionScreen(
                 category: 'Famille',
               )),
     );
@@ -184,7 +191,7 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => GameSelectionScreen(
+                    builder: (context) => const GameSelectionScreen(
                       category: 'Famille',
                     ),
                   ),

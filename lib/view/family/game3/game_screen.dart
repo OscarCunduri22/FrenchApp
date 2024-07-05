@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:frenc_app/repository/global.repository.dart';
@@ -66,16 +68,20 @@ class _MemoryGamePageState extends State<MemoryGamePage>
   }
 
   void _incrementTimesPlayed() {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
-      Provider.of<UserTracking>(context, listen: false).incrementTimesPlayed(studentId, 'memory_game');
+      Provider.of<UserTracking>(context, listen: false)
+          .incrementTimesPlayed(studentId, 'memory_game');
     }
   }
 
   void _incrementTimesCompleted() {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
-      Provider.of<UserTracking>(context, listen: false).incrementTimesCompleted(studentId, 'memory_game');
+      Provider.of<UserTracking>(context, listen: false)
+          .incrementTimesCompleted(studentId, 'memory_game');
     }
   }
 
@@ -109,7 +115,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => GameSelectionScreen(
+          builder: (context) => const GameSelectionScreen(
                 category: 'Famille',
               )),
     );
@@ -274,7 +280,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => GameSelectionScreen(
+                        builder: (context) => const GameSelectionScreen(
                           category: 'Famille',
                         ),
                       ),

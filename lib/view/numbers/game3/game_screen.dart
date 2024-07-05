@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, sized_box_for_whitespace
+
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -13,11 +15,14 @@ import 'package:frenc_app/widgets/confetti_animation.dart';
 import 'package:frenc_app/widgets/replay_popup.dart';
 
 class MemoryNumbersGame extends StatefulWidget {
+  const MemoryNumbersGame({super.key});
+
   @override
   _MemoryNumbersGameState createState() => _MemoryNumbersGameState();
 }
 
-class _MemoryNumbersGameState extends State<MemoryNumbersGame> with TickerProviderStateMixin {
+class _MemoryNumbersGameState extends State<MemoryNumbersGame>
+    with TickerProviderStateMixin {
   List<String> cardImages = [];
   List<bool> cardFlips = [];
   List<bool> cardMatched = [];
@@ -51,21 +56,26 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame> with TickerProvid
   }
 
   void _incrementTimesPlayed() {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
-      Provider.of<UserTracking>(context, listen: false).incrementTimesPlayed(studentId, 'memory_numbers_game');
+      Provider.of<UserTracking>(context, listen: false)
+          .incrementTimesPlayed(studentId, 'memory_numbers_game');
     }
   }
 
   void _incrementTimesCompleted() {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
-      Provider.of<UserTracking>(context, listen: false).incrementTimesCompleted(studentId, 'memory_numbers_game');
+      Provider.of<UserTracking>(context, listen: false)
+          .incrementTimesCompleted(studentId, 'memory_numbers_game');
     }
   }
 
   void _onGameComplete() async {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
 
     if (studentId != null) {
       _incrementTimesCompleted();
@@ -74,7 +84,7 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame> with TickerProvid
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => GameSelectionScreen(
+          builder: (context) => const GameSelectionScreen(
                 category: 'Nombres',
               )),
     );
@@ -96,7 +106,7 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame> with TickerProvid
 
     setState(() {
       cardFlips = List<bool>.filled(cardImages.length, true);
-      Timer(Duration(seconds: 2), () {
+      Timer(const Duration(seconds: 2), () {
         setState(() {
           cardFlips = List<bool>.filled(cardImages.length, false);
           allowFlip = true;
@@ -141,12 +151,12 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame> with TickerProvid
             selectedCards.clear();
             _playCorrectAnswerSounds(firstImage);
             if (pairsFound == cardImages.length ~/ 2) {
-              Timer(Duration(seconds: 2), levelUp);
+              Timer(const Duration(seconds: 2), levelUp);
             }
           });
         } else {
           await AudioManager.effects().play('sound/incorrect.mp3');
-          Timer(Duration(seconds: 1), () {
+          Timer(const Duration(seconds: 1), () {
             setState(() {
               cardFlips[firstIndex] = false;
               cardFlips[secondIndex] = false;
@@ -235,7 +245,8 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame> with TickerProvid
       rows.add(
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: buildRow(i, min(cardsPerRow, cardImages.length - i), cardWidth, cardHeight),
+          children: buildRow(i, min(cardsPerRow, cardImages.length - i),
+              cardWidth, cardHeight),
         ),
       );
       rows.add(const SizedBox(height: 10));
@@ -243,7 +254,8 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame> with TickerProvid
     return rows;
   }
 
-  List<Widget> buildRow(int startIndex, int count, double cardWidth, double cardHeight) {
+  List<Widget> buildRow(
+      int startIndex, int count, double cardWidth, double cardHeight) {
     List<Widget> rowChildren = [];
     for (int i = startIndex; i < startIndex + count; i++) {
       rowChildren.add(

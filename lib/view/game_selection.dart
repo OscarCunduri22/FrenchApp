@@ -1,6 +1,5 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, library_private_types_in_public_api
 
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frenc_app/repository/global.repository.dart';
@@ -14,7 +13,8 @@ import 'package:provider/provider.dart';
 class GameSelectionScreen extends StatefulWidget {
   final String category;
 
-  GameSelectionScreen({
+  const GameSelectionScreen({
+    super.key,
     required this.category,
   });
 

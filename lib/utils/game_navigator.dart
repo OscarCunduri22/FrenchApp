@@ -18,14 +18,15 @@ Widget getGameScreen(String category, int gameNumber) {
           return StartGame(
             title: 'Trouvez votre famille',
             buttons: [
-              ButtonData(text: 'Commencer', widget: TrainWagonNumbersGame()),
+              ButtonData(
+                  text: 'Commencer', widget: const TrainWagonNumbersGame()),
             ],
           );
         case 2:
           return StartGame(
             title: 'Trouvez votre famille',
             buttons: [
-              ButtonData(text: 'Commencer', widget: MemoryNumbersGame()),
+              ButtonData(text: 'Commencer', widget: const MemoryNumbersGame()),
             ],
           );
         case 3:
@@ -41,11 +42,17 @@ Widget getGameScreen(String category, int gameNumber) {
     case 'Voyelles':
       switch (gameNumber) {
         case 1:
-          return StartGame(title: 'Attrapez la voyelle', buttons: [ButtonData(text: 'Commencer', widget: const VocalGame())]);
+          return StartGame(title: 'Attrapez la voyelle', buttons: [
+            ButtonData(text: 'Commencer', widget: const VocalGame())
+          ]);
         case 2:
-          return StartGame(title: 'Faites correspondre les voyelles', buttons: [ButtonData(text: 'Commencer', widget:const VocalMemoryPage())]);
+          return StartGame(title: 'Faites correspondre les voyelles', buttons: [
+            ButtonData(text: 'Commencer', widget: const VocalMemoryPage())
+          ]);
         case 3:
-          return StartGame(title: 'Complétez le nom', buttons: [ButtonData(text: 'Commencer', widget: const AnimalNameGame())]);
+          return StartGame(title: 'Complétez le nom', buttons: [
+            ButtonData(text: 'Commencer', widget: const AnimalNameGame())
+          ]);
         default:
           return Container();
       }

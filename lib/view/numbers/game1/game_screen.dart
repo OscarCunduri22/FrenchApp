@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:confetti/confetti.dart';
 // ignore_for_file: use_build_context_synchronously
 
@@ -21,7 +23,8 @@ class BubbleNumbersGame extends StatefulWidget {
   _BubbleNumbersGameState createState() => _BubbleNumbersGameState();
 }
 
-class _BubbleNumbersGameState extends State<BubbleNumbersGame> with TickerProviderStateMixin {
+class _BubbleNumbersGameState extends State<BubbleNumbersGame>
+    with TickerProviderStateMixin {
   late ConfettiController _confettiController;
   late AnimationController _characterBoxController;
   late AnimationController _disorderedCharactersController;
@@ -32,7 +35,8 @@ class _BubbleNumbersGameState extends State<BubbleNumbersGame> with TickerProvid
   @override
   void initState() {
     super.initState();
-    _confettiController = ConfettiController(duration: const Duration(seconds: 2));
+    _confettiController =
+        ConfettiController(duration: const Duration(seconds: 2));
     _characterBoxController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 1),
@@ -77,7 +81,8 @@ class _BubbleNumbersGameState extends State<BubbleNumbersGame> with TickerProvid
   }
 
   void _onGameComplete() async {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
       // Implementar lógica de finalización de juego específica para el estudiante
     }
@@ -116,7 +121,8 @@ class _BubbleNumbersGameState extends State<BubbleNumbersGame> with TickerProvid
                 Container(
                   decoration: const BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/numbers/game1/fondo-marino.png'),
+                      image: AssetImage(
+                          'assets/images/numbers/game1/fondo-marino.png'),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -191,10 +197,10 @@ class _BubbleNumbersGameState extends State<BubbleNumbersGame> with TickerProvid
                       ),
                     ),
                   ),
-                Positioned(
+                const Positioned(
                   bottom: 20,
                   right: 20,
-                  child: const MovableButtonScreen(
+                  child: MovableButtonScreen(
                     spanishAudio: 'sound/family/instruccionGame1.m4a',
                     frenchAudio: 'sound/family/instruccionGame1.m4a',
                     rivePath: 'assets/RiveAssets/nombresgame1.riv',

@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
+
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
@@ -53,31 +55,36 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
   }
 
   void _incrementTimesPlayed() {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
-      Provider.of<UserTracking>(context, listen: false).incrementTimesPlayed(studentId, 'animal_name_game');
+      Provider.of<UserTracking>(context, listen: false)
+          .incrementTimesPlayed(studentId, 'animal_name_game');
     }
   }
 
   void _incrementTimesCompleted() {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
-      Provider.of<UserTracking>(context, listen: false).incrementTimesCompleted(studentId, 'animal_name_game');
+      Provider.of<UserTracking>(context, listen: false)
+          .incrementTimesCompleted(studentId, 'animal_name_game');
     }
   }
 
   void _onGameComplete() async {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
       await databaseRepository.updateGameCompletionStatus(
           studentId, 'Voyelles', [true, true, true]);
-      _incrementTimesCompleted(); 
+      _incrementTimesCompleted();
     }
 
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => GameSelectionScreen(
+          builder: (context) => const GameSelectionScreen(
                 category: 'Voyelles',
               )),
     );
@@ -139,7 +146,8 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
                             height: 110,
                             decoration: BoxDecoration(
                               image: DecorationImage(
-                                image: AssetImage('assets/images/vocals/game3/animals/$animalImage'),
+                                image: AssetImage(
+                                    'assets/images/vocals/game3/animals/$animalImage'),
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -150,13 +158,15 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
                             children: [
                               _buildOutlinedText(animalName.split('_')[0]),
                               DragTarget<String>(
-                                builder: (context, candidateData, rejectedData) {
+                                builder:
+                                    (context, candidateData, rejectedData) {
                                   return Container(
                                     width: 40,
                                     height: 50,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(8),
-                                      color: isCorrect ? Colors.green : Colors.red,
+                                      color:
+                                          isCorrect ? Colors.green : Colors.red,
                                     ),
                                     alignment: Alignment.center,
                                     child: _buildOutlinedText(missingVowel),
@@ -165,12 +175,14 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
                                 onWillAccept: (data) => true,
                                 onAccept: (data) {
                                   setState(() {
-                                    missingVowel = data!;
+                                    missingVowel = data;
                                     isCorrect = (data == targetVowel);
                                     if (isCorrect) {
-                                      Future.delayed(const Duration(seconds: 1), () {
+                                      Future.delayed(const Duration(seconds: 1),
+                                          () {
                                         setState(() {
-                                          if (currentAnimalIndex < animals.length - 1) {
+                                          if (currentAnimalIndex <
+                                              animals.length - 1) {
                                             currentAnimalIndex++;
                                             missingVowel = "_";
                                             isCorrect = false;
@@ -192,7 +204,8 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
                             spacing: 30,
                             alignment: WrapAlignment.center,
                             children: currentVowelChoices.map((vowel) {
-                              final vowelImage = vowelImages[vowels.indexOf(vowel)];
+                              final vowelImage =
+                                  vowelImages[vowels.indexOf(vowel)];
                               return VowelTile(
                                 letter: vowel,
                                 imagePath: vowelImage,
@@ -207,7 +220,7 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
               ),
             ],
           ),
-          Positioned(
+          const Positioned(
             bottom: 10,
             right: 10,
             child: MovableButtonScreen(
@@ -226,10 +239,10 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
     for (var i = 0; i < text.length; i++) {
       letters.add(Text(
         text[i],
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 40,
           fontWeight: FontWeight.bold,
-          color: const Color(0xFFFFC700),
+          color: Color(0xFFFFC700),
           shadows: [
             Shadow(
               offset: Offset(-1.5, -1.5),
@@ -293,7 +306,8 @@ class VowelTile extends StatelessWidget {
   final String letter;
   final String imagePath;
 
-  const VowelTile({required this.letter, required this.imagePath, Key? key}) : super(key: key);
+  const VowelTile({required this.letter, required this.imagePath, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -324,7 +338,8 @@ class VowelTile extends StatelessWidget {
       child: Container(
         width: 50,
         height: 50,
-        margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15), // Aumentar espaciado horizontal
+        margin: const EdgeInsets.symmetric(
+            vertical: 10, horizontal: 15), // Aumentar espaciado horizontal
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
         ),

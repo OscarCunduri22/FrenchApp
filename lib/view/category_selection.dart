@@ -5,15 +5,12 @@ import 'package:flutter/services.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/widgets/character/button.dart';
 import 'package:frenc_app/model/tutor.dart';
-import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/auth/tutor_dashboard.dart';
 import 'package:frenc_app/view/game_selection.dart';
 import 'package:frenc_app/view/montessori/montessori_screen.dart';
 import 'package:frenc_app/widgets/auth/security_code_box.dart';
-import 'package:frenc_app/widgets/character/button.dart';
 import 'package:frenc_app/widgets/custom_theme_text.dart';
 import 'package:provider/provider.dart';
-import 'package:frenc_app/view/game_selection.dart';
 
 class CategorySelectionScreen extends StatefulWidget {
   const CategorySelectionScreen({super.key});
@@ -136,7 +133,7 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
                       ],
                     ),
                     const SizedBox(height: 15),
-                    Expanded(
+                    const Expanded(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
