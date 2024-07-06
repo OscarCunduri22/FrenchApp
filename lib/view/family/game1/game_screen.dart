@@ -29,6 +29,7 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
   String? selectedIncorrectCard;
   bool showBounceAnimation = true;
   bool _showConfetti = false;
+  bool _isPlayingSound = false;
 
   final databaseRepository = DatabaseRepository();
 
@@ -111,11 +112,14 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
   void checkMatch(String selectedCard) async {
     if (selectedCard == cardUp) {
       await playSound(selectedCard);
+      _playCorrectAnswerSounds(selectedCard);
       Future.delayed(const Duration(seconds: 2), () {
         setState(() {
           score++;
-          if (score >= 3) {
-            _showWinDialog();
+          if (score >= 1) {
+            Future.delayed(const Duration(seconds: 8), () {
+              _showWinDialog();
+            });
           } else {
             newGame();
           }
@@ -204,6 +208,25 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
         ],
       ),
     );
+  }
+
+  Future<void> _playCorrectAnswerSounds(String audioFileName) async {
+    setState(() {
+      _isPlayingSound = true;
+    });
+
+    await AudioManager.effects().play('sound/numbers/yeahf.mp3');
+    await Future.delayed(const Duration(seconds: 2));
+    await AudioManager.effects().play('sound/numbers/repetir.m4a');
+    await Future.delayed(const Duration(seconds: 2));
+    await playSound(audioFileName);
+    await Future.delayed(const Duration(seconds: 3));
+    await playSound(audioFileName);
+    await Future.delayed(const Duration(seconds: 3));
+
+    setState(() {
+      _isPlayingSound = false;
+    });
   }
 
   @override
@@ -307,6 +330,17 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
                 ),
               ],
             ),
+            if (_isPlayingSound)
+              Container(
+                color: Colors.black.withOpacity(0.8),
+                child: const Center(
+                  child: Icon(
+                    Icons.volume_up,
+                    size: 100,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             const MovableButtonScreen(
               spanishAudio: 'sound/family/instruccionGame1.m4a',
               frenchAudio: 'sound/family/instruccionGame1.m4a',
@@ -395,7 +429,7 @@ class _PlayButtonState extends State<PlayButton> {
         child: Center(
           child: Image.asset(
             'assets/images/icons/sonido.png',
-            width: 50, // Ajusta el tamaño de la imagen según sea necesario
+            width: 50,
             height: 50,
           ),
         ),

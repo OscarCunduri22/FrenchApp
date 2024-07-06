@@ -2,11 +2,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/user_provider.dart';
-import 'package:frenc_app/view/game_selection.dart';
 import 'package:frenc_app/view/button.dart';
+import 'package:frenc_app/view/game_selection.dart';
 import 'package:frenc_app/widgets/confetti_animation.dart';
-import 'package:frenc_app/widgets/replay_popup.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
+import 'package:frenc_app/widgets/replay_popup.dart';
 import 'package:frenc_app/utils/audio_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:frenc_app/utils/user_tracking.dart'; // Importar UserTracking
@@ -49,8 +49,8 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
   late List<String> selectedKeys;
   Map<String, String> placedImages = {};
   int score = 0;
-  int gamesCompleted = 0;
   bool _showConfetti = false;
+  bool _isPlayingSound = false;
 
   final databaseRepository = DatabaseRepository();
 
@@ -115,23 +115,35 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
     if (correct) {
       soundPath = soundMappings[key]!;
     } else {
-      soundPath = 'sound/incorrect.mp3';
+      soundPath = 'sound/error.mp3';
     }
     await AudioManager.effects().play(soundPath);
   }
 
-  void _checkCompletion() {
-    if (placedImages.length == selectedKeys.length) {
+  void checkMatch(String key, String data) async {
+    bool correct = data == imageMappings[key];
+    await playSound(key, correct);
+    if (correct) {
+      _playCorrectAnswerSounds(key);
       setState(() {
-        score++;
-        if (score >= 2) {
-          _showWinDialog();
-        } else {
-          Future.delayed(const Duration(seconds: 2), () {
-            newGame();
+        placedImages[key] = data;
+        if (placedImages.length == selectedKeys.length) {
+          setState(() {
+            score++;
+            if (score >= 1) {
+              Future.delayed(const Duration(seconds: 8), () {
+                _showWinDialog();
+              });
+            } else {
+              Future.delayed(const Duration(seconds: 2), () {
+                newGame();
+              });
+            }
           });
         }
       });
+    } else {
+      await playSound(key, false);
     }
   }
 
@@ -163,6 +175,25 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
     );
   }
 
+  Future<void> _playCorrectAnswerSounds(String audioFileName) async {
+    setState(() {
+      _isPlayingSound = true;
+    });
+
+    await AudioManager.effects().play('sound/numbers/yeahf.mp3');
+    await Future.delayed(const Duration(seconds: 1));
+    await AudioManager.effects().play('sound/numbers/repetir.m4a');
+    await Future.delayed(const Duration(seconds: 2));
+    await playSound(audioFileName, true);
+    await Future.delayed(const Duration(seconds: 3));
+    await playSound(audioFileName, true);
+    await Future.delayed(const Duration(seconds: 2));
+
+    setState(() {
+      _isPlayingSound = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -173,46 +204,57 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
             fit: BoxFit.cover,
           ),
         ),
-        child: Column(
+        child: Stack(
           children: [
-            ProgressBar(
-              backgroundColor: const Color(0xFF424141),
-              progressBarColor: const Color(0xFFD67171),
-              headerText: 'Trouver la bonne position familiale',
-              progressValue: score / 10,
-              onBack: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => GameSelectionScreen(
-                      category: 'Famille',
-                    ),
-                  ),
-                );
-              },
-              onVolume: () {
-                // Acción para controlar el volumen
-              },
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: Stack(
-                children: [
-                  Column(
+            Column(
+              children: [
+                ProgressBar(
+                  backgroundColor: const Color(0xFF424141),
+                  progressBarColor: const Color(0xFFD67171),
+                  headerText: 'Trouver la bonne position familiale',
+                  progressValue: score / 10,
+                  onBack: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => GameSelectionScreen(
+                          category: 'Famille',
+                        ),
+                      ),
+                    );
+                  },
+                  onVolume: () {
+                    // Acción para controlar el volumen
+                  },
+                ),
+                const SizedBox(height: 20),
+                Expanded(
+                  child: Column(
                     children: [
                       const SizedBox(height: 80),
                       buildDragTargetsRow(),
                     ],
                   ),
-                  ...buildRemainingDraggableImages(),
-                  const MovableButtonScreen(
-                    spanishAudio: 'sound/family/instruccionGame1.m4a',
-                    frenchAudio: 'sound/family/instruccionGame1.m4a',
-                    rivePath: 'assets/RiveAssets/familygame2.riv',
-                  )
-                ],
-              ),
+                ),
+              ],
             ),
+            ...buildRemainingDraggableImages(),
+            if (_isPlayingSound)
+              Container(
+                color: Colors.black.withOpacity(0.8),
+                child: const Center(
+                  child: Icon(
+                    Icons.volume_up,
+                    size: 100,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            const MovableButtonScreen(
+              spanishAudio: 'sound/family/instruccionGame1.m4a',
+              frenchAudio: 'sound/family/instruccionGame1.m4a',
+              rivePath: 'assets/RiveAssets/familygame2.riv',
+            )
           ],
         ),
       ),
@@ -317,16 +359,9 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
           ),
         );
       },
-      onWillAccept: (data) => true, // Accept any data to play sound
-      onAccept: (data) async {
-        bool correct = data == imageMappings[target];
-        await playSound(target, correct);
-        if (correct) {
-          setState(() {
-            placedImages[target] = data;
-          });
-          _checkCompletion();
-        }
+      onWillAccept: (data) => true,
+      onAccept: (data) {
+        checkMatch(target, data);
       },
     );
   }

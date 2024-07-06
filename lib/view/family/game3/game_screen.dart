@@ -44,6 +44,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
   late List<AnimationController> _controllers;
   late List<Animation<double>> _animations;
   bool _isLoading = true;
+  bool _isPlayingSound = false;
 
   final databaseRepository = DatabaseRepository();
 
@@ -218,7 +219,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
               _controllers[flippedIndices[0]].reverse();
               _controllers[flippedIndices[1]].reverse();
               flippedIndices.clear();
-              AudioManager.effects().play('sound/incorrect.mp3');
+              AudioManager.effects().play('sound/error.mp3');
               isBusy = false;
               Future.delayed(const Duration(seconds: 2), () {
                 AudioManager.effects().stop();
@@ -226,11 +227,9 @@ class _MemoryGamePageState extends State<MemoryGamePage>
             });
           });
         } else {
-          playSound(cardImages[flippedIndices[0]]);
-          Future.delayed(const Duration(seconds: 2), () {
-            AudioManager.effects().stop();
-            isBusy = false;
-          });
+          // playSound(cardImages[flippedIndices[0]]);
+          _playCorrectAnswerSounds(cardImages[flippedIndices[0]]);
+          isBusy = false;
           flippedIndices.clear();
         }
       }
@@ -238,13 +237,36 @@ class _MemoryGamePageState extends State<MemoryGamePage>
       if (cardsFlipped.every((flipped) => flipped)) {
         score += 1;
         Future.delayed(const Duration(seconds: 2), () {
-          if (score < 10) {
-            _newGame();
+          if (score > 1) {
+            Future.delayed(const Duration(seconds: 8), () {
+              _showWinDialog();
+            });
           } else {
-            _showWinDialog();
+            Future.delayed(const Duration(seconds: 2), () {
+              _newGame();
+            });
           }
         });
       }
+    });
+  }
+
+  Future<void> _playCorrectAnswerSounds(String audioFileName) async {
+    setState(() {
+      _isPlayingSound = true;
+    });
+
+    await AudioManager.effects().play('sound/numbers/yeahf.mp3');
+    await Future.delayed(const Duration(seconds: 1));
+    await AudioManager.effects().play('sound/numbers/repetir.m4a');
+    await Future.delayed(const Duration(seconds: 3));
+    await playSound(audioFileName);
+    await Future.delayed(const Duration(seconds: 3));
+    await playSound(audioFileName);
+    await Future.delayed(const Duration(seconds: 3));
+
+    setState(() {
+      _isPlayingSound = false;
     });
   }
 
@@ -348,6 +370,17 @@ class _MemoryGamePageState extends State<MemoryGamePage>
               ],
             ),
           ),
+          if (_isPlayingSound)
+            Container(
+              color: Colors.black.withOpacity(0.8),
+              child: const Center(
+                child: Icon(
+                  Icons.volume_up,
+                  size: 100,
+                  color: Colors.white,
+                ),
+              ),
+            ),
           const MovableButtonScreen(
             spanishAudio: 'sound/family/instruccionGame1.m4a',
             frenchAudio: 'sound/family/instruccionGame1.m4a',
