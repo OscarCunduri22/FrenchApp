@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:frenc_app/repository/global.repository.dart';
@@ -109,7 +111,7 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => GameSelectionScreen(
+          builder: (context) => const GameSelectionScreen(
                 category: 'Voyelles',
               )),
     );
@@ -334,7 +336,7 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
               ],
             ),
           ),
-          Positioned(
+          const Positioned(
             bottom: 10,
             right: 10,
             child: MovableButtonScreen(

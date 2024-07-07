@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:frenc_app/model/tutor.dart';
 import 'package:frenc_app/model/game_result.dart';

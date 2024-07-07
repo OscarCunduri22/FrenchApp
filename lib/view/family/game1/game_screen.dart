@@ -79,7 +79,7 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => GameSelectionScreen(
+          builder: (context) => const GameSelectionScreen(
                 category: 'Famille',
               )),
     );
@@ -259,7 +259,7 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => GameSelectionScreen(
+                        builder: (context) => const GameSelectionScreen(
                           category: 'Famille',
                         ),
                       ),

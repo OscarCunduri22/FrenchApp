@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors_in_immutables, library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 
 class TracingGame extends StatefulWidget {
@@ -6,7 +8,8 @@ class TracingGame extends StatefulWidget {
   final String imageObjectName;
 
   TracingGame(
-      {required this.letter,
+      {super.key,
+      required this.letter,
       required this.imageAssetPath,
       required this.imageObjectName});
 
@@ -22,7 +25,7 @@ class _TracingGameState extends State<TracingGame> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage(
                 "assets/images/vocals/bg.jpg"), // Change to your background image asset
@@ -49,7 +52,7 @@ class _TracingGameState extends State<TracingGame> {
                       });
                     },
                     child: CustomPaint(
-                      size: Size(200, 200),
+                      size: const Size(200, 200),
                       painter:
                           LetterPainter(points: points, letter: widget.letter),
                     ),
@@ -64,7 +67,7 @@ class _TracingGameState extends State<TracingGame> {
                       ? Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
+                            const Text(
                               'Good Job!',
                               style: TextStyle(
                                   fontSize: 24, fontWeight: FontWeight.bold),
@@ -73,12 +76,12 @@ class _TracingGameState extends State<TracingGame> {
                                 height: 200, width: 200),
                             Text(
                               widget.imageObjectName,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 24, fontWeight: FontWeight.bold),
                             )
                           ],
                         )
-                      : SizedBox(
+                      : const SizedBox(
                           width: 200,
                           height: 200,
                           child: Center(

@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, prefer_const_constructors_in_immutables
 
 import 'package:flutter/material.dart';
 import 'package:frenc_app/view_model/numbers/game2/game_provider.dart';
@@ -10,7 +10,11 @@ class TrainCar extends StatelessWidget {
   final bool isMiddle;
   final VoidCallback onComplete;
 
-  TrainCar({this.number, this.isMiddle = false, required this.onComplete});
+  TrainCar(
+      {super.key,
+      this.number,
+      this.isMiddle = false,
+      required this.onComplete});
 
   @override
   Widget build(BuildContext context) {

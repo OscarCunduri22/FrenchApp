@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
+
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
@@ -82,7 +84,7 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => GameSelectionScreen(
+          builder: (context) => const GameSelectionScreen(
                 category: 'Voyelles',
               )),
     );
@@ -173,7 +175,7 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
                                 onWillAccept: (data) => true,
                                 onAccept: (data) {
                                   setState(() {
-                                    missingVowel = data!;
+                                    missingVowel = data;
                                     isCorrect = (data == targetVowel);
                                     if (isCorrect) {
                                       Future.delayed(const Duration(seconds: 1),
@@ -218,7 +220,7 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
               ),
             ],
           ),
-          Positioned(
+          const Positioned(
             bottom: 10,
             right: 10,
             child: MovableButtonScreen(
@@ -237,10 +239,10 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
     for (var i = 0; i < text.length; i++) {
       letters.add(Text(
         text[i],
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 40,
           fontWeight: FontWeight.bold,
-          color: const Color(0xFFFFC700),
+          color: Color(0xFFFFC700),
           shadows: [
             Shadow(
               offset: Offset(-1.5, -1.5),

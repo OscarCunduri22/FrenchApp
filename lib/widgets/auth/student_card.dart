@@ -7,6 +7,7 @@ class StudentCard extends StatelessWidget {
   final void Function(String studentId) onTap;
 
   const StudentCard({
+    super.key,
     required this.student,
     required this.studentId,
     required this.onTap,

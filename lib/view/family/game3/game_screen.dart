@@ -117,7 +117,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => GameSelectionScreen(
+          builder: (context) => const GameSelectionScreen(
                 category: 'Famille',
               )),
     );
@@ -303,7 +303,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => GameSelectionScreen(
+                        builder: (context) => const GameSelectionScreen(
                           category: 'Famille',
                         ),
                       ),

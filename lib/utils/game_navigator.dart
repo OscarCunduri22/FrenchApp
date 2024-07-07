@@ -18,14 +18,14 @@ Widget getGameScreen(String category, int gameNumber) {
           return StartGame(
             title: 'Trouvez votre famille',
             buttons: [
-              ButtonData(text: 'Jugar', widget: TrainWagonNumbersGame()),
+              ButtonData(text: 'Jugar', widget: const TrainWagonNumbersGame()),
             ],
           );
         case 2:
           return StartGame(
             title: 'Trouvez votre famille',
             buttons: [
-              ButtonData(text: 'Jugar', widget: MemoryNumbersGame()),
+              ButtonData(text: 'Jugar', widget: const MemoryNumbersGame()),
             ],
           );
         case 3:

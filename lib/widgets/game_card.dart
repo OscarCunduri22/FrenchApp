@@ -26,14 +26,14 @@ class GameCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
-            padding: EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
+            padding: const EdgeInsets.all(8.0),
+            decoration: const BoxDecoration(
               color: Colors.transparent,
               borderRadius: BorderRadius.vertical(top: Radius.circular(15.0)),
             ),
             child: Text(
               frName,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 16.0,
                 fontWeight: FontWeight.bold,
@@ -46,8 +46,8 @@ class GameCard extends StatelessWidget {
               fit: StackFit.expand,
               children: [
                 ClipRRect(
-                  borderRadius:
-                      BorderRadius.vertical(bottom: Radius.circular(15.0)),
+                  borderRadius: const BorderRadius.vertical(
+                      bottom: Radius.circular(15.0)),
                   child: Image.asset(
                     imagePath!,
                     fit: BoxFit.cover,

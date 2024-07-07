@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, deprecated_member_use
 
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -102,7 +102,7 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => GameSelectionScreen(
+          builder: (context) => const GameSelectionScreen(
                 category: 'Famille',
               )),
     );
@@ -225,7 +225,7 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => GameSelectionScreen(
+                        builder: (context) => const GameSelectionScreen(
                           category: 'Famille',
                         ),
                       ),

@@ -1,7 +1,10 @@
+// ignore_for_file: library_private_types_in_public_api, deprecated_member_use
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/audio_manager.dart';
+import 'package:frenc_app/utils/dialog_manager.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/utils/user_tracking.dart'; // Importar UserTracking
 import 'package:frenc_app/view/button.dart';
@@ -14,6 +17,8 @@ import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:provider/provider.dart';
 
 class TrainWagonNumbersGame extends StatefulWidget {
+  const TrainWagonNumbersGame({super.key});
+
   @override
   _TrainWagonNumbersGameState createState() => _TrainWagonNumbersGameState();
 }
@@ -30,7 +35,8 @@ class _TrainWagonNumbersGameState extends State<TrainWagonNumbersGame> {
 
   void _onGameComplete() async {
     AudioManager.effects().play('sound/level_win.mp3');
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
 
     if (studentId != null) {
       await databaseRepository.updateGameCompletionStatus(
@@ -41,7 +47,7 @@ class _TrainWagonNumbersGameState extends State<TrainWagonNumbersGame> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => GameSelectionScreen(
+            builder: (context) => const GameSelectionScreen(
                   category: 'Nombres',
                 )),
       );
@@ -59,117 +65,132 @@ class _TrainWagonNumbersGameState extends State<TrainWagonNumbersGame> {
     String? studentId = Provider.of<UserProvider>(context).currentStudentId;
 
     return ChangeNotifierProvider(
-      create: (context) => GameProvider(
-        Provider.of<UserTracking>(context, listen: false),
-        studentId!,
-      ),
-      child: Scaffold(
-        body: Stack(
-          children: [
-            Container(
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/numbers/game2/trainstation_bg.png'),
-                  fit: BoxFit.cover,
+        create: (context) => GameProvider(
+              Provider.of<UserTracking>(context, listen: false),
+              studentId!,
+            ),
+        child: WillPopScope(
+          onWillPop: () async {
+            DialogManager.showExitGameDialog(
+                context,
+                const GameSelectionScreen(
+                  category: 'Nombres',
+                ));
+            return false;
+          },
+          child: Scaffold(
+            body: Stack(
+              children: [
+                Container(
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(
+                          'assets/images/numbers/game2/trainstation_bg.png'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            // Game Content
-            Consumer<GameProvider>(
-              builder: (context, gameProvider, child) {
-                if (gameProvider.isCompleted) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    _handleGameCompletion();
-                  });
-                }
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ProgressBar(
-                      backgroundColor: const Color(0xF29B2929).withOpacity(0.8),
-                      progressBarColor: const Color(0xFF0BCC6C),
-                      headerText: 'Completa la secuencia de números',
-                      progressValue: gameProvider.progressValue,
-                      onBack: () {
-                        Navigator.pushReplacement(context, MaterialPageRoute(
-                          builder: (context) {
-                            return GameSelectionScreen(
-                              category: 'Nombres',
-                            );
+                // Game Content
+                Consumer<GameProvider>(
+                  builder: (context, gameProvider, child) {
+                    if (gameProvider.isCompleted) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        _handleGameCompletion();
+                      });
+                    }
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ProgressBar(
+                          backgroundColor:
+                              const Color(0xF29B2929).withOpacity(0.8),
+                          progressBarColor: const Color(0xFF0BCC6C),
+                          headerText: 'Completa la secuencia de números',
+                          progressValue: gameProvider.progressValue,
+                          onBack: () {
+                            Navigator.pushReplacement(context,
+                                MaterialPageRoute(
+                              builder: (context) {
+                                return const GameSelectionScreen(
+                                  category: 'Nombres',
+                                );
+                              },
+                            ));
                           },
-                        ));
-                      },
-                      onVolume: () {},
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: gameProvider.options
-                          .map((number) => NumberOptionWidget(number: number))
-                          .toList(),
-                    ),
-                    const SizedBox(height: 20),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        height: 160,
-                        alignment: Alignment.bottomCenter,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            AnimatedPositioned(
-                              duration: const Duration(seconds: 1),
-                              left: isOffScreenLeft
-                                  ? -MediaQuery.of(context).size.width
-                                  : (isOffScreenRight
-                                      ? MediaQuery.of(context).size.width
-                                      : 0),
-                              child: AnimatedOpacity(
-                                duration: const Duration(milliseconds: 500),
-                                opacity: isVisible ? 1.0 : 0.0,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    TrainEngine(),
-                                    ...gameProvider.sequence
-                                        .asMap()
-                                        .entries
-                                        .map((entry) {
-                                      int idx = entry.key;
-                                      int? number = entry.value;
-                                      if (idx == 1) {
-                                        return TrainCar(
-                                            number: number,
-                                            isMiddle: true,
-                                            onComplete: _onGameComplete);
-                                      } else {
-                                        return TrainCar(
-                                            number: number,
-                                            onComplete: _onGameComplete);
-                                      }
-                                    }).toList(),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
+                          onVolume: () {},
                         ),
-                      ),
-                    ),
-                  ],
-                );
-              },
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: gameProvider.options
+                              .map((number) =>
+                                  NumberOptionWidget(number: number))
+                              .toList(),
+                        ),
+                        const SizedBox(height: 20),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                            height: 160,
+                            alignment: Alignment.bottomCenter,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                AnimatedPositioned(
+                                  duration: const Duration(seconds: 1),
+                                  left: isOffScreenLeft
+                                      ? -MediaQuery.of(context).size.width
+                                      : (isOffScreenRight
+                                          ? MediaQuery.of(context).size.width
+                                          : 0),
+                                  child: AnimatedOpacity(
+                                    duration: const Duration(milliseconds: 500),
+                                    opacity: isVisible ? 1.0 : 0.0,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        TrainEngine(),
+                                        ...gameProvider.sequence
+                                            .asMap()
+                                            .entries
+                                            .map((entry) {
+                                          int idx = entry.key;
+                                          int? number = entry.value;
+                                          if (idx == 1) {
+                                            return TrainCar(
+                                                number: number,
+                                                isMiddle: true,
+                                                onComplete: _onGameComplete);
+                                          } else {
+                                            return TrainCar(
+                                                number: number,
+                                                onComplete: _onGameComplete);
+                                          }
+                                        }).toList(),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+                const MovableButtonScreen(
+                  spanishAudio: 'sound/numbers/esgame1.m4a',
+                  frenchAudio: 'sound/numbers/frgame1.m4a',
+                  rivePath: 'assets/RiveAssets/nombresgame2.riv',
+                )
+              ],
             ),
-            const MovableButtonScreen(
-              spanishAudio: 'assets/sound/family/instruccionGame1.m4a',
-              frenchAudio: 'assets/sound/family/instruccionGame1.m4a',
-              rivePath: 'assets/RiveAssets/nombresgame2.riv',
-            )
-          ],
-        ),
-      ),
-    );
+          ),
+        ));
   }
 
   void _handleGameCompletion() async {

@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:flutter/material.dart';
 
 enum TextType { Title, Subtitle }
@@ -55,7 +57,7 @@ class CustomTextWidget extends StatelessWidget {
                     Shadow(
                       blurRadius: 0.0,
                       color: getShadowColor(shadowColor),
-                      offset: Offset(4.0, 4.0),
+                      offset: const Offset(4.0, 4.0),
                     ),
                   ]
                 : null,
@@ -73,7 +75,7 @@ class CustomTextWidget extends StatelessWidget {
                         Shadow(
                           blurRadius: 0.0,
                           color: getShadowColor(shadowColor),
-                          offset: Offset(4.0, 4.0),
+                          offset: const Offset(4.0, 4.0),
                         ),
                       ]
                     : null,
@@ -97,7 +99,7 @@ class CustomTextWidget extends StatelessWidget {
               ? [
                   Shadow(
                     color: getShadowColor(shadowColor),
-                    offset: Offset(2.0, 2.0),
+                    offset: const Offset(2.0, 2.0),
                   ),
                 ]
               : null,
