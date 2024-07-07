@@ -65,16 +65,6 @@ class _MemoryGamePageState extends State<MemoryGamePage>
     }).toList();
 
     _loadGame();
-    _incrementTimesPlayed(); // Incrementar contador de juegos jugados
-  }
-
-  void _incrementTimesPlayed() {
-    String? studentId =
-        Provider.of<UserProvider>(context, listen: false).currentStudentId;
-    if (studentId != null) {
-      Provider.of<UserTracking>(context, listen: false)
-          .incrementTimesPlayed(studentId, 'memory_game');
-    }
   }
 
   void _incrementTimesCompleted() {
@@ -234,7 +224,6 @@ class _MemoryGamePageState extends State<MemoryGamePage>
             });
           });
         } else {
-          // playSound(cardImages[flippedIndices[0]]);
           _playCorrectAnswerSounds(cardImages[flippedIndices[0]]);
           isBusy = false;
           flippedIndices.clear();
@@ -243,6 +232,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
 
       if (cardsFlipped.every((flipped) => flipped)) {
         score += 1;
+        _incrementTimesCompleted(); // Incrementar contador de juegos completados cuando el nivel se completa
         Future.delayed(const Duration(seconds: 2), () {
           if (score >= 1) {
             Future.delayed(const Duration(seconds: 8), () {

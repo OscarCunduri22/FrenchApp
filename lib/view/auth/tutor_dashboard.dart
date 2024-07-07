@@ -6,6 +6,7 @@ import 'package:frenc_app/model/tutor.dart';
 import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/auth/login_tutor_screen.dart';
+import 'package:frenc_app/widgets/custom_theme_text.dart';
 import 'package:provider/provider.dart';
 import 'package:frenc_app/utils/dialog_manager.dart';
 import 'dart:ui';
@@ -15,7 +16,6 @@ import 'package:frenc_app/model/student.dart'; // Importar el modelo Student
 import 'package:frenc_app/view/auth/edit_profile.dart'; // Importar la pantalla de edición de perfil
 import 'package:frenc_app/view/auth/student_detail_screen.dart'; // Importar la pantalla de detalles del estudiante
 import 'package:frenc_app/widgets/auth/common_button_styles.dart'; // Importar estilos de botones comunes
-import 'package:frenc_app/view/auth/login_tutor_screen.dart'; // Importar la pantalla de inicio de sesión de tutor
 
 class TutorDashboardScreen extends StatefulWidget {
   final String tutorName;
@@ -135,7 +135,7 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
               Container(
                 decoration: const BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/images/montessoribg.jpg'),
+                    image: AssetImage('assets/images/fondo_tutor_dashboard.png'),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -149,9 +149,18 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: 32),
+                    const CustomTextWidget(
+                      text: 'Tutor',
+                      type: TextType.Subtitle,
+                      color: ColorType.Primary,
+                      fontSize: 44,
+                      fontWeight: FontWeight.w200,
+                      letterSpacing: 1.0,
+                    ),
+                    const SizedBox(height: 20),
                     Card(
                       elevation: 4,
                       shape: RoundedRectangleBorder(
@@ -225,17 +234,19 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    const Text(
-                      'Alumnos',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 0, 0, 0),
+                    const Center(
+                      child: CustomTextWidget(
+                        text: 'Alumnos',
+                        type: TextType.Subtitle,
+                        color: ColorType.Primary,
+                        fontSize: 44,
+                        fontWeight: FontWeight.w200,
+                        letterSpacing: 1.0,
                       ),
                     ),
                     const SizedBox(height: 10),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ElevatedButton(
                           onPressed: () async {
