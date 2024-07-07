@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors_in_immutables
+// ignore_for_file: prefer_const_constructors_in_immutables, must_be_immutable
 
 import 'dart:ui';
 import 'package:flutter/material.dart';
@@ -9,6 +9,7 @@ class GameCard extends StatelessWidget {
   final int gameNumber;
   final bool isUnlocked;
   final VoidCallback onPlayPressed;
+  String gameName;
 
   GameCard({
     super.key,
@@ -16,7 +17,26 @@ class GameCard extends StatelessWidget {
     required this.gameNumber,
     required this.isUnlocked,
     required this.onPlayPressed,
+    this.gameName = '',
   });
+
+  String _getGameName() {
+    switch (category) {
+      case 'Nombres':
+        if (gameNumber == 1) return 'Vagones numericos';
+        if (gameNumber == 2) return 'Memoria de numeros';
+        if (gameNumber == 3) return 'Burbujas';
+      case 'Voyelles':
+        if (gameNumber == 1) return 'Juego 1';
+        if (gameNumber == 2) return 'Juego 2';
+        if (gameNumber == 3) return 'Juego 3';
+      case 'Famille':
+        if (gameNumber == 1) return 'Juego 1';
+        if (gameNumber == 2) return 'Juego 2';
+        if (gameNumber == 3) return 'Juego 3';
+    }
+    return '';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +58,7 @@ class GameCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CustomTextWidget(
-                  text: 'Juego $gameNumber',
+                  text: _getGameName(),
                   type: TextType.Subtitle,
                   fontSize: 24,
                   color: ColorType.Secondary,

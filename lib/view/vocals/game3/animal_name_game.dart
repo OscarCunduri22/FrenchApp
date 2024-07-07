@@ -226,7 +226,7 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
             child: MovableButtonScreen(
               spanishAudio: 'sound/family/instruccionGame1.m4a',
               frenchAudio: 'sound/family/instruccionGame1.m4a',
-              rivePath: 'assets/RiveAssets/vocalsgame1.riv',
+              rivePath: 'assets/RiveAssets/vocalsgame3.riv',
             ),
           ),
         ],

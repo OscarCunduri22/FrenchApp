@@ -1,8 +1,9 @@
-// ignore_for_file: library_private_types_in_public_api, sized_box_for_whitespace
+// ignore_for_file: library_private_types_in_public_api, sized_box_for_whitespace, deprecated_member_use
 
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:frenc_app/utils/dialog_manager.dart';
 import 'package:frenc_app/utils/user_tracking.dart';
 import 'package:frenc_app/view/button.dart';
 import 'package:provider/provider.dart';
@@ -300,67 +301,76 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/numbers/game3/gamebg.png'),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Center(
-            child: Stack(
-              children: [
-                Opacity(
-                  opacity: _isPlayingSound ? 0.3 : 1.0,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ProgressBar(
-                        backgroundColor: const Color(0xFFFF5F01),
-                        progressBarColor: const Color(0xFF8DB270),
-                        headerText: 'Completa la secuencia de números',
-                        progressValue: (level - 1) / maxLevel,
-                        onBack: () {
-                          Navigator.pop(context);
-                        },
-                        onVolume: () {},
-                      ),
-                      ...buildRows(),
-                    ],
+    return WillPopScope(
+        onWillPop: () async {
+          DialogManager.showExitGameDialog(
+              context,
+              const GameSelectionScreen(
+                category: 'Nombres',
+              ));
+          return false;
+        },
+        child: Scaffold(
+          body: Stack(
+            children: [
+              Container(
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/numbers/game3/gamebg.png'),
+                    fit: BoxFit.cover,
                   ),
                 ),
-                const Positioned(
-                  bottom: 20,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: MovableButtonScreen(
-                      spanishAudio: 'sound/family/instruccionGame1.m4a',
-                      frenchAudio: 'sound/family/instruccionGame1.m4a',
-                      rivePath: 'assets/RiveAssets/nombresgame3.riv',
+              ),
+              Center(
+                child: Stack(
+                  children: [
+                    Opacity(
+                      opacity: _isPlayingSound ? 0.3 : 1.0,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ProgressBar(
+                            backgroundColor: const Color(0xFFFF5F01),
+                            progressBarColor: const Color(0xFF8DB270),
+                            headerText: 'Completa la secuencia de números',
+                            progressValue: (level - 1) / maxLevel,
+                            onBack: () {
+                              Navigator.pop(context);
+                            },
+                            onVolume: () {},
+                          ),
+                          ...buildRows(),
+                        ],
+                      ),
+                    ),
+                    const Positioned(
+                      bottom: 20,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: MovableButtonScreen(
+                          spanishAudio: 'sound/numbers/esgame2.m4a',
+                          frenchAudio: 'sound/numbers/frgame2.m4a',
+                          rivePath: 'assets/RiveAssets/nombresgame3.riv',
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (_isPlayingSound)
+                Container(
+                  color: Colors.black.withOpacity(0.8),
+                  child: const Center(
+                    child: Icon(
+                      Icons.volume_up,
+                      color: Colors.white,
+                      size: 100,
                     ),
                   ),
                 ),
-              ],
-            ),
+            ],
           ),
-          if (_isPlayingSound)
-            Container(
-              color: Colors.black.withOpacity(0.8),
-              child: const Center(
-                child: Icon(
-                  Icons.volume_up,
-                  color: Colors.white,
-                  size: 100,
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
+        ));
   }
 }

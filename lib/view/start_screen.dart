@@ -28,7 +28,6 @@ class _StartScreenState extends State<StartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
         DialogManager.showExitConfirmationDialog(context);
@@ -37,7 +36,7 @@ class _StartScreenState extends State<StartScreen> {
       child: Scaffold(
         extendBodyBehindAppBar: true,
         body: Stack(
-          children: [
+          children: <Widget>[
             const Positioned.fill(
               child: RiveAnimation.asset(
                 'assets/RiveAssets/firstscreen.riv',
@@ -46,7 +45,7 @@ class _StartScreenState extends State<StartScreen> {
             ),
             SafeArea(
               child: Center(
-                child: Row(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment:
                       CrossAxisAlignment.start, // Alinea al inicio
@@ -71,7 +70,7 @@ class _StartScreenState extends State<StartScreen> {
                                 height: 80,
                                 width: 80,
                               ),
-                              const SizedBox(width: 16),
+                              SizedBox(width: 16),
                               Image.asset(
                                 'assets/images/ludolab.png',
                                 height: 50,

@@ -29,6 +29,7 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
   String? selectedIncorrectCard;
   bool showBounceAnimation = true;
   bool _showConfetti = false;
+  bool _isPlayingSound = false;
 
   final databaseRepository = DatabaseRepository();
 
@@ -37,7 +38,8 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
     super.initState();
     _incrementTimesPlayed(); // Incrementar contador de juegos jugados
     newGame();
-    AudioManager.effects().play('sound/family/instruccionGame1.m4a');
+    AudioManager.playBackground('sound/family/song120.mp3');
+    AudioManager.playEffect('sound/family/instruccionJuego1.m4a');
   }
 
   void _incrementTimesPlayed() {
@@ -116,11 +118,14 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
   void checkMatch(String selectedCard) async {
     if (selectedCard == cardUp) {
       await playSound(selectedCard);
+      _playCorrectAnswerSounds(selectedCard);
       Future.delayed(const Duration(seconds: 2), () {
         setState(() {
           score++;
-          if (score >= 3) {
-            _showWinDialog();
+          if (score >= 1) {
+            Future.delayed(const Duration(seconds: 8), () {
+              _showWinDialog();
+            });
           } else {
             newGame();
           }
@@ -211,6 +216,25 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
     );
   }
 
+  Future<void> _playCorrectAnswerSounds(String audioFileName) async {
+    setState(() {
+      _isPlayingSound = true;
+    });
+
+    await AudioManager.effects().play('sound/numbers/yeahf.mp3');
+    await Future.delayed(const Duration(seconds: 2));
+    await AudioManager.effects().play('sound/numbers/repetir.m4a');
+    await Future.delayed(const Duration(seconds: 2));
+    await playSound(audioFileName);
+    await Future.delayed(const Duration(seconds: 3));
+    await playSound(audioFileName);
+    await Future.delayed(const Duration(seconds: 3));
+
+    setState(() {
+      _isPlayingSound = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -229,7 +253,7 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
                   backgroundColor: const Color.fromARGB(255, 36, 18, 58),
                   progressBarColor: const Color.fromARGB(255, 90, 65, 156),
                   headerText:
-                      'Sélectionnez la photo de famille comme celle ci-dessus',
+                      'Selecciona la foto familiar igual a la de arriba',
                   progressValue: score / 10,
                   onBack: () {
                     Navigator.pushReplacement(
@@ -313,8 +337,19 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
                 ),
               ],
             ),
+            if (_isPlayingSound)
+              Container(
+                color: Colors.black.withOpacity(0.8),
+                child: const Center(
+                  child: Icon(
+                    Icons.volume_up,
+                    size: 100,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             const MovableButtonScreen(
-              spanishAudio: 'sound/family/instruccionGame1.m4a',
+              spanishAudio: 'sound/family/instruccionJuego1.m4a',
               frenchAudio: 'sound/family/instruccionGame1.m4a',
               rivePath: 'assets/RiveAssets/familygame1.riv',
             )
@@ -401,7 +436,7 @@ class _PlayButtonState extends State<PlayButton> {
         child: Center(
           child: Image.asset(
             'assets/images/icons/sonido.png',
-            width: 50, // Ajusta el tamaño de la imagen según sea necesario
+            width: 50,
             height: 50,
           ),
         ),

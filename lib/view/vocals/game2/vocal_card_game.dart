@@ -336,10 +336,14 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
               ],
             ),
           ),
-          const MovableButtonScreen(
-            spanishAudio: "",
-            frenchAudio: "",
-            rivePath: "",
+          const Positioned(
+            bottom: 10,
+            right: 10,
+            child: MovableButtonScreen(
+              spanishAudio: 'sound/family/instruccionGame1.m4a',
+              frenchAudio: 'sound/family/instruccionGame1.m4a',
+              rivePath: 'assets/RiveAssets/vocalsgame2.riv',
+            ),
           ),
         ],
       ),

@@ -18,22 +18,21 @@ Widget getGameScreen(String category, int gameNumber) {
           return StartGame(
             title: 'Trouvez votre famille',
             buttons: [
-              ButtonData(
-                  text: 'Commencer', widget: const TrainWagonNumbersGame()),
+              ButtonData(text: 'Jugar', widget: const TrainWagonNumbersGame()),
             ],
           );
         case 2:
           return StartGame(
             title: 'Trouvez votre famille',
             buttons: [
-              ButtonData(text: 'Commencer', widget: const MemoryNumbersGame()),
+              ButtonData(text: 'Jugar', widget: const MemoryNumbersGame()),
             ],
           );
         case 3:
           return StartGame(
             title: 'Trouvez votre famille',
             buttons: [
-              ButtonData(text: 'Commencer', widget: const BubbleNumbersGame()),
+              ButtonData(text: 'Jugar', widget: const BubbleNumbersGame()),
             ],
           );
         default:
@@ -42,16 +41,16 @@ Widget getGameScreen(String category, int gameNumber) {
     case 'Voyelles':
       switch (gameNumber) {
         case 1:
-          return StartGame(title: 'Attrapez la voyelle', buttons: [
-            ButtonData(text: 'Commencer', widget: const VocalGame())
-          ]);
+          return StartGame(
+              title: 'Attrapez la voyelle',
+              buttons: [ButtonData(text: 'Jugar', widget: const VocalGame())]);
         case 2:
           return StartGame(title: 'Faites correspondre les voyelles', buttons: [
-            ButtonData(text: 'Commencer', widget: const VocalMemoryPage())
+            ButtonData(text: 'Jugar', widget: const VocalMemoryPage())
           ]);
         case 3:
           return StartGame(title: 'Complétez le nom', buttons: [
-            ButtonData(text: 'Commencer', widget: const AnimalNameGame())
+            ButtonData(text: 'Jugar', widget: const AnimalNameGame())
           ]);
         default:
           return Container();
@@ -60,23 +59,23 @@ Widget getGameScreen(String category, int gameNumber) {
       switch (gameNumber) {
         case 1:
           return StartGame(
-            title: 'Trouvez votre famille',
+            title: 'Encuentra a la familia',
             buttons: [
-              ButtonData(text: 'Commencer', widget: const FindFamilyGame()),
+              ButtonData(text: 'Jugar', widget: const FindFamilyGame()),
             ],
           );
         case 2:
           return StartGame(
-            title: 'Trouvez votre famille',
+            title: 'Reune a la familia',
             buttons: [
-              ButtonData(text: 'Commencer', widget: const GatherFamilyGame()),
+              ButtonData(text: 'Jugar', widget: const GatherFamilyGame()),
             ],
           );
         case 3:
           return StartGame(
-            title: 'Trouvez votre famille',
+            title: 'Empareja a la familia',
             buttons: [
-              ButtonData(text: 'Commencer', widget: const MemoryGamePage()),
+              ButtonData(text: 'Jugar', widget: const MemoryGamePage()),
             ],
           );
         default:
