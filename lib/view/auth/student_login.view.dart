@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:frenc_app/model/fruit.dart';
 import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/user_provider.dart';
+import 'package:frenc_app/view/button.dart';
 import 'package:frenc_app/view/category_selection.dart';
 import 'package:frenc_app/view_model/auth/student_login.dart';
 import 'package:frenc_app/widgets/custom_theme_text.dart';
@@ -171,6 +172,15 @@ class FruitGameScreen extends StatelessWidget {
                 },
               ),
             ),
+            const Positioned(
+              bottom: 10,
+              right: 10,
+              child: MovableButtonScreen(
+                spanishAudio: '',
+                frenchAudio: '',
+                rivePath: '',
+              ),
+            )
           ],
         ),
       ),
@@ -230,7 +240,7 @@ class _ShakeWidgetState extends State<ShakeWidget>
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
-    ]); // Restablecer orientación a vertical al eliminar la pantalla
+    ]);
     super.dispose();
   }
 
