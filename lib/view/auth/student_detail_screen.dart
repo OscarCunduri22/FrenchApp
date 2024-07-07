@@ -76,9 +76,23 @@ class StudentDetailScreen extends StatelessWidget {
                             .setCurrentStudent(studentId, student);
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                FruitGameScreen(studentId: studentId),
+                          PageRouteBuilder(
+                            transitionDuration: const Duration(seconds: 1),
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    FruitGameScreen(studentId: studentId),
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                              return FadeTransition(
+                                opacity: TweenSequence([
+                                  TweenSequenceItem(
+                                    tween: Tween(begin: 0.0, end: 1.0),
+                                    weight: 50.0,
+                                  ),
+                                ]).animate(animation),
+                                child: child,
+                              );
+                            },
                           ),
                         );
                       },
