@@ -46,6 +46,8 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
     ]);
     super.dispose();
   }
@@ -344,9 +346,8 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                                           height: 32,
                                         ),
                                         onPressed: () {
-                                          DialogManager
-                                              .showExitConfirmationDialog(
-                                                  context);
+                                          confirmDeleteStudent(
+                                              studentId, student.name);
                                         },
                                       ),
                                     ),
@@ -355,6 +356,32 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                             },
                           );
                         },
+                      ),
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TutorLoginScreen(),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: const Text(
+                          'Cerrar Sesión',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
                       ),
                     ),
                   ],
