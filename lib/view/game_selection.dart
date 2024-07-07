@@ -30,7 +30,6 @@ class _GameSelectionScreenState extends State<GameSelectionScreen> {
   @override
   void initState() {
     super.initState();
-
     _fetchGameCompletionStatus();
   }
 
@@ -72,73 +71,72 @@ class _GameSelectionScreenState extends State<GameSelectionScreen> {
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
+
     return WillPopScope(
-        onWillPop: () async {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const CategorySelectionScreen(),
-            ),
-          );
-          return false;
-        },
-        child: Scaffold(
-          body: isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : errorMessage.isNotEmpty
-                  ? Center(child: Text(errorMessage))
-                  : Stack(
-                      children: [
-                        Positioned.fill(
-                          child: Image.asset(
-                            'assets/images/global/cloudsbg.png',
-                            fit: BoxFit.cover,
-                          ),
+      onWillPop: () async {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const CategorySelectionScreen(),
+          ),
+        );
+        return false;
+      },
+      child: Scaffold(
+        body: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : errorMessage.isNotEmpty
+                ? Center(child: Text(errorMessage))
+                : Stack(
+                    children: [
+                      Positioned.fill(
+                        child: Image.asset(
+                          'assets/images/global/cloudsbg.png',
+                          fit: BoxFit.cover,
                         ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: Stack(
-                                children: [
-                                  Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: IconButton(
-                                      icon: Image.asset(
-                                        'assets/images/icons/hacia-atras.png',
-                                        width: 32,
-                                        height: 32,
+                      ),
+                      Column(
+                        children: [
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                IconButton(
+                                  icon: Image.asset(
+                                    'assets/images/icons/hacia-atras.png',
+                                    width: 32,
+                                    height: 32,
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const CategorySelectionScreen(),
                                       ),
-                                      onPressed: () {
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const CategorySelectionScreen(),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  Align(
-                                    alignment: Alignment.center,
-                                    child: CustomTextWidget(
-                                      text: widget.category,
-                                      type: TextType.Subtitle,
-                                      fontSize: 48,
-                                      color: ColorType.Secondary,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                    );
+                                  },
+                                ),
+                                CustomTextWidget(
+                                  text: widget.category,
+                                  type: TextType.Subtitle,
+                                  fontSize: 48,
+                                  color: ColorType.Secondary,
+                                ),
+                                const SizedBox(width: 32),
+                              ],
                             ),
-                            Expanded(
-                              child: Center(
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
+                          ),
+                          Expanded(
+                            child: LayoutBuilder(
+                              builder: (context, constraints) {
+                                double cardWidth =
+                                    (constraints.maxWidth - 128) / 3;
+                                double cardHeight = constraints.maxHeight - 64;
+
+                                return Center(
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceEvenly,
@@ -153,7 +151,7 @@ class _GameSelectionScreenState extends State<GameSelectionScreen> {
                                               gameCompletionStatus[1]);
                                       return Padding(
                                         padding: const EdgeInsets.symmetric(
-                                            horizontal: 32.0),
+                                            horizontal: 16.0),
                                         child: GameCard(
                                           category: widget.category,
                                           gameNumber: index + 1,
@@ -172,17 +170,21 @@ class _GameSelectionScreenState extends State<GameSelectionScreen> {
                                               );
                                             }
                                           },
+                                          width: cardWidth,
+                                          height: cardHeight,
                                         ),
                                       );
                                     }),
                                   ),
-                                ),
-                              ),
+                                );
+                              },
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
-        ));
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+      ),
+    );
   }
 }
