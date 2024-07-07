@@ -49,8 +49,7 @@ class _StartScreenState extends State<StartScreen> {
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start, // Alinea al inicio
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(

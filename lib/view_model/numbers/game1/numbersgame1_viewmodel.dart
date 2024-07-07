@@ -56,7 +56,7 @@ class GameViewModel extends ChangeNotifier {
 
   GameViewModel(this.userTracking, this.studentId) {
     characterSlots = List<String?>.filled(_numbers[_currentIndex].length, null);
-    _incrementTimesPlayed(); // Incrementar contador de juegos jugados
+    _incrementTimesPlayed();
   }
 
   List<String> get numbers => _numbers;
@@ -100,7 +100,7 @@ class GameViewModel extends ChangeNotifier {
       notifyListeners();
     } else {
       _isGameCompleted = true;
-      _incrementTimesCompleted(); // Incrementar contador de juegos completados
+      _incrementTimesCompleted();
       notifyListeners();
     }
   }

@@ -1,45 +1,75 @@
-// ignore_for_file: prefer_const_constructors_in_immutables, use_build_context_synchronously, deprecated_member_use, library_private_types_in_public_api
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously, prefer_const_constructors_in_immutables, library_private_types_in_public_api
 
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:frenc_app/utils/audio_manager.dart';
+import 'package:provider/provider.dart';
 import 'package:frenc_app/model/fruit.dart';
 import 'package:frenc_app/model/tutor.dart';
 import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/dialog_manager.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/auth/tutor_dashboard.dart';
-import 'package:frenc_app/view/button.dart';
 import 'package:frenc_app/view/category_selection.dart';
 import 'package:frenc_app/view_model/auth/student_login.dart';
+import 'package:frenc_app/widgets/animations/shake.dart';
+import 'package:frenc_app/widgets/character/gallo.dart';
 import 'package:frenc_app/widgets/custom_theme_text.dart';
-import 'package:provider/provider.dart';
+import 'package:frenc_app/widgets/confetti_animation.dart'; // Import the ConfettiAnimation widget
 import 'dart:math';
 
-class FruitGameScreen extends StatelessWidget {
+class FruitGameScreen extends StatefulWidget {
   final String studentId;
 
   FruitGameScreen({Key? key, required this.studentId}) : super(key: key);
 
+  @override
+  _FruitGameScreenState createState() => _FruitGameScreenState();
+}
+
+class _FruitGameScreenState extends State<FruitGameScreen>
+    with SingleTickerProviderStateMixin {
+  bool _showExplanation = true;
+  late AnimationController _animationController;
+
   void _setStudentIdInProvider(BuildContext context) async {
     final repository = DatabaseRepository();
-    final student = await repository.getStudentById(studentId);
+    final student = await repository.getStudentById(widget.studentId);
 
     if (student != null) {
       Provider.of<UserProvider>(context, listen: false)
-          .setCurrentStudent(studentId, student);
+          .setCurrentStudent(widget.studentId, student);
     }
   }
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     _setStudentIdInProvider(context);
-
     SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
     ]);
+    _animationController = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    )..repeat(reverse: true);
+  }
 
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+    ]);
+    final buttonHeight = MediaQuery.of(context).size.height * 0.07;
+    final buttonWidth = MediaQuery.of(context).size.width * 0.25;
     return ChangeNotifierProvider(
       create: (_) => FruitGameViewModel(),
       child: Scaffold(
@@ -54,25 +84,84 @@ class FruitGameScreen extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-                child: Container(
-                  color: Colors.black.withOpacity(0.1),
-                ),
-              ),
             ),
             Consumer<FruitGameViewModel>(
               builder: (context, viewModel, child) {
-                if (viewModel.correctAnswers.length ==
-                        viewModel.fruits.length &&
-                    viewModel.correctAnswers.values
-                        .every((isCorrect) => isCorrect)) {
+                if (viewModel.isAllCorrect()) {
                   Future.delayed(Duration.zero, () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const CategorySelectionScreen(),
-                      ),
+                    AudioManager.effects().play('sound/numbers/yeahf.mp3');
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return WillPopScope(
+                          onWillPop: () async => false,
+                          child: AlertDialog(
+                            backgroundColor: Colors.black.withOpacity(0.8),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const ConfettiAnimation(animate: true),
+                                const Text(
+                                  '¡Felicidades!',
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                const Text(
+                                  'Has completado el juego con éxito.',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 20),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                    Navigator.pushReplacement(
+                                      context,
+                                      PageRouteBuilder(
+                                        transitionDuration:
+                                            const Duration(seconds: 1),
+                                        pageBuilder: (context, animation,
+                                                secondaryAnimation) =>
+                                            const CategorySelectionScreen(),
+                                        transitionsBuilder: (context, animation,
+                                            secondaryAnimation, child) {
+                                          return FadeTransition(
+                                            opacity: TweenSequence([
+                                              TweenSequenceItem(
+                                                tween:
+                                                    Tween(begin: 1.0, end: 0.0),
+                                                weight: 50.0,
+                                              ),
+                                              TweenSequenceItem(
+                                                tween:
+                                                    Tween(begin: 0.0, end: 1.0),
+                                                weight: 50.0,
+                                              ),
+                                            ]).animate(animation),
+                                            child: child,
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.green,
+                                  ),
+                                  child: const Text('Continuar'),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
                     );
                   });
                 }
@@ -161,6 +250,119 @@ class FruitGameScreen extends StatelessWidget {
                 );
               },
             ),
+            if (_showExplanation)
+              Stack(
+                children: [
+                  Container(
+                    color: Colors.black.withOpacity(0.7),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Flexible(
+                                child: Container(
+                                    width: 300,
+                                    padding: const EdgeInsets.all(16.0),
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(8.0)),
+                                    child: const Column(
+                                      children: [
+                                        Text(
+                                          'Desafio diario',
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 20,
+                                              fontFamily: 'FuzzyBubblesFont',
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        SizedBox(height: 4),
+                                        Text(
+                                          'Asigna la fruta a la silueta correcta',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 20,
+                                            fontFamily: 'FuzzyBubblesFont',
+                                          ),
+                                        ),
+                                        SizedBox(height: 4),
+                                        Text(
+                                          'Buena Suerte!',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 20,
+                                            fontFamily: 'FuzzyBubblesFont',
+                                          ),
+                                        )
+                                      ],
+                                    )),
+                              ),
+                              const SizedBox(width: 8.0),
+                              Flexible(
+                                child: SizedBox(
+                                  width: 300,
+                                  height: 300,
+                                  child: Stack(
+                                    children: [
+                                      GalloComponent.speaking(
+                                          audioPath:
+                                              'sound/numbers/silueta.m4a'),
+                                      Positioned(
+                                        left: 0,
+                                        right: 0,
+                                        bottom: 0,
+                                        top: 0,
+                                        child: SlideTransition(
+                                          position: Tween<Offset>(
+                                                  begin: const Offset(0, 0.3),
+                                                  end: const Offset(0, 0.25))
+                                              .animate(_animationController),
+                                          child: const Icon(
+                                            Icons.touch_app,
+                                            color: Colors.white,
+                                            size: 50,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              setState(() {
+                                _showExplanation = false;
+                              });
+                            },
+                            label: const Text(
+                              'Saltar',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 24),
+                            ),
+                            icon: const Icon(Icons.skip_next,
+                                color: Colors.white),
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: Size(buttonWidth, buttonHeight),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              backgroundColor: const Color(0xFF016171),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             Positioned(
               top: 10,
               right: 10,
@@ -179,89 +381,9 @@ class FruitGameScreen extends StatelessWidget {
                 },
               ),
             ),
-            const Positioned(
-              bottom: 10,
-              right: 10,
-              child: MovableButtonScreen(
-                spanishAudio: '',
-                frenchAudio: '',
-                rivePath: '',
-              ),
-            )
           ],
         ),
       ),
-    );
-  }
-}
-
-class ShakeWidget extends StatefulWidget {
-  final Widget child;
-  final Duration interval;
-
-  const ShakeWidget({
-    Key? key,
-    required this.child,
-    this.interval = const Duration(seconds: 2),
-  }) : super(key: key);
-
-  @override
-  _ShakeWidgetState createState() => _ShakeWidgetState();
-}
-
-class _ShakeWidgetState extends State<ShakeWidget>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-  late final Animation<double> _animation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 500),
-      vsync: this,
-    );
-
-    _animation = Tween<double>(begin: -5.0, end: 5.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.elasticIn),
-    );
-
-    _startShake();
-  }
-
-  void _startShake() {
-    Future.delayed(widget.interval, () {
-      if (mounted) {
-        _controller.forward(from: 0.0).then((_) {
-          _controller.reverse().then((_) {
-            _startShake();
-          });
-        });
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _animation,
-      child: widget.child,
-      builder: (context, child) {
-        return Transform.translate(
-          offset: Offset(_animation.value, 0),
-          child: child,
-        );
-      },
     );
   }
 }
