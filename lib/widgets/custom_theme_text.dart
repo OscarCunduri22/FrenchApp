@@ -18,19 +18,21 @@ class CustomTextWidget extends StatelessWidget {
   final TextAlign? align;
   final bool shadow;
   final ShadowType shadowColor;
+  final TextOverflow? overflow;
 
-  const CustomTextWidget(
-      {Key? key,
-      required this.text,
-      required this.type,
-      required this.fontSize,
-      this.fontWeight = FontWeight.normal,
-      this.letterSpacing = 0.0,
-      this.color,
-      this.align,
-      this.shadow = true,
-      this.shadowColor = ShadowType.Dark})
-      : super(key: key);
+  const CustomTextWidget({
+    Key? key,
+    required this.text,
+    required this.type,
+    required this.fontSize,
+    this.fontWeight = FontWeight.normal,
+    this.letterSpacing = 0.0,
+    this.color,
+    this.align,
+    this.shadow = true,
+    this.shadowColor = ShadowType.Dark,
+    this.overflow,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -105,6 +107,7 @@ class CustomTextWidget extends StatelessWidget {
               : null,
         ),
         textAlign: align,
+        overflow: overflow,
       );
     } else {
       throw ArgumentError(

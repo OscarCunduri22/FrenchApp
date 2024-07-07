@@ -33,13 +33,13 @@ class StartGame extends StatelessWidget {
                 },
                 child: Container(
                   margin: EdgeInsets.symmetric(
-                    horizontal: size.width * 0.05,
-                    vertical: size.height * 0.05,
+                    horizontal: size.width * 0.03,
+                    vertical: size.height * 0.03,
                   ),
                   child: Image.asset(
                     'assets/images/icons/hacia-atras.png',
-                    width: size.width * 0.07,
-                    height: size.width * 0.07,
+                    width: size.width * 0.04,
+                    height: size.width * 0.04,
                   ),
                 ),
               ),
@@ -58,7 +58,7 @@ class StartGame extends StatelessWidget {
                               Text(
                                 title,
                                 style: TextStyle(
-                                  fontSize: size.width * 0.06,
+                                  fontSize: size.width * 0.04,
                                   fontWeight: FontWeight.bold,
                                   foreground: Paint()
                                     ..style = PaintingStyle.stroke
@@ -80,7 +80,7 @@ class StartGame extends StatelessWidget {
                             ],
                           ),
                         ),
-                        SizedBox(height: size.height * 0.02),
+                        SizedBox(height: size.height * 0.1),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: buttons.map((buttonData) {
@@ -120,17 +120,17 @@ class StartGame extends StatelessWidget {
                       child: Stack(
                         children: [
                           Positioned(
-                            bottom: size.height * 0,
+                            bottom: size.height * 0.05,
                             left: size.width * 0.18,
                             child: SizedBox(
-                              width: size.width * 0.5,
-                              height: size.width * 0.5,
+                              width: size.width * 0.4,
+                              height: size.width * 0.4,
                               child: GalloComponent.dancing(),
                             ),
                           ),
                           Positioned(
                             bottom: size.height * 0.4,
-                            right: size.width * 0.22,
+                            right: size.width * 0.23,
                             child: CustomPaint(
                               painter: TrianglePainter(),
                             ),

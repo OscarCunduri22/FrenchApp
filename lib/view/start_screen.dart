@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:frenc_app/utils/dialog_manager.dart';
 import 'package:frenc_app/view/auth/login_tutor_screen.dart';
@@ -70,7 +72,7 @@ class _StartScreenState extends State<StartScreen> {
                                 height: 80,
                                 width: 80,
                               ),
-                              SizedBox(width: 16),
+                              const SizedBox(width: 16),
                               Image.asset(
                                 'assets/images/ludolab.png',
                                 height: 50,

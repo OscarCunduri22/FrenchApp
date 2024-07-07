@@ -4,8 +4,11 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frenc_app/model/fruit.dart';
+import 'package:frenc_app/model/tutor.dart';
 import 'package:frenc_app/repository/global.repository.dart';
+import 'package:frenc_app/utils/dialog_manager.dart';
 import 'package:frenc_app/utils/user_provider.dart';
+import 'package:frenc_app/view/auth/tutor_dashboard.dart';
 import 'package:frenc_app/view/button.dart';
 import 'package:frenc_app/view/category_selection.dart';
 import 'package:frenc_app/view_model/auth/student_login.dart';
@@ -164,11 +167,15 @@ class FruitGameScreen extends StatelessWidget {
               child: IconButton(
                 icon: Image.asset(
                   'assets/images/icons/exit.png',
-                  width: 64,
-                  height: 64,
+                  width: 32,
+                  height: 32,
                 ),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Tutor? tutor =
+                      Provider.of<UserProvider>(context, listen: false)
+                          .currentUser;
+                  DialogManager.showExitGameDialog(
+                      context, TutorDashboardScreen(tutorName: tutor!.name));
                 },
               ),
             ),

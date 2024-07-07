@@ -9,6 +9,8 @@ class GameCard extends StatelessWidget {
   final int gameNumber;
   final bool isUnlocked;
   final VoidCallback onPlayPressed;
+  final double width;
+  final double height;
   String gameName;
 
   GameCard({
@@ -17,6 +19,8 @@ class GameCard extends StatelessWidget {
     required this.gameNumber,
     required this.isUnlocked,
     required this.onPlayPressed,
+    required this.width,
+    required this.height,
     this.gameName = '',
   });
 
@@ -48,8 +52,8 @@ class GameCard extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: Container(
-            width: 160,
-            height: 220,
+            width: width,
+            height: height,
             decoration: BoxDecoration(
               color: Colors.transparent,
               borderRadius: BorderRadius.circular(12),
@@ -63,11 +67,12 @@ class GameCard extends StatelessWidget {
                   fontSize: 24,
                   color: ColorType.Secondary,
                   shadowColor: ShadowType.Light,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 8),
                 Container(
-                  width: 144,
-                  height: 120,
+                  width: width * 0.9,
+                  height: height * 0.5,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: Colors.black, width: 2),
@@ -106,8 +111,8 @@ class GameCard extends StatelessWidget {
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
               child: Container(
-                width: 160,
-                height: 220,
+                width: width,
+                height: height,
                 color: Colors.white.withOpacity(0.1),
               ),
             ),
