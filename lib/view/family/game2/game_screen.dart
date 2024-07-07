@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/repository/global.repository.dart';
@@ -59,20 +61,25 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
     super.initState();
     _incrementTimesPlayed(); // Incrementar contador de juegos jugados
     newGame();
-    AudioManager.effects().play('sound/family/instruccionGame2.m4a');
+    AudioManager.playBackground('sound/family/song220.mp3');
+    AudioManager.playEffect('sound/family/instruccionJuego2.m4a');
   }
 
   void _incrementTimesPlayed() {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
-      Provider.of<UserTracking>(context, listen: false).incrementTimesPlayed(studentId, 'gather_family_game');
+      Provider.of<UserTracking>(context, listen: false)
+          .incrementTimesPlayed(studentId, 'gather_family_game');
     }
   }
 
   void _incrementTimesCompleted() {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
-      Provider.of<UserTracking>(context, listen: false).incrementTimesCompleted(studentId, 'gather_family_game');
+      Provider.of<UserTracking>(context, listen: false)
+          .incrementTimesCompleted(studentId, 'gather_family_game');
     }
   }
 
@@ -83,7 +90,8 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
   }
 
   void _onGameComplete() async {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
 
     if (studentId != null) {
       await databaseRepository
@@ -211,7 +219,7 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
                 ProgressBar(
                   backgroundColor: const Color(0xFF424141),
                   progressBarColor: const Color(0xFFD67171),
-                  headerText: 'Trouver la bonne position familiale',
+                  headerText: 'Encuentra la ubicación correcta del familiar',
                   progressValue: score / 10,
                   onBack: () {
                     Navigator.pushReplacement(
@@ -251,8 +259,8 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
                 ),
               ),
             const MovableButtonScreen(
-              spanishAudio: 'sound/family/instruccionGame1.m4a',
-              frenchAudio: 'sound/family/instruccionGame1.m4a',
+              spanishAudio: 'sound/family/instruccionJuego2.m4a',
+              frenchAudio: 'sound/family/instruccionGame2.m4a',
               rivePath: 'assets/RiveAssets/familygame2.riv',
             )
           ],

@@ -19,7 +19,8 @@ class VocalMemoryPage extends StatefulWidget {
   State<VocalMemoryPage> createState() => _VocalMemoryPageState();
 }
 
-class _VocalMemoryPageState extends State<VocalMemoryPage> with TickerProviderStateMixin {
+class _VocalMemoryPageState extends State<VocalMemoryPage>
+    with TickerProviderStateMixin {
   bool _showConfetti = false;
   bool isBusy = false;
 
@@ -79,24 +80,29 @@ class _VocalMemoryPageState extends State<VocalMemoryPage> with TickerProviderSt
   }
 
   void _incrementTimesPlayed() {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
-      Provider.of<UserTracking>(context, listen: false).incrementTimesPlayed(studentId, 'vocal_memory');
+      Provider.of<UserTracking>(context, listen: false)
+          .incrementTimesPlayed(studentId, 'vocal_memory');
     }
   }
 
   void _incrementTimesCompleted() {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
-      Provider.of<UserTracking>(context, listen: false).incrementTimesCompleted(studentId, 'vocal_memory');
+      Provider.of<UserTracking>(context, listen: false)
+          .incrementTimesCompleted(studentId, 'vocal_memory');
     }
   }
 
   void _onGameComplete() async {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
-      await databaseRepository.updateGameCompletionStatus(
-          studentId, 'Voyelles', [true, true, false]); // Actualizar estado de juego
+      await databaseRepository.updateGameCompletionStatus(studentId, 'Voyelles',
+          [true, true, false]); // Actualizar estado de juego
       _incrementTimesCompleted(); // Incrementar contador de juegos completados
     }
 
@@ -157,7 +163,8 @@ class _VocalMemoryPageState extends State<VocalMemoryPage> with TickerProviderSt
 
   List<String> _getRandomImages() {
     final random = Random();
-    final selectedImages = (allImages.toList()..shuffle(random)).take(4).toList();
+    final selectedImages =
+        (allImages.toList()..shuffle(random)).take(4).toList();
     return List.from(selectedImages)..addAll(selectedImages);
   }
 
@@ -327,7 +334,15 @@ class _VocalMemoryPageState extends State<VocalMemoryPage> with TickerProviderSt
               ],
             ),
           ),
-          const MovableButtonScreen(spanishAudio: "", frenchAudio: "", rivePath: "",),
+          Positioned(
+            bottom: 10,
+            right: 10,
+            child: MovableButtonScreen(
+              spanishAudio: 'sound/family/instruccionGame1.m4a',
+              frenchAudio: 'sound/family/instruccionGame1.m4a',
+              rivePath: 'assets/RiveAssets/vocalsgame2.riv',
+            ),
+          ),
         ],
       ),
     );
