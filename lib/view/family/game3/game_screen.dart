@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:frenc_app/repository/global.repository.dart';
@@ -67,25 +69,30 @@ class _MemoryGamePageState extends State<MemoryGamePage>
   }
 
   void _incrementTimesPlayed() {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
-      Provider.of<UserTracking>(context, listen: false).incrementTimesPlayed(studentId, 'memory_game');
+      Provider.of<UserTracking>(context, listen: false)
+          .incrementTimesPlayed(studentId, 'memory_game');
     }
   }
 
   void _incrementTimesCompleted() {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
-      Provider.of<UserTracking>(context, listen: false).incrementTimesCompleted(studentId, 'memory_game');
+      Provider.of<UserTracking>(context, listen: false)
+          .incrementTimesCompleted(studentId, 'memory_game');
     }
   }
 
   Future<void> _loadGame() async {
-    await AudioManager.effects().play('sound/family/instruccionGame3.m4a');
-    _newGame();
     setState(() {
       _isLoading = false;
     });
+    _newGame();
+    AudioManager.playBackground('sound/family/song320.mp3');
+    AudioManager.playEffect('sound/family/instruccionJuego3.m4a');
   }
 
   @override
@@ -237,7 +244,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
       if (cardsFlipped.every((flipped) => flipped)) {
         score += 1;
         Future.delayed(const Duration(seconds: 2), () {
-          if (score > 1) {
+          if (score >= 1) {
             Future.delayed(const Duration(seconds: 8), () {
               _showWinDialog();
             });
@@ -290,7 +297,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
                 ProgressBar(
                   backgroundColor: const Color(0xFF424141),
                   progressBarColor: const Color(0xFF8DB270),
-                  headerText: 'Retournez les cartes et trouvez les paires',
+                  headerText: 'Voltea las cartas y encuentra las parejas',
                   progressValue: score / 10,
                   onBack: () {
                     Navigator.pushReplacement(
@@ -382,8 +389,8 @@ class _MemoryGamePageState extends State<MemoryGamePage>
               ),
             ),
           const MovableButtonScreen(
-            spanishAudio: 'sound/family/instruccionGame1.m4a',
-            frenchAudio: 'sound/family/instruccionGame1.m4a',
+            spanishAudio: 'sound/family/instruccionJuego3.m4a',
+            frenchAudio: 'sound/family/instruccionGame3.m4a',
             rivePath: 'assets/RiveAssets/familygame3.riv',
           )
         ],
