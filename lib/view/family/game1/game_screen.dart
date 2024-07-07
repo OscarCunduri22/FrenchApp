@@ -38,20 +38,25 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
     super.initState();
     _incrementTimesPlayed(); // Incrementar contador de juegos jugados
     newGame();
-    AudioManager.effects().play('sound/family/instruccionGame1.m4a');
+    AudioManager.playBackground('sound/family/song120.mp3');
+    AudioManager.playEffect('sound/family/instruccionJuego1.m4a');
   }
 
   void _incrementTimesPlayed() {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
-      Provider.of<UserTracking>(context, listen: false).incrementTimesPlayed(studentId, 'find_family_game');
+      Provider.of<UserTracking>(context, listen: false)
+          .incrementTimesPlayed(studentId, 'find_family_game');
     }
   }
 
   void _incrementTimesCompleted() {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
-      Provider.of<UserTracking>(context, listen: false).incrementTimesCompleted(studentId, 'find_family_game');
+      Provider.of<UserTracking>(context, listen: false)
+          .incrementTimesCompleted(studentId, 'find_family_game');
     }
   }
 
@@ -62,7 +67,8 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
   }
 
   void _onGameComplete() async {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
 
     if (studentId != null) {
       await databaseRepository.updateGameCompletionStatus(
@@ -73,7 +79,7 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => GameSelectionScreen(
+          builder: (context) => const GameSelectionScreen(
                 category: 'Famille',
               )),
     );
@@ -246,13 +252,14 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
                 ProgressBar(
                   backgroundColor: const Color.fromARGB(255, 36, 18, 58),
                   progressBarColor: const Color.fromARGB(255, 90, 65, 156),
-                  headerText: 'Sélectionnez la photo de famille comme celle ci-dessus',
+                  headerText:
+                      'Selecciona la foto familiar igual a la de arriba',
                   progressValue: score / 10,
                   onBack: () {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => GameSelectionScreen(
+                        builder: (context) => const GameSelectionScreen(
                           category: 'Famille',
                         ),
                       ),
@@ -342,7 +349,7 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
                 ),
               ),
             const MovableButtonScreen(
-              spanishAudio: 'sound/family/instruccionGame1.m4a',
+              spanishAudio: 'sound/family/instruccionJuego1.m4a',
               frenchAudio: 'sound/family/instruccionGame1.m4a',
               rivePath: 'assets/RiveAssets/familygame1.riv',
             )

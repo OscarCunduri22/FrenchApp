@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:flutter/material.dart';
 
 enum TextType { Title, Subtitle }
@@ -16,19 +18,21 @@ class CustomTextWidget extends StatelessWidget {
   final TextAlign? align;
   final bool shadow;
   final ShadowType shadowColor;
+  final TextOverflow? overflow;
 
-  const CustomTextWidget(
-      {Key? key,
-      required this.text,
-      required this.type,
-      required this.fontSize,
-      this.fontWeight = FontWeight.normal,
-      this.letterSpacing = 0.0,
-      this.color,
-      this.align,
-      this.shadow = true,
-      this.shadowColor = ShadowType.Dark})
-      : super(key: key);
+  const CustomTextWidget({
+    Key? key,
+    required this.text,
+    required this.type,
+    required this.fontSize,
+    this.fontWeight = FontWeight.normal,
+    this.letterSpacing = 0.0,
+    this.color,
+    this.align,
+    this.shadow = true,
+    this.shadowColor = ShadowType.Dark,
+    this.overflow,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +59,7 @@ class CustomTextWidget extends StatelessWidget {
                     Shadow(
                       blurRadius: 0.0,
                       color: getShadowColor(shadowColor),
-                      offset: Offset(4.0, 4.0),
+                      offset: const Offset(4.0, 4.0),
                     ),
                   ]
                 : null,
@@ -73,7 +77,7 @@ class CustomTextWidget extends StatelessWidget {
                         Shadow(
                           blurRadius: 0.0,
                           color: getShadowColor(shadowColor),
-                          offset: Offset(4.0, 4.0),
+                          offset: const Offset(4.0, 4.0),
                         ),
                       ]
                     : null,
@@ -97,12 +101,13 @@ class CustomTextWidget extends StatelessWidget {
               ? [
                   Shadow(
                     color: getShadowColor(shadowColor),
-                    offset: Offset(2.0, 2.0),
+                    offset: const Offset(2.0, 2.0),
                   ),
                 ]
               : null,
         ),
         textAlign: align,
+        overflow: overflow,
       );
     } else {
       throw ArgumentError(

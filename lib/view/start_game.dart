@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frenc_app/utils/audio_manager.dart';
+import 'package:frenc_app/widgets/animated_button.dart';
 import 'package:frenc_app/widgets/character/button.dart';
 import 'package:frenc_app/widgets/character/gallo.dart';
 
@@ -11,6 +13,8 @@ class StartGame extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -28,12 +32,14 @@ class StartGame extends StatelessWidget {
                   Navigator.of(context).pop();
                 },
                 child: Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+                  margin: EdgeInsets.symmetric(
+                    horizontal: size.width * 0.03,
+                    vertical: size.height * 0.03,
+                  ),
                   child: Image.asset(
                     'assets/images/icons/hacia-atras.png',
-                    width: 50,
-                    height: 50,
+                    width: size.width * 0.04,
+                    height: size.width * 0.04,
                   ),
                 ),
               ),
@@ -52,11 +58,11 @@ class StartGame extends StatelessWidget {
                               Text(
                                 title,
                                 style: TextStyle(
-                                  fontSize: 50,
+                                  fontSize: size.width * 0.04,
                                   fontWeight: FontWeight.bold,
                                   foreground: Paint()
                                     ..style = PaintingStyle.stroke
-                                    ..strokeWidth = 10
+                                    ..strokeWidth = size.width * 0.02
                                     ..color = Colors.white,
                                 ),
                                 textAlign: TextAlign.center,
@@ -64,17 +70,17 @@ class StartGame extends StatelessWidget {
                               // Text with tomato color
                               Text(
                                 title,
-                                style: const TextStyle(
-                                  fontSize: 50,
+                                style: TextStyle(
+                                  fontSize: size.width * 0.06,
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xFFF44B09),
+                                  color: const Color(0xFFF44B09),
                                 ),
                                 textAlign: TextAlign.center,
                               ),
                             ],
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        SizedBox(height: size.height * 0.1),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: buttons.map((buttonData) {
@@ -82,17 +88,17 @@ class StartGame extends StatelessWidget {
                               padding:
                                   const EdgeInsets.symmetric(vertical: 5.0),
                               child: SizedBox(
-                                width: 200,
+                                width: size.width * 0.3,
                                 child: CustomButton(
                                   text: buttonData.text,
-                                  color: const Color(0xFF321158),
-                                  textStyle: const TextStyle(
-                                    fontSize: 25,
-                                    color: Color(0xFFFFE600),
+                                  color: Colors.purple[900]!,
+                                  textStyle: TextStyle(
+                                    fontSize: size.width * 0.05,
+                                    color: const Color(0xFFFFE600),
                                   ),
                                   borderSide: const BorderSide(
                                     color: Color(0xFFFFE600),
-                                    width: 2,
+                                    width: 4,
                                   ),
                                   onPressed: () {
                                     Navigator.of(context).pushReplacement(
@@ -114,40 +120,74 @@ class StartGame extends StatelessWidget {
                       child: Stack(
                         children: [
                           Positioned(
-                            right: 200,
-                            top: 120,
-                            width: 250,
-                            child: Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: const Text(
-                                'Cliquez sur jouer pour commencer à vous amuser.',
-                                style: TextStyle(
-                                  fontSize: 25,
-                                  color: Colors.black,
-                                ),
-                              ),
+                            bottom: size.height * 0.05,
+                            left: size.width * 0.18,
+                            child: SizedBox(
+                              width: size.width * 0.4,
+                              height: size.width * 0.4,
+                              child: GalloComponent.dancing(),
                             ),
                           ),
                           Positioned(
-                            bottom: 150,
-                            right: 210,
+                            bottom: size.height * 0.4,
+                            right: size.width * 0.23,
                             child: CustomPaint(
                               painter: TrianglePainter(),
                             ),
                           ),
                           Positioned(
-                            right: -80,
-                            bottom: 0,
-                            child: SizedBox(
-                              width: 350,
-                              height: 350,
-                              child: Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: GalloComponent.dancing(),
+                            top: size.height * 0.2,
+                            width: size.width * 0.3,
+                            child: Container(
+                              padding: const EdgeInsets.all(15),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset(
+                                          width: size.width * 0.07,
+                                          height: size.width * 0.07,
+                                          'assets/images/icons/ecuador.png',
+                                          fit: BoxFit.cover,
+                                        ),
+                                        SizedBox(width: size.width * 0.05),
+                                        AnimatedButton(
+                                            imagePath:
+                                                'assets/images/icons/sonido.png',
+                                            onTap: () => AudioManager.playEffect(
+                                                'sound/empezarJuegoES.m4a')),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(height: size.height * 0.02),
+                                  SizedBox(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset(
+                                          width: size.width * 0.07,
+                                          height: size.width * 0.07,
+                                          'assets/images/icons/francia.png',
+                                          fit: BoxFit.cover,
+                                        ),
+                                        SizedBox(width: size.width * 0.05),
+                                        AnimatedButton(
+                                            imagePath:
+                                                'assets/images/icons/sonido.png',
+                                            onTap: () => AudioManager.playEffect(
+                                                'sound/empezarJuegoFR.m4a')),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),

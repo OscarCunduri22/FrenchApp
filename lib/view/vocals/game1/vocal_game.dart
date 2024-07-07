@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:frenc_app/view/button.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
@@ -8,8 +10,7 @@ import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/game_selection.dart';
 import 'package:frenc_app/widgets/confetti_animation.dart';
 import 'package:frenc_app/widgets/replay_popup.dart';
-import 'package:frenc_app/utils/audio_manager.dart';
-import 'package:frenc_app/repository/global.repository.dart'; // Importar DatabaseRepository
+import 'package:frenc_app/repository/global.repository.dart';
 
 class VocalGame extends StatefulWidget {
   const VocalGame({Key? key}) : super(key: key);
@@ -57,32 +58,37 @@ class _VocalGameState extends State<VocalGame> {
   }
 
   void _incrementTimesPlayed() {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
-      Provider.of<UserTracking>(context, listen: false).incrementTimesPlayed(studentId, 'vocal_game');
+      Provider.of<UserTracking>(context, listen: false)
+          .incrementTimesPlayed(studentId, 'vocal_game');
     }
   }
 
   void _incrementTimesCompleted() {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
-      Provider.of<UserTracking>(context, listen: false).incrementTimesCompleted(studentId, 'vocal_game');
+      Provider.of<UserTracking>(context, listen: false)
+          .incrementTimesCompleted(studentId, 'vocal_game');
     }
   }
 
   Future<void> _onGameComplete() async {
-    String? studentId = Provider.of<UserProvider>(context, listen: false).currentStudentId;
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
 
     if (studentId != null) {
-      await databaseRepository.updateGameCompletionStatus(
-          studentId, 'Voyelles', [true, true, false]); // Actualizar estado de juego
+      await databaseRepository.updateGameCompletionStatus(studentId, 'Voyelles',
+          [true, true, false]); // Actualizar estado de juego
       _incrementTimesCompleted(); // Incrementar contador de juegos completados
     }
 
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => GameSelectionScreen(
+          builder: (context) => const GameSelectionScreen(
                 category: 'Voyelles',
               )),
     );
@@ -94,7 +100,7 @@ class _VocalGameState extends State<VocalGame> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final screenWidth = MediaQuery.of(context).size.width;
       final screenHeight = MediaQuery.of(context).size.height;
-      final vocalSize = 100.0;
+      const vocalSize = 100.0;
 
       setState(() {
         vowelPositionX = random.nextDouble() * (screenWidth - vocalSize);
@@ -153,7 +159,8 @@ class _VocalGameState extends State<VocalGame> {
               ProgressBar(
                 backgroundColor: const Color(0xFF424141),
                 progressBarColor: const Color(0xFFD67171),
-                headerText: 'Sélectionnez l\'image qui ressemble à celle ci-dessus',
+                headerText:
+                    'Sélectionnez l\'image qui ressemble à celle ci-dessus',
                 progressValue: foundVowels / 6,
                 onBack: () {
                   Navigator.pop(context);
@@ -189,7 +196,7 @@ class _VocalGameState extends State<VocalGame> {
               ),
             ],
           ),
-          Positioned(
+          const Positioned(
             bottom: 10,
             right: 10,
             child: MovableButtonScreen(

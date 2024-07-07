@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously, use_key_in_widget_constructors
+// ignore_for_file: use_build_context_synchronously, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
 import 'package:frenc_app/model/tutor.dart';
@@ -54,7 +54,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Editar Perfil'),
+        title: const Text('Editar Perfil'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -65,7 +65,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             children: [
               TextFormField(
                 controller: _nameController,
-                decoration: InputDecoration(labelText: 'Nombre'),
+                decoration: const InputDecoration(labelText: 'Nombre'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor ingresa tu nombre';
@@ -75,7 +75,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
               TextFormField(
                 controller: _usernameController,
-                decoration: InputDecoration(labelText: 'Nombre de usuario'),
+                decoration:
+                    const InputDecoration(labelText: 'Nombre de usuario'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor ingresa tu nombre de usuario';
@@ -85,7 +86,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
               TextFormField(
                 controller: _emailController,
-                decoration: InputDecoration(labelText: 'Correo electrónico'),
+                decoration:
+                    const InputDecoration(labelText: 'Correo electrónico'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor ingresa tu correo electrónico';
@@ -95,7 +97,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
               TextFormField(
                 controller: _passwordController,
-                decoration: InputDecoration(labelText: 'Contraseña'),
+                decoration: const InputDecoration(labelText: 'Contraseña'),
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -104,11 +106,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Center(
                 child: ElevatedButton(
                   onPressed: _saveProfile,
-                  child: Text('Guardar'),
+                  child: const Text('Guardar'),
                 ),
               ),
             ],

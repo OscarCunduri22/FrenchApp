@@ -68,7 +68,7 @@ class _AnimatedButtonState extends State<AnimatedButton>
             borderRadius: BorderRadius.circular(999),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withOpacity(0),
                 offset: const Offset(0, 4),
                 blurRadius: 4,
               ),

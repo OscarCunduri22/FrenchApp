@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_types_as_parameter_names
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,12 +32,16 @@ class UserTracking extends ChangeNotifier {
       _timesPlayed = Map<String, int>.from(json.decode(timesPlayedString));
     }
     if (timesCompletedString != null) {
-      _timesCompleted = Map<String, int>.from(json.decode(timesCompletedString));
+      _timesCompleted =
+          Map<String, int>.from(json.decode(timesCompletedString));
     }
   }
 
   Future<void> _loadFromFirestore(String studentId) async {
-    final docSnapshot = await FirebaseFirestore.instance.collection('users').doc(studentId).get();
+    final docSnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(studentId)
+        .get();
     if (docSnapshot.exists) {
       final data = docSnapshot.data()!;
       _timesPlayed = Map<String, int>.from(data['timesPlayed'] ?? {});
@@ -81,8 +87,16 @@ class UserTracking extends ChangeNotifier {
   String getMostPlayedCategory() {
     final Map<String, List<String>> categoryMap = {
       'voyelles': ['vocal_game', 'vocal_memory_game'],
-      'nombres': ['bubble_numbers_game', 'train_wagon_numbers_game', 'memory_numbers_game'],
-      'famille': ['find_family_game', 'gather_family_game', 'memory_family_game'],
+      'nombres': [
+        'bubble_numbers_game',
+        'train_wagon_numbers_game',
+        'memory_numbers_game'
+      ],
+      'famille': [
+        'find_family_game',
+        'gather_family_game',
+        'memory_family_game'
+      ],
     };
 
     final Map<String, int> categoryCount = {};
@@ -99,14 +113,24 @@ class UserTracking extends ChangeNotifier {
       return 'N/A';
     }
 
-    return categoryCount.entries.reduce((a, b) => a.value > b.value ? a : b).key;
+    return categoryCount.entries
+        .reduce((a, b) => a.value > b.value ? a : b)
+        .key;
   }
 
   Map<String, int> getGamesPlayedPerCategory() {
     final Map<String, List<String>> categoryMap = {
       'voyelles': ['vocal_game', 'vocal_memory_game'],
-      'nombres': ['bubble_numbers_game', 'train_wagon_numbers_game', 'memory_numbers_game'],
-      'famille': ['find_family_game', 'gather_family_game', 'memory_family_game'],
+      'nombres': [
+        'bubble_numbers_game',
+        'train_wagon_numbers_game',
+        'memory_numbers_game'
+      ],
+      'famille': [
+        'find_family_game',
+        'gather_family_game',
+        'memory_family_game'
+      ],
     };
 
     final Map<String, int> categoryCount = {

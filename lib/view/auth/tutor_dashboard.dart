@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, prefer_const_constructors_in_immutables, library_private_types_in_public_api, sized_box_for_whitespace
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,7 +20,7 @@ import 'package:frenc_app/view/auth/login_tutor_screen.dart'; // Importar la pan
 class TutorDashboardScreen extends StatefulWidget {
   final String tutorName;
 
-  TutorDashboardScreen({required this.tutorName});
+  TutorDashboardScreen({super.key, required this.tutorName});
 
   @override
   _TutorDashboardScreenState createState() => _TutorDashboardScreenState();
@@ -83,20 +83,20 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Eliminar Alumno'),
+          title: const Text('Eliminar Alumno'),
           content: Text('¿Deseas eliminar al alumno $studentName?'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(false); // Cancelar
               },
-              child: Text('Cancelar'),
+              child: const Text('Cancelar'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(true); // Aceptar
               },
-              child: Text('Aceptar'),
+              child: const Text('Aceptar'),
             ),
           ],
         );
@@ -164,7 +164,7 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                           children: [
                             Row(
                               children: [
-                                CircleAvatar(
+                                const CircleAvatar(
                                   backgroundImage:
                                       AssetImage('assets/images/gallo.png'),
                                   radius: 40,

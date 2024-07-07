@@ -224,9 +224,6 @@ class _TutorLoginScreenState extends State<TutorLoginScreen> {
               );
 
               if (tutorId != null && tutor != null) {
-                int? studentCount =
-                    await databaseRepository.getStudentsCountByTutorId(tutorId);
-
                 setState(() {
                   isLoading = false;
                 });

@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors_in_immutables, must_be_immutable
+
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/widgets/custom_theme_text.dart';
@@ -7,13 +9,38 @@ class GameCard extends StatelessWidget {
   final int gameNumber;
   final bool isUnlocked;
   final VoidCallback onPlayPressed;
+  final double width;
+  final double height;
+  String gameName;
 
   GameCard({
+    super.key,
     required this.category,
     required this.gameNumber,
     required this.isUnlocked,
     required this.onPlayPressed,
+    required this.width,
+    required this.height,
+    this.gameName = '',
   });
+
+  String _getGameName() {
+    switch (category) {
+      case 'Nombres':
+        if (gameNumber == 1) return 'Vagones numericos';
+        if (gameNumber == 2) return 'Memoria de numeros';
+        if (gameNumber == 3) return 'Burbujas';
+      case 'Voyelles':
+        if (gameNumber == 1) return 'Juego 1';
+        if (gameNumber == 2) return 'Juego 2';
+        if (gameNumber == 3) return 'Juego 3';
+      case 'Famille':
+        if (gameNumber == 1) return 'Juego 1';
+        if (gameNumber == 2) return 'Juego 2';
+        if (gameNumber == 3) return 'Juego 3';
+    }
+    return '';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +52,8 @@ class GameCard extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: Container(
-            width: 160,
-            height: 220,
+            width: width,
+            height: height,
             decoration: BoxDecoration(
               color: Colors.transparent,
               borderRadius: BorderRadius.circular(12),
@@ -35,16 +62,17 @@ class GameCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CustomTextWidget(
-                  text: 'Juego $gameNumber',
+                  text: _getGameName(),
                   type: TextType.Subtitle,
                   fontSize: 24,
                   color: ColorType.Secondary,
                   shadowColor: ShadowType.Light,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 8),
                 Container(
-                  width: 144,
-                  height: 120,
+                  width: width * 0.9,
+                  height: height * 0.5,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: Colors.black, width: 2),
@@ -83,8 +111,8 @@ class GameCard extends StatelessWidget {
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
               child: Container(
-                width: 160,
-                height: 220,
+                width: width,
+                height: height,
                 color: Colors.white.withOpacity(0.1),
               ),
             ),

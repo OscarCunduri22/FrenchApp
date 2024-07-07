@@ -35,6 +35,22 @@ class DialogManager {
     );
   }
 
+  static void showExitGameDialog(BuildContext context, Widget nextScreen) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ExitConfirmationDialog(
+          onExitConfirmed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => nextScreen),
+            );
+          },
+        );
+      },
+    );
+  }
+
   static void showExitAndLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
