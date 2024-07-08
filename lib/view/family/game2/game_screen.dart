@@ -59,19 +59,9 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
   @override
   void initState() {
     super.initState();
-    _incrementTimesPlayed(); // Incrementar contador de juegos jugados
     newGame();
     AudioManager.playBackground('sound/family/song220.mp3');
     AudioManager.playEffect('sound/family/instruccionJuego2.m4a');
-  }
-
-  void _incrementTimesPlayed() {
-    String? studentId =
-        Provider.of<UserProvider>(context, listen: false).currentStudentId;
-    if (studentId != null) {
-      Provider.of<UserTracking>(context, listen: false)
-          .incrementTimesPlayed(studentId, 'gather_family_game');
-    }
   }
 
   void _incrementTimesCompleted() {

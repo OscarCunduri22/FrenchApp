@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously, prefer_const_constructors_in_immutables, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/dialog_manager.dart';
 import 'package:frenc_app/utils/validator.dart';
@@ -26,6 +27,15 @@ class _TutorLoginScreenState extends State<TutorLoginScreen> {
   final TextEditingController passwordController = TextEditingController();
   final DatabaseRepository databaseRepository = DatabaseRepository();
   bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+  }
 
   Future<void> signIn() async {
     try {
