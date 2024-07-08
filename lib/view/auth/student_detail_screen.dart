@@ -7,6 +7,7 @@ import 'package:frenc_app/widgets/auth/common_button_styles.dart';
 import 'package:frenc_app/utils/user_tracking.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:frenc_app/widgets/custom_theme_text.dart';
 
 class StudentDetailScreen extends StatefulWidget {
   final Student student;
@@ -26,6 +27,7 @@ class _StudentDetailScreenState extends State<StudentDetailScreen> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    _loadStudentData();
   }
 
   @override
@@ -37,6 +39,10 @@ class _StudentDetailScreenState extends State<StudentDetailScreen> {
       DeviceOrientation.portraitDown,
     ]);
     super.dispose();
+  }
+
+  Future<void> _loadStudentData() async {
+    await Provider.of<UserTracking>(context, listen: false).loadTrackingData(widget.studentId);
   }
 
   @override
@@ -55,8 +61,7 @@ class _StudentDetailScreenState extends State<StudentDetailScreen> {
           ),
           // Content
           FutureBuilder(
-              future: Provider.of<UserTracking>(context, listen: false)
-                  .loadTrackingData(widget.studentId),
+              future: Provider.of<UserTracking>(context, listen: false).loadTrackingData(widget.studentId),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -96,23 +101,21 @@ class _StudentDetailScreenState extends State<StudentDetailScreen> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        const Text(
-                          'Juegos',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        const CustomTextWidget(
+                          text: 'Juegos',
+                          type: TextType.Subtitle,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: ColorType.Primary,
                         ),
                         const SizedBox(height: 10),
                         ElevatedButton(
                           onPressed: () {
-                            Provider.of<UserProvider>(context, listen: false)
-                                .setCurrentStudent(widget.studentId, widget.student);
-                            Navigator.push(
+                            Provider.of<UserProvider>(context, listen: false).setCurrentStudent(widget.studentId, widget.student);
+                            Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    FruitGameScreen(studentId: widget.studentId),
+                                builder: (context) => FruitGameScreen(studentId: widget.studentId),
                               ),
                             );
                           },
@@ -123,22 +126,19 @@ class _StudentDetailScreenState extends State<StudentDetailScreen> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        const Text(
-                          'Progreso del Estudiante',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        const CustomTextWidget(
+                          text: 'Progreso del Estudiante',
+                          type: TextType.Subtitle,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: ColorType.Secondary,
                         ),
                         const SizedBox(height: 10),
                         Consumer<UserTracking>(
                           builder: (context, userTracking, child) {
-                            final totalGamesPlayed =
-                                userTracking.getTotalGamesPlayed();
-                            final mostPlayedCategory =
-                                userTracking.getMostPlayedCategory();
-                            final gamesPlayedPerCategory =
-                                userTracking.getGamesPlayedPerCategory();
+                            final totalGamesPlayed = userTracking.getTotalGamesPlayed();
+                            final mostPlayedCategory = userTracking.getMostPlayedCategory();
+                            final gamesPlayedPerCategory = userTracking.getGamesPlayedPerCategory();
                             final topThreeGames = userTracking.getTopThreeGames();
                             return Column(
                               children: [
@@ -146,6 +146,7 @@ class _StudentDetailScreenState extends State<StudentDetailScreen> {
                                   children: [
                                     Expanded(
                                       child: Card(
+                                        color: const Color(0xFFDBD8FF),
                                         elevation: 4,
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(10),
@@ -160,12 +161,12 @@ class _StudentDetailScreenState extends State<StudentDetailScreen> {
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
                                                 ),
+                                                textAlign: TextAlign.center,
                                               ),
                                               const SizedBox(height: 10),
                                               Text(
                                                 '$totalGamesPlayed',
-                                                style:
-                                                    const TextStyle(fontSize: 16),
+                                                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                                               ),
                                             ],
                                           ),
@@ -175,6 +176,7 @@ class _StudentDetailScreenState extends State<StudentDetailScreen> {
                                     const SizedBox(width: 10),
                                     Expanded(
                                       child: Card(
+                                        color: const Color(0xFFD8FFF1),
                                         elevation: 4,
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(10),
@@ -189,12 +191,21 @@ class _StudentDetailScreenState extends State<StudentDetailScreen> {
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
                                                 ),
+                                                textAlign: TextAlign.center,
                                               ),
                                               const SizedBox(height: 10),
+                                              Padding(
+                                                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                                child: Text(
+                                                  mostPlayedCategory,
+                                                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 5),
                                               Text(
-                                                mostPlayedCategory,
-                                                style:
-                                                    const TextStyle(fontSize: 16),
+                                                'Esta es la categoría que ${widget.student.name} ha jugado más',
+                                                style: const TextStyle(fontSize: 14),
                                                 textAlign: TextAlign.center,
                                               ),
                                             ],
@@ -205,62 +216,65 @@ class _StudentDetailScreenState extends State<StudentDetailScreen> {
                                   ],
                                 ),
                                 const SizedBox(height: 20),
-                                const Text(
-                                  'Juegos por Categoría',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                const CustomTextWidget(
+                                  text: 'Juegos por Categoría',
+                                  type: TextType.Subtitle,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: ColorType.Secondary,
                                 ),
                                 const SizedBox(height: 10),
-                                Table(
-                                  border: TableBorder.all(),
-                                  children: [
-                                    const TableRow(
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.all(8.0),
-                                          child: Text(
-                                            'Categoría',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.all(8.0),
-                                          child: Text(
-                                            'Juegos Jugados',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    ...gamesPlayedPerCategory.entries.map((entry) {
-                                      return TableRow(
+                                Container(
+                                  color: Colors.white,
+                                  child: Table(
+                                    border: TableBorder.all(),
+                                    children: [
+                                      const TableRow(
                                         children: [
                                           Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(entry.key),
+                                            padding: EdgeInsets.all(8.0),
+                                            child: Text(
+                                              'Categoría',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
                                           ),
                                           Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text('${entry.value}'),
+                                            padding: EdgeInsets.all(8.0),
+                                            child: Text(
+                                              'Juegos Jugados',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
                                           ),
                                         ],
-                                      );
-                                    }).toList(),
-                                  ],
+                                      ),
+                                      ...gamesPlayedPerCategory.entries.map((entry) {
+                                        return TableRow(
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: Text(entry.key),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: Text('${entry.value}'),
+                                            ),
+                                          ],
+                                        );
+                                      }).toList(),
+                                    ],
+                                  ),
                                 ),
                                 const SizedBox(height: 20),
-                                const Text(
-                                  'Top 3 Juegos Más Jugados',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                const CustomTextWidget(
+                                  text: 'Top 3 Juegos Más Jugados',
+                                  type: TextType.Subtitle,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: ColorType.Secondary,
                                 ),
                                 const SizedBox(height: 10),
                                 SizedBox(
@@ -275,11 +289,10 @@ class _StudentDetailScreenState extends State<StudentDetailScreen> {
                                             BarChartRodData(
                                               toY: entry.value.toDouble(),
                                               color: Colors.blue,
-                                              width:
-                                                  30, // Adjust the width here to make bars wider or narrower
+                                              width: 30, // Adjust the width here to make bars wider or narrower
                                             ),
                                           ],
-                                          showingTooltipIndicators: [0],
+                                          showingTooltipIndicators: [],
                                         );
                                       }).toList(),
                                       titlesData: FlTitlesData(
@@ -287,25 +300,22 @@ class _StudentDetailScreenState extends State<StudentDetailScreen> {
                                           sideTitles: SideTitles(
                                             showTitles: true,
                                             getTitlesWidget: (value, meta) {
-                                              final game = topThreeGames
-                                                  .firstWhere((entry) =>
-                                                      entry.key.hashCode ==
-                                                      value.toInt())
-                                                  .key;
+                                              final game = topThreeGames.firstWhere((entry) => entry.key.hashCode == value.toInt()).key;
                                               return Padding(
-                                                padding: const EdgeInsets.symmetric(
-                                                    horizontal:
-                                                        4.0), // Adjust horizontal padding to space out bars
-                                                child: Text(game,
-                                                    style: const TextStyle(
-                                                        fontSize: 10),
-                                                    textAlign: TextAlign.center),
+                                                padding: const EdgeInsets.symmetric(horizontal: 4.0), // Adjust horizontal padding to space out bars
+                                                child: Text(game, style: const TextStyle(fontSize: 10), textAlign: TextAlign.center),
                                               );
                                             },
                                           ),
                                         ),
                                         leftTitles: const AxisTitles(
                                           sideTitles: SideTitles(showTitles: true),
+                                        ),
+                                        topTitles: const AxisTitles(
+                                          sideTitles: SideTitles(showTitles: false),
+                                        ),
+                                        rightTitles: const AxisTitles(
+                                          sideTitles: SideTitles(showTitles: false),
                                         ),
                                       ),
                                       borderData: FlBorderData(show: false),
@@ -314,8 +324,7 @@ class _StudentDetailScreenState extends State<StudentDetailScreen> {
                                         touchTooltipData: BarTouchTooltipData(
                                           tooltipPadding: const EdgeInsets.all(8.0),
                                           tooltipRoundedRadius: 4,
-                                          getTooltipItem:
-                                              (group, groupIndex, rod, rodIndex) {
+                                          getTooltipItem: (group, groupIndex, rod, rodIndex) {
                                             return BarTooltipItem(
                                               rod.toY.toString(),
                                               const TextStyle(
@@ -326,8 +335,7 @@ class _StudentDetailScreenState extends State<StudentDetailScreen> {
                                           },
                                         ),
                                       ),
-                                      groupsSpace:
-                                          10, // Adjust group space to bring bars closer together
+                                      groupsSpace: 10, // Adjust group space to bring bars closer together
                                     ),
                                   ),
                                 ),

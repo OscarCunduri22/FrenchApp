@@ -81,7 +81,7 @@ class _VocalGameState extends State<VocalGame> {
 
     if (studentId != null) {
       await databaseRepository.updateGameCompletionStatus(studentId, 'Voyelles',
-          [true, true, false]); // Actualizar estado de juego
+          [true, false, false]); // Actualizar estado de juego
       _incrementTimesCompleted(); // Incrementar contador de juegos completados
     }
 

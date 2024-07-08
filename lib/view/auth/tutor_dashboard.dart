@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use, prefer_const_constructors_in_immutables, library_private_types_in_public_api, sized_box_for_whitespace
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frenc_app/model/tutor.dart';
@@ -20,7 +18,7 @@ import 'package:frenc_app/widgets/auth/common_button_styles.dart'; // Importar e
 class TutorDashboardScreen extends StatefulWidget {
   final String tutorName;
 
-  TutorDashboardScreen({super.key, required this.tutorName});
+  const TutorDashboardScreen({super.key, required this.tutorName});
 
   @override
   _TutorDashboardScreenState createState() => _TutorDashboardScreenState();
@@ -46,6 +44,8 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
     ]);
     super.dispose();
   }
@@ -203,7 +203,7 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                             ),
                             Column(
                               children: [
-                                Container(
+                                SizedBox(
                                   width: 77.6,
                                   child: ElevatedButton(
                                     onPressed: () {
@@ -331,6 +331,8 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                                         student: student,
                                         studentId: studentId,
                                         onTap: (id) {
+                                          Provider.of<UserProvider>(context, listen: false).clearStudent();
+                                          Provider.of<UserProvider>(context, listen: false).setCurrentStudent(studentId, student);
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
@@ -371,6 +373,7 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
+                          Provider.of<UserProvider>(context, listen: false).clearUser();
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(

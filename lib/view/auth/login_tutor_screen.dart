@@ -28,7 +28,7 @@ class _TutorLoginScreenState extends State<TutorLoginScreen> {
   final DatabaseRepository databaseRepository = DatabaseRepository();
   bool isLoading = false;
 
-
+  @override
   void initState() {
     super.initState();
     SystemChrome.setPreferredOrientations([

@@ -91,7 +91,7 @@ class _StudentListScreenState extends State<StudentListScreen> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    TutorDashboardScreen(tutorName: ''),
+                    const TutorDashboardScreen(tutorName: ''),
               ));
         });
         return false;
@@ -203,7 +203,7 @@ class _StudentListScreenState extends State<StudentListScreen> {
                             Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => TutorDashboardScreen(
+                                  builder: (context) => const TutorDashboardScreen(
                                       tutorName: ''),
                                 ));
                           });

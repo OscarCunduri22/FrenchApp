@@ -10,9 +10,7 @@ class UserTracking extends ChangeNotifier {
   Map<String, int> get timesPlayed => _timesPlayed;
   Map<String, int> get timesCompleted => _timesCompleted;
 
-  UserTracking() {
-    // _init() is removed since student-specific data should be loaded separately
-  }
+  UserTracking();
 
   Future<void> loadTrackingData(String studentId) async {
     await _loadFromPrefs(studentId);
@@ -70,7 +68,7 @@ class UserTracking extends ChangeNotifier {
 
   void incrementTimesCompleted(String studentId, String game) {
     _timesCompleted[game] = (_timesCompleted[game] ?? 0) + 1;
-    _timesPlayed[game] = (_timesPlayed[game] ?? 0) + 1; // Increment total plays when a game is completed
+    _timesPlayed[game] = (_timesPlayed[game] ?? 0) + 1;
     _saveToPrefs(studentId);
     _saveToFirestore(studentId);
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -79,7 +77,7 @@ class UserTracking extends ChangeNotifier {
   }
 
   int getTotalGamesPlayed() {
-    return _timesCompleted.values.fold(0, (sum, value) => sum + value);
+    return _timesCompleted.values.fold(0, (suma, value) => suma + value);
   }
 
   String getMostPlayedCategory() {
@@ -99,10 +97,10 @@ class UserTracking extends ChangeNotifier {
 
     final Map<String, int> categoryCount = {};
 
-    _timesPlayed.forEach((game, count) {
+    _timesPlayed.forEach((game, countg) {
       categoryMap.forEach((category, games) {
         if (games.contains(game)) {
-          categoryCount[category] = (categoryCount[category] ?? 0) + count;
+          categoryCount[category] = (categoryCount[category] ?? 0) + countg;
         }
       });
     });
@@ -137,10 +135,10 @@ class UserTracking extends ChangeNotifier {
       'famille': 0,
     };
 
-    _timesPlayed.forEach((game, count) {
+    _timesPlayed.forEach((game, countg) {
       categoryMap.forEach((category, games) {
         if (games.contains(game)) {
-          categoryCount[category] = (categoryCount[category] ?? 0) + count;
+          categoryCount[category] = (categoryCount[category] ?? 0) + countg;
         }
       });
     });
