@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frenc_app/utils/audio_manager.dart';
@@ -6,14 +8,17 @@ import 'package:frenc_app/widgets/animated_rive.dart';
 import 'package:rive/rive.dart';
 import 'package:audioplayers/audioplayers.dart';
 
+// ignore: must_be_immutable
 class GalloComponent extends StatefulWidget {
   final String animationType;
   final EdgeInsetsGeometry padding;
+  String? audioPath;
 
-  const GalloComponent(
+  GalloComponent(
       {Key? key,
       required this.animationType,
-      this.padding = const EdgeInsets.all(0)})
+      this.padding = const EdgeInsets.all(0),
+      this.audioPath})
       : super(key: key);
 
   @override
@@ -25,8 +30,13 @@ class GalloComponent extends StatefulWidget {
   }
 
   static GalloComponent speaking(
-      {EdgeInsetsGeometry padding = const EdgeInsets.all(0)}) {
-    return GalloComponent(animationType: 'Speaking', padding: padding);
+      {EdgeInsetsGeometry padding = const EdgeInsets.all(0),
+      String? audioPath}) {
+    return GalloComponent(
+      animationType: 'Speaking',
+      padding: padding,
+      audioPath: audioPath,
+    );
   }
 
   static GalloComponent walking(
@@ -114,6 +124,7 @@ class _GalloComponentState extends State<GalloComponent> {
   SMITrigger? isSpeaking;
   SMITrigger? isWalking;
   SMITrigger? isJumping;
+  StreamSubscription? _audioPlayerStateSubscription;
 
   final AudioPlayer audioPlayer = AudioPlayer();
 
@@ -141,12 +152,17 @@ class _GalloComponentState extends State<GalloComponent> {
 
   @override
   void dispose() {
+    _audioPlayerStateSubscription?.cancel();
     audioPlayer.dispose();
     super.dispose();
   }
 
   void _playSound() async {
-    await audioPlayer.play(AssetSource('../assets/sound/Login.m4a'));
+    if (widget.audioPath != null) {
+      await AudioManager.effects().play(widget.audioPath!);
+    } else {
+      await AudioManager.effects().play('sound/Login.m4a');
+    }
   }
 
   void _triggerAnimation() {
@@ -167,6 +183,18 @@ class _GalloComponentState extends State<GalloComponent> {
       default:
         break;
     }
+  }
+
+  void playCustomSoundAndSpeak(String audioPath) async {
+    isSpeaking?.fire();
+    _audioPlayerStateSubscription =
+        audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
+      if (state == PlayerState.completed) {
+        isSpeaking?.fire();
+      }
+    });
+
+    await AudioManager.effects().play(audioPath);
   }
 
   @override

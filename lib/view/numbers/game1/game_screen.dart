@@ -1,7 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api, deprecated_member_use
 
 import 'package:confetti/confetti.dart';
-// ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,7 +13,7 @@ import 'package:frenc_app/widgets/numbers/game1/number_image_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/utils/user_tracking.dart';
-import 'package:frenc_app/view_model/numbers/game1/numbersgame1_viewmodel.dart'; // Ajusta la ruta según sea necesario
+import 'package:frenc_app/view_model/numbers/game1/numbersgame1_viewmodel.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
 import 'dart:math';
 
@@ -85,9 +84,7 @@ class _BubbleNumbersGameState extends State<BubbleNumbersGame>
   void _onGameComplete() async {
     String? studentId =
         Provider.of<UserProvider>(context, listen: false).currentStudentId;
-    if (studentId != null) {
-      // Implementar lógica de finalización de juego específica para el estudiante
-    }
+    if (studentId != null) {}
   }
 
   @override
@@ -209,15 +206,16 @@ class _BubbleNumbersGameState extends State<BubbleNumbersGame>
                           ),
                         ),
                       ),
-                    const Positioned(
-                      bottom: 20,
-                      right: 20,
-                      child: MovableButtonScreen(
-                        spanishAudio: 'sound/numbers/esgame3.m4a',
-                        frenchAudio: 'sound/numbers/frgame3.m4a',
-                        rivePath: 'assets/RiveAssets/nombresgame1.riv',
+                    if (!viewModel.isPlayingSound)
+                      const Positioned(
+                        bottom: 20,
+                        right: 20,
+                        child: MovableButtonScreen(
+                          spanishAudio: 'sound/numbers/esgame3.m4a',
+                          frenchAudio: 'sound/numbers/frgame3.m4a',
+                          rivePath: 'assets/RiveAssets/nombresgame1.riv',
+                        ),
                       ),
-                    ),
                   ],
                 );
               },

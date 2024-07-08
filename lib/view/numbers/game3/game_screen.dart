@@ -343,18 +343,19 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame>
                         ],
                       ),
                     ),
-                    const Positioned(
-                      bottom: 20,
-                      left: 0,
-                      right: 0,
-                      child: Center(
-                        child: MovableButtonScreen(
-                          spanishAudio: 'sound/numbers/esgame2.m4a',
-                          frenchAudio: 'sound/numbers/frgame2.m4a',
-                          rivePath: 'assets/RiveAssets/nombresgame3.riv',
+                    if (!_isPlayingSound)
+                      const Positioned(
+                        bottom: 20,
+                        left: 0,
+                        right: 0,
+                        child: Center(
+                          child: MovableButtonScreen(
+                            spanishAudio: 'sound/numbers/esgame2.m4a',
+                            frenchAudio: 'sound/numbers/frgame2.m4a',
+                            rivePath: 'assets/RiveAssets/nombresgame3.riv',
+                          ),
                         ),
                       ),
-                    ),
                   ],
                 ),
               ),
