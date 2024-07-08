@@ -11,6 +11,7 @@ import 'package:frenc_app/view/game_selection.dart';
 import 'package:frenc_app/widgets/confetti_animation.dart';
 import 'package:frenc_app/widgets/replay_popup.dart';
 import 'package:frenc_app/repository/global.repository.dart';
+import 'package:frenc_app/utils/audio_manager.dart';
 
 class VocalGame extends StatefulWidget {
   const VocalGame({Key? key}) : super(key: key);
@@ -36,11 +37,21 @@ class _VocalGameState extends State<VocalGame> {
     'assets/images/vocals/vocal/y.png',
   ];
 
+  final List<String> vocalAudios = [
+    'sound/vocals/a.mp3',
+    'sound/vocals/e.mp3',
+    'sound/vocals/i.mp3',
+    'sound/vocals/o.mp3',
+    'sound/vocals/u.mp3',
+    'sound/vocals/y.mp3',
+  ];
+
   int foundVowels = 0;
   String currentBackground = "";
   double vowelPositionX = 0;
   double vowelPositionY = 0;
   bool _showConfetti = false;
+  bool _isPlayingSound = false;
 
   final databaseRepository = DatabaseRepository();
 
@@ -49,6 +60,7 @@ class _VocalGameState extends State<VocalGame> {
     super.initState();
     _incrementTimesPlayed();
     _loadNewScene();
+    _playInstructionSound();
   }
 
   @override
@@ -57,6 +69,12 @@ class _VocalGameState extends State<VocalGame> {
     _loadNewScene();
   }
 
+   @override
+  void dispose() {
+    super.dispose();
+    AudioManager.background().stop();
+  }
+  
   void _incrementTimesPlayed() {
     String? studentId =
         Provider.of<UserProvider>(context, listen: false).currentStudentId;
@@ -109,7 +127,25 @@ class _VocalGameState extends State<VocalGame> {
     });
   }
 
-  void _onVowelTapped() {
+  Future<void> _playInstructionSound() async {
+    await AudioManager.playBackground('sound/vocals/esgame1.m4a');
+  }
+
+  Future<void> _playVowelSound(int index) async {
+    setState(() {
+      _isPlayingSound = true;
+    });
+
+    await AudioManager.effects().play(vocalAudios[index]);
+
+    setState(() {
+      _isPlayingSound = false;
+    });
+  }
+
+  void _onVowelTapped() async {
+    await _playVowelSound(foundVowels);
+
     setState(() {
       foundVowels++;
       if (foundVowels >= 6) {
@@ -160,7 +196,7 @@ class _VocalGameState extends State<VocalGame> {
                 backgroundColor: const Color(0xFF424141),
                 progressBarColor: const Color(0xFFD67171),
                 headerText:
-                    'Sélectionnez l\'image qui ressemble à celle ci-dessus',
+                    'Encuentra la vocal',
                 progressValue: foundVowels / 6,
                 onBack: () {
                   Navigator.pop(context);
@@ -196,12 +232,23 @@ class _VocalGameState extends State<VocalGame> {
               ),
             ],
           ),
+          if (_isPlayingSound)
+            Container(
+              color: Colors.black.withOpacity(0.8),
+              child: const Center(
+                child: Icon(
+                  Icons.volume_up,
+                  size: 100,
+                  color: Colors.white,
+                ),
+              ),
+            ),
           const Positioned(
             bottom: 10,
             right: 10,
             child: MovableButtonScreen(
-              spanishAudio: 'sound/family/instruccionGame1.m4a',
-              frenchAudio: 'sound/family/instruccionGame1.m4a',
+              spanishAudio: 'sound/vocals/esgame1.m4a',
+              frenchAudio: 'sound/vocals/frgame1.m4a',
               rivePath: 'assets/RiveAssets/vocalsgame1.riv',
             ),
           ),

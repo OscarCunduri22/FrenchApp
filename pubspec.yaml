@@ -80,6 +80,7 @@ flutter:
     - assets/RiveAssets/
     - assets/sound/
     - assets/sound/family/
+    - assets/sound/vocals/
     - assets/images/
     - assets/images/auth/
     - assets/images/gameSelection/

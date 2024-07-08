@@ -121,22 +121,22 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
     String soundPath;
     switch (card) {
       case 'assets/images/vocals/vocal/a.png':
-        soundPath = 'sound/family/mere.m4a';
+        soundPath = 'sound/vocals/a.mp3';
         break;
       case 'assets/images/vocals/vocal/e.png':
-        soundPath = 'sound/family/mere.m4a';
+        soundPath = 'sound/vocals/e.mp3';
         break;
       case 'assets/images/vocals/vocal/i.png':
-        soundPath = 'sound/family/mere.m4a';
+        soundPath = 'sound/vocals/i.mp3';
         break;
       case 'assets/images/vocals/vocal/o.png':
-        soundPath = 'sound/family/mere.m4a';
+        soundPath = 'sound/vocals/o.mp3';
         break;
       case 'assets/images/vocals/vocal/u.png':
-        soundPath = 'sound/family/mere.m4a';
+        soundPath = 'sound/vocals/u.mp3';
         break;
       case 'assets/images/vocals/vocal/y.png':
-        soundPath = 'sound/family/mere.m4a';
+        soundPath = 'sound/vocals/y.mp3';
         break;
       default:
         soundPath = 'sound/correct.mp3';
@@ -263,7 +263,7 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
                 ProgressBar(
                   backgroundColor: const Color(0xFF424141),
                   progressBarColor: const Color(0xFF8DB270),
-                  headerText: 'Retournez les cartes et trouvez les paires',
+                  headerText: 'Encuentra los pares de vocales',
                   progressValue: round / totalRounds,
                   onBack: () {
                     Navigator.pop(context);
@@ -340,8 +340,8 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
             bottom: 10,
             right: 10,
             child: MovableButtonScreen(
-              spanishAudio: 'sound/family/instruccionGame1.m4a',
-              frenchAudio: 'sound/family/instruccionGame1.m4a',
+              spanishAudio: 'sound/vocals/esgame2.m4a',
+              frenchAudio: 'sound/vocals/frgame2.m4a',
               rivePath: 'assets/RiveAssets/vocalsgame2.riv',
             ),
           ),
