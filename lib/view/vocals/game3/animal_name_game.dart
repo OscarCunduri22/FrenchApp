@@ -114,7 +114,16 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
   }
 
   Future<void> _playAnimalSound(String animalAudio) async {
+    setState(() {
+      _isPlayingSound = true;
+    });
+
     await AudioManager.effects().play('sound/vocals/$animalAudio');
+    await Future.delayed(const Duration(seconds: 9));
+
+    setState(() {
+      _isPlayingSound = false;
+    });
   }
 
   @override
@@ -185,28 +194,28 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
                                   );
                                 },
                                 onWillAccept: (data) => true,
-                                onAccept: (data) {
+                                onAccept: (data) async {
                                   setState(() {
                                     missingVowel = data;
                                     isCorrect = (data == targetVowel);
-                                    if (isCorrect) {
-                                      _playAnimalSound(animalAudio);
-                                      Future.delayed(const Duration(seconds: 1),
-                                          () {
-                                        setState(() {
-                                          if (currentAnimalIndex <
-                                              animals.length - 1) {
-                                            currentAnimalIndex++;
-                                            missingVowel = "_";
-                                            isCorrect = false;
-                                            _loadNewVowelChoices();
-                                          } else {
-                                            _showWinDialog();
-                                          }
-                                        });
-                                      });
-                                    }
                                   });
+                                  if (isCorrect) {
+                                    await _playAnimalSound(animalAudio);
+                                    Future.delayed(const Duration(seconds: 1),
+                                        () {
+                                      setState(() {
+                                        if (currentAnimalIndex <
+                                            animals.length - 1) {
+                                          currentAnimalIndex++;
+                                          missingVowel = "_";
+                                          isCorrect = false;
+                                          _loadNewVowelChoices();
+                                        } else {
+                                          _showWinDialog();
+                                        }
+                                      });
+                                    });
+                                  }
                                 },
                               ),
                               _buildOutlinedText(animalName.split('_')[1]),

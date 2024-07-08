@@ -25,6 +25,7 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
     with TickerProviderStateMixin {
   bool _showConfetti = false;
   bool isBusy = false;
+  bool _isPlayingSound = false;
 
   List<String> allImages = [
     'assets/images/vocals/vocal/a.png',
@@ -225,11 +226,8 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
             });
           });
         } else {
-          playSound(cardImages[flippedIndices[0]]);
-          Future.delayed(const Duration(seconds: 2), () {
-            AudioManager.effects().stop();
-            isBusy = false;
-          });
+          _playCorrectAnswerSounds(cardImages[flippedIndices[0]]);
+          isBusy = false;
           flippedIndices.clear();
         }
       }
@@ -240,6 +238,21 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
           _newGame();
         });
       }
+    });
+  }
+
+  Future<void> _playCorrectAnswerSounds(String audioFileName) async {
+    setState(() {
+      _isPlayingSound = true;
+    });
+
+    await AudioManager.effects().play('sound/numbers/yeahf.mp3');
+    await Future.delayed(const Duration(seconds: 2));
+    await playSound(audioFileName);
+    await Future.delayed(const Duration(seconds: 9));
+
+    setState(() {
+      _isPlayingSound = false;
     });
   }
 
@@ -336,6 +349,17 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
               ],
             ),
           ),
+          if (_isPlayingSound)
+            Container(
+              color: Colors.black.withOpacity(0.8),
+              child: const Center(
+                child: Icon(
+                  Icons.volume_up,
+                  size: 100,
+                  color: Colors.white,
+                ),
+              ),
+            ),
           const Positioned(
             bottom: 10,
             right: 10,

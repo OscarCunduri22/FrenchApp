@@ -69,12 +69,12 @@ class _VocalGameState extends State<VocalGame> {
     _loadNewScene();
   }
 
-   @override
+  @override
   void dispose() {
     super.dispose();
     AudioManager.background().stop();
   }
-  
+
   void _incrementTimesPlayed() {
     String? studentId =
         Provider.of<UserProvider>(context, listen: false).currentStudentId;
@@ -131,12 +131,21 @@ class _VocalGameState extends State<VocalGame> {
     await AudioManager.playBackground('sound/vocals/esgame1.m4a');
   }
 
+  Future<void> playSound(String soundPath) async {
+    await AudioManager.effects().play(soundPath);
+  }
+
   Future<void> _playVowelSound(int index) async {
     setState(() {
       _isPlayingSound = true;
     });
 
-    await AudioManager.effects().play(vocalAudios[index]);
+    await AudioManager.effects().play('sound/numbers/yeahf.mp3');
+    await Future.delayed(const Duration(seconds: 2));
+    await playSound(vocalAudios[index]);
+    await Future.delayed(const Duration(seconds: 3));
+    await playSound(vocalAudios[index]);
+    await Future.delayed(const Duration(seconds: 7));
 
     setState(() {
       _isPlayingSound = false;
@@ -144,6 +153,10 @@ class _VocalGameState extends State<VocalGame> {
   }
 
   void _onVowelTapped() async {
+    setState(() {
+      _isPlayingSound = true;
+    });
+
     await _playVowelSound(foundVowels);
 
     setState(() {
@@ -195,8 +208,7 @@ class _VocalGameState extends State<VocalGame> {
               ProgressBar(
                 backgroundColor: const Color(0xFF424141),
                 progressBarColor: const Color(0xFFD67171),
-                headerText:
-                    'Encuentra la vocal',
+                headerText: 'Encuentra la vocal',
                 progressValue: foundVowels / 6,
                 onBack: () {
                   Navigator.pop(context);
