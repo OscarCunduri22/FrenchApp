@@ -58,7 +58,7 @@ class StartGame extends StatelessWidget {
                               Text(
                                 title,
                                 style: TextStyle(
-                                  fontSize: size.width * 0.04,
+                                  fontSize: size.width * 0.06,
                                   fontWeight: FontWeight.bold,
                                   foreground: Paint()
                                     ..style = PaintingStyle.stroke

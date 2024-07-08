@@ -39,6 +39,11 @@ class GalloComponent extends StatefulWidget {
     );
   }
 
+  static GalloComponent speakingwithoutsound(
+      {EdgeInsetsGeometry padding = const EdgeInsets.all(0)}) {
+    return GalloComponent(animationType: 'Speaking1', padding: padding);
+  }
+
   static GalloComponent walking(
       {EdgeInsetsGeometry padding = const EdgeInsets.all(0)}) {
     return GalloComponent(animationType: 'Walking', padding: padding);
@@ -157,9 +162,9 @@ class _GalloComponentState extends State<GalloComponent> {
     super.dispose();
   }
 
-  void _playSound() async {
-    if (widget.audioPath != null) {
-      await AudioManager.effects().play(widget.audioPath!);
+  void _playSound(String? audioPath) async {
+    if (audioPath != null) {
+      await audioPlayer.play(AssetSource('../assets/sound/$audioPath.m4a'));
     } else {
       await AudioManager.effects().play('sound/Login.m4a');
     }
@@ -172,7 +177,10 @@ class _GalloComponentState extends State<GalloComponent> {
         break;
       case 'Speaking':
         isSpeaking?.fire();
-        _playSound();
+        _playSound(widget.audioPath);
+        break;
+      case 'Speaking1':
+        isSpeaking?.fire();
         break;
       case 'Walking':
         isWalking?.fire();

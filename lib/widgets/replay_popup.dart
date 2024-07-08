@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:frenc_app/widgets/character/gallo.dart';
 import 'package:frenc_app/widgets/custom_theme_text.dart';
 
 class ReplayPopup extends StatefulWidget {
@@ -39,13 +40,9 @@ class _ReplayPopupState extends State<ReplayPopup> {
             child: Row(
               children: [
                 SizedBox(
-                  width: 200,
-                  height: 200,
-                  child: Image.asset(
-                    'assets/images/gallo.png',
-                    fit: BoxFit.cover,
-                  ),
-                ),
+                    width: 200,
+                    height: 200,
+                    child: GalloComponent.speakingwithoutsound()),
                 const SizedBox(width: 20),
                 Expanded(
                   flex: 1,

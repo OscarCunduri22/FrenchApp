@@ -3,6 +3,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/repository/global.repository.dart';
+import 'package:frenc_app/utils/dialog_manager.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/button.dart';
 import 'package:frenc_app/view/game_selection.dart';
@@ -75,8 +76,9 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
 
   @override
   void dispose() {
+    AudioManager.stopBackground();
+    AudioManager.stopEffect();
     super.dispose();
-    AudioManager.background().stop();
   }
 
   void _onGameComplete() async {
@@ -89,13 +91,18 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
       _incrementTimesCompleted(); // Incrementar contador de juegos completados
     }
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => const GameSelectionScreen(
-                category: 'Famille',
-              )),
-    );
+    await AudioManager.stopBackground();
+    await AudioManager.stopEffect();
+
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const GameSelectionScreen(
+                  category: 'Famille',
+                )),
+      );
+    }
   }
 
   void newGame() {
@@ -103,9 +110,11 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
     selectedKeys.shuffle(Random());
     selectedKeys = selectedKeys.take(4).toList();
     placedImages.clear();
-    setState(() {
-      _showConfetti = false;
-    });
+    if (mounted) {
+      setState(() {
+        _showConfetti = false;
+      });
+    }
   }
 
   Future<void> playSound(String key, bool correct) async {
@@ -123,137 +132,156 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
     await playSound(key, correct);
     if (correct) {
       _playCorrectAnswerSounds(key);
-      setState(() {
-        placedImages[key] = data;
-        if (placedImages.length == selectedKeys.length) {
-          setState(() {
-            score++;
-            if (score >= 1) {
-              Future.delayed(const Duration(seconds: 8), () {
-                _showWinDialog();
-              });
-            } else {
-              Future.delayed(const Duration(seconds: 2), () {
-                newGame();
-              });
-            }
-          });
-        }
-      });
+      if (mounted) {
+        setState(() {
+          placedImages[key] = data;
+          if (placedImages.length == selectedKeys.length) {
+            setState(() {
+              score++;
+              if (score >= 1) {
+                Future.delayed(const Duration(seconds: 9), () {
+                  if (mounted) {
+                    _showWinDialog();
+                  }
+                });
+              } else {
+                Future.delayed(const Duration(seconds: 2), () {
+                  if (mounted) {
+                    newGame();
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
     } else {
       await playSound(key, false);
     }
   }
 
   void _showWinDialog() {
-    setState(() {
-      _showConfetti = true;
-      AudioManager.effects().play('sound/family/level_win.mp3');
-    });
-    showDialog(
-      context: context,
-      builder: (context) => Stack(
-        children: [
-          ReplayPopup(
-            score: score,
-            onReplay: () {
-              setState(() {
-                newGame();
+    if (mounted) {
+      setState(() {
+        _showConfetti = true;
+        AudioManager.effects().play('sound/family/level_win.mp3');
+      });
+      showDialog(
+        context: context,
+        builder: (context) => Stack(
+          children: [
+            ReplayPopup(
+              score: score,
+              onReplay: () {
+                if (mounted) {
+                  setState(() {
+                    newGame();
+                    score = 0;
+                  });
+                }
+              },
+              onQuit: () {
                 score = 0;
-              });
-            },
-            onQuit: () {
-              score = 0;
-              _onGameComplete();
-            },
-          ),
-          if (_showConfetti) ConfettiAnimation(animate: _showConfetti),
-        ],
-      ),
-    );
+                _onGameComplete();
+              },
+            ),
+            if (_showConfetti) ConfettiAnimation(animate: _showConfetti),
+          ],
+        ),
+      );
+    }
   }
 
   Future<void> _playCorrectAnswerSounds(String audioFileName) async {
-    setState(() {
-      _isPlayingSound = true;
-    });
+    if (mounted) {
+      setState(() {
+        _isPlayingSound = true;
+      });
+    }
 
     await AudioManager.effects().play('sound/numbers/yeahf.mp3');
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 2));
     await AudioManager.effects().play('sound/numbers/repetir.m4a');
     await Future.delayed(const Duration(seconds: 2));
     await playSound(audioFileName, true);
     await Future.delayed(const Duration(seconds: 3));
     await playSound(audioFileName, true);
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 3));
 
-    setState(() {
-      _isPlayingSound = false;
-    });
+    if (mounted) {
+      setState(() {
+        _isPlayingSound = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/family/game2/draganddrop.jpg'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Stack(
-          children: [
-            Column(
-              children: [
-                ProgressBar(
-                  backgroundColor: const Color(0xFF424141),
-                  progressBarColor: const Color(0xFFD67171),
-                  headerText: 'Encuentra la ubicación correcta del familiar',
-                  progressValue: score / 10,
-                  onBack: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const GameSelectionScreen(
-                          category: 'Famille',
-                        ),
-                      ),
-                    );
-                  },
-                  onVolume: () {
-                    // Acción para controlar el volumen
-                  },
-                ),
-                const SizedBox(height: 20),
-                Expanded(
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 80),
-                      buildDragTargetsRow(),
-                    ],
-                  ),
-                ),
-              ],
+    return WillPopScope(
+      onWillPop: () async {
+        AudioManager.stopBackground();
+        AudioManager.stopEffect();
+        DialogManager.showExitGameDialog(
+            context,
+            const GameSelectionScreen(
+              category: 'Famille',
+            ));
+        return false;
+      },
+      child: Scaffold(
+        body: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/family/game2/draganddrop.jpg'),
+              fit: BoxFit.cover,
             ),
-            ...buildRemainingDraggableImages(),
-            if (_isPlayingSound)
-              Container(
-                color: Colors.black.withOpacity(0.8),
-                child: const Center(
-                  child: Icon(
-                    Icons.volume_up,
-                    size: 100,
-                    color: Colors.white,
+          ),
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  ProgressBar(
+                    backgroundColor: const Color(0xFF424141),
+                    progressBarColor: const Color(0xFFD67171),
+                    headerText: 'Encuentra la ubicación correcta del familiar',
+                    progressValue: score / 10,
+                    onBack: () {
+                      Navigator.pop(context);
+                    },
+                    onVolume: () {
+                      // Acción para controlar el volumen
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 80),
+                        buildDragTargetsRow(),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              ...buildRemainingDraggableImages(),
+              if (_isPlayingSound)
+                Container(
+                  color: Colors.black.withOpacity(0.8),
+                  child: const Center(
+                    child: Icon(
+                      Icons.volume_up,
+                      size: 100,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-              ),
-            const MovableButtonScreen(
-              spanishAudio: 'sound/family/instruccionJuego2.m4a',
-              frenchAudio: 'sound/family/instruccionGame2.m4a',
-              rivePath: 'assets/RiveAssets/familygame2.riv',
-            )
-          ],
+              const MovableButtonScreen(
+                spanishAudio: 'sound/family/instruccionJuego2.m4a',
+                frenchAudio: 'sound/family/instruccionGame2.m4a',
+                rivePath: 'assets/RiveAssets/familygame2.riv',
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -300,19 +328,19 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
       switch (index) {
         case 0:
           left = 0;
-          top = 0;
+          top = MediaQuery.of(context).size.height - 300;
           break;
         case 1:
-          left = MediaQuery.of(context).size.width - 120;
-          top = 0;
+          left = MediaQuery.of(context).size.width - 100;
+          top = MediaQuery.of(context).size.height - 300;
           break;
         case 2:
           left = 0;
-          top = MediaQuery.of(context).size.height - 280;
+          top = MediaQuery.of(context).size.height - 190;
           break;
         case 3:
-          left = MediaQuery.of(context).size.width - 120;
-          top = MediaQuery.of(context).size.height - 280;
+          left = MediaQuery.of(context).size.width - 100;
+          top = MediaQuery.of(context).size.height - 190;
           break;
         default:
           left = 0;

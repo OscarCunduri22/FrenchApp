@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frenc_app/model/tutor.dart';
 import 'package:frenc_app/repository/global.repository.dart';
+import 'package:frenc_app/utils/audio_manager.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/auth/login_tutor_screen.dart';
 import 'package:frenc_app/widgets/custom_theme_text.dart';
@@ -37,6 +38,7 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
       DeviceOrientation.portraitDown,
     ]);
     _loadStudentCount();
+    AudioManager.playEffect('sound/instruccionalumnos.m4a');
   }
 
   @override
