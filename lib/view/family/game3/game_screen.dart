@@ -103,7 +103,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
     if (studentId != null) {
       await databaseRepository
           .updateGameCompletionStatus(studentId, 'Famille', [true, true, true]);
-      _incrementTimesCompleted(); // Incrementar contador de juegos completados
+      _incrementTimesCompleted();
     }
 
     if (mounted) {
