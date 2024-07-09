@@ -342,7 +342,7 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
           children: [
             ReplayPopup(
               score: currentAnimalIndex + 1,
-              overScore: 5,
+              overScore: 6,
               onReplay: () {
                 if (mounted) {
                   setState(() {
