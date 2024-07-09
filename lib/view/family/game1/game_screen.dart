@@ -65,8 +65,8 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
 
     if (studentId != null) {
       await databaseRepository.updateGameCompletionStatus(
-          studentId, 'Famille', [true, true, false]);
-      _incrementTimesCompleted(); // Incrementar contador de juegos completados
+          studentId, 'Famille', [true, false, false]);
+      _incrementTimesCompleted();
     }
 
     await AudioManager.stopBackground();

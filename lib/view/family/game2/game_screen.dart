@@ -86,9 +86,9 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
         Provider.of<UserProvider>(context, listen: false).currentStudentId;
 
     if (studentId != null) {
-      await databaseRepository
-          .updateGameCompletionStatus(studentId, 'Famille', [true, true, true]);
-      _incrementTimesCompleted(); // Incrementar contador de juegos completados
+      await databaseRepository.updateGameCompletionStatus(
+          studentId, 'Famille', [true, true, false]);
+      _incrementTimesCompleted();
     }
 
     await AudioManager.stopBackground();
