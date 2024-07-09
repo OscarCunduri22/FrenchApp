@@ -138,7 +138,7 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
           if (placedImages.length == selectedKeys.length) {
             setState(() {
               score++;
-              if (score >= 1) {
+              if (score >= 5) {
                 Future.delayed(const Duration(seconds: 9), () {
                   if (mounted) {
                     _showWinDialog();
@@ -172,16 +172,22 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
           children: [
             ReplayPopup(
               score: score,
+              overScore: 5,
               onReplay: () {
                 if (mounted) {
                   setState(() {
                     newGame();
                     score = 0;
+                    AudioManager.playBackground('sound/family/song220.mp3');
+                    AudioManager.playEffect(
+                        'sound/family/instruccionJuego2.m4a');
                   });
                 }
               },
               onQuit: () {
                 score = 0;
+                AudioManager.stopBackground();
+                AudioManager.stopEffect();
                 _onGameComplete();
               },
             ),
@@ -244,13 +250,11 @@ class _GatherFamilyGameState extends State<GatherFamilyGame> {
                     backgroundColor: const Color(0xFF424141),
                     progressBarColor: const Color(0xFFD67171),
                     headerText: 'Encuentra la ubicación correcta del familiar',
-                    progressValue: score / 10,
+                    progressValue: score / 5,
                     onBack: () {
                       Navigator.pop(context);
                     },
-                    onVolume: () {
-                      // Acción para controlar el volumen
-                    },
+                    backgroundMusic: 'sound/family/song220.mp3',
                   ),
                   const SizedBox(height: 20),
                   Expanded(

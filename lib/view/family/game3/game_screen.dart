@@ -161,7 +161,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
 
   void newGame() {
     setState(() {
-      cardImages = (allImages..shuffle()).take(4).toList();
+      cardImages = (allImages..shuffle()).take(3).toList();
       cardImages = List.from(cardImages)..addAll(cardImages);
       cardImages.shuffle();
       cardsFlipped = List<bool>.filled(cardImages.length, false);
@@ -190,16 +190,22 @@ class _MemoryGamePageState extends State<MemoryGamePage>
           children: [
             ReplayPopup(
               score: score,
+              overScore: 5,
               onReplay: () {
                 if (mounted) {
                   setState(() {
                     newGame();
                     score = 0;
+                    AudioManager.playBackground('sound/family/song320.mp3');
+                    AudioManager.playEffect(
+                        'sound/family/instruccionJuego3.m4a');
                   });
                 }
               },
               onQuit: () {
                 score = 0;
+                AudioManager.stopBackground();
+                AudioManager.stopEffect();
                 _onGameComplete();
               },
             ),
@@ -245,7 +251,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
         if (cardsFlipped.every((flipped) => flipped)) {
           score += 1;
           Future.delayed(const Duration(seconds: 2), () {
-            if (score >= 1) {
+            if (score >= 5) {
               Future.delayed(const Duration(seconds: 8), () {
                 if (mounted) {
                   _showWinDialog();
@@ -272,7 +278,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
     }
 
     await AudioManager.effects().play('sound/numbers/yeahf.mp3');
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 2));
     await AudioManager.effects().play('sound/numbers/repetir.m4a');
     await Future.delayed(const Duration(seconds: 3));
     await playSound(audioFileName);
@@ -319,13 +325,11 @@ class _MemoryGamePageState extends State<MemoryGamePage>
                     backgroundColor: const Color(0xFF424141),
                     progressBarColor: const Color(0xFF8DB270),
                     headerText: 'Voltea las cartas y encuentra las parejas',
-                    progressValue: score / 10,
+                    progressValue: score / 5,
                     onBack: () {
                       Navigator.pop(context);
                     },
-                    onVolume: () {
-                      // Acción para activar/desactivar el sonido
-                    },
+                    backgroundMusic: 'sound/family/song320.mp3',
                   ),
                   _isLoading
                       ? const Expanded(
@@ -342,7 +346,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
                               itemCount: cardImages.length,
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 4,
+                                crossAxisCount: 3,
                                 crossAxisSpacing: 10,
                                 mainAxisSpacing: 10,
                                 mainAxisExtent: size.height * 0.30,

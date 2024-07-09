@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frenc_app/utils/audio_manager.dart';
 import 'package:frenc_app/widgets/auth/exit_game_box.dart';
 
 class ProgressBar extends StatelessWidget {
@@ -7,7 +8,7 @@ class ProgressBar extends StatelessWidget {
   final String headerText;
   final double progressValue;
   final VoidCallback onBack;
-  final VoidCallback onVolume;
+  final String backgroundMusic;
 
   const ProgressBar({
     required this.backgroundColor,
@@ -15,7 +16,7 @@ class ProgressBar extends StatelessWidget {
     required this.headerText,
     required this.progressValue,
     required this.onBack,
-    required this.onVolume,
+    required this.backgroundMusic,
     Key? key,
   }) : super(key: key);
 
@@ -41,7 +42,13 @@ class ProgressBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               GestureDetector(
-                onTap: onVolume,
+                onTap: () async {
+                  if (await AudioManager.background().isPlaying()) {
+                    AudioManager.background().pause();
+                  } else {
+                    AudioManager.background().play(backgroundMusic);
+                  }
+                },
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 30),
                   child: Image.asset(
