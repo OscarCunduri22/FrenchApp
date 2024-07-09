@@ -264,9 +264,11 @@ class _StudentDetailScreenState extends State<StudentDetailScreen> {
                                     ),
                                     const SizedBox(height: 10),
                                     Container(
-                                      color: Colors.white,
+                                      color: const Color.fromARGB(255, 250, 239, 142), // Color de fondo amarillo
                                       child: Table(
-                                        border: TableBorder.all(),
+                                        border: TableBorder.all(
+                                          color: Colors.transparent,
+                                        ),
                                         children: [
                                           const TableRow(
                                             children: [

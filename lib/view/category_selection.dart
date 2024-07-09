@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:frenc_app/view/rewards/rewards_popup.dart';
 import 'package:provider/provider.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/widgets/character/button.dart';
@@ -12,7 +13,7 @@ import 'package:frenc_app/widgets/custom_theme_text.dart';
 import 'package:frenc_app/utils/reward_manager.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:path_provider/path_provider.dart';
-import 'dart:io';
+import 'dart:io';// Importar RewardsScreen
 
 class CategorySelectionScreen extends StatefulWidget {
   const CategorySelectionScreen({super.key});
@@ -60,45 +61,12 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
     }
   }
 
-  void _showRewardsDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Consumer<RewardManager>(
-          builder: (context, rewardManager, child) {
-            return AlertDialog(
-              title: const Text('Recompensas'),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: List.generate(RewardManager.totalRewards, (index) {
-                    bool isUnlocked = rewardManager.isRewardUnlocked(index);
-                    return ListTile(
-                      title: Text('Recompensa ${index + 1}'),
-                      trailing: isUnlocked
-                          ? IconButton(
-                              icon: const Icon(Icons.download),
-                              onPressed: () async {
-                                String path = rewardManager.getRewardPath(index);
-                                await _saveFile(path);
-                              },
-                            )
-                          : const Icon(Icons.lock),
-                    );
-                  }),
-                ),
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: const Text('Cerrar'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      },
+  void _navigateToRewardsScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const RewardsScreen(),
+      ),
     );
   }
 
@@ -228,7 +196,7 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
                                 iconSize: 36,
                                 color: Colors.white,
                                 onPressed: () {
-                                  _showRewardsDialog(context);
+                                  _navigateToRewardsScreen(context);
                                 },
                               ),
                             ),
