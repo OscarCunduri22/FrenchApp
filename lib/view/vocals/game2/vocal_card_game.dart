@@ -186,6 +186,7 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
         children: [
           ReplayPopup(
             score: score,
+            overScore: 5,
             onReplay: () {
               setState(() {
                 round = 0;
@@ -285,9 +286,7 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
                   onBack: () {
                     Navigator.pop(context);
                   },
-                  onVolume: () {
-                    // Acción para activar/desactivar el sonido
-                  },
+                  backgroundMusic: 'sound/start_page.mp3',
                 ),
                 _isLoading
                     ? const Expanded(

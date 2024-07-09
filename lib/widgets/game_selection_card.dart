@@ -35,9 +35,9 @@ class GameCard extends StatelessWidget {
         if (gameNumber == 2) return 'Memoria de vocales';
         if (gameNumber == 3) return 'Completa el animal';
       case 'Famille':
-        if (gameNumber == 1) return 'Juego 1';
-        if (gameNumber == 2) return 'Juego 2';
-        if (gameNumber == 3) return 'Juego 3';
+        if (gameNumber == 1) return 'Encuentra a la familia';
+        if (gameNumber == 2) return 'Reune a la familia';
+        if (gameNumber == 3) return 'Empareja a la familia';
     }
     return '';
   }

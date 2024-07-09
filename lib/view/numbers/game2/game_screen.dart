@@ -118,7 +118,7 @@ class _TrainWagonNumbersGameState extends State<TrainWagonNumbersGame> {
                               },
                             ));
                           },
-                          onVolume: () {},
+                          backgroundMusic: 'sound/start_page.mp3',
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
