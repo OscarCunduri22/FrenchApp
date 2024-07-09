@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:frenc_app/utils/dialog_manager.dart';
 import 'package:frenc_app/view/auth/student_login.view.dart';
 import 'package:provider/provider.dart';
 import 'package:frenc_app/model/student.dart';
@@ -47,7 +48,12 @@ class _StudentDetailScreenState extends State<StudentDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return  WillPopScope(
+        onWillPop: () async {
+          DialogManager.showExitConfirmationDialog(context);
+          return false;
+        },
+    child: Scaffold(
       body: Stack(
         children: [
           // Background image
@@ -350,6 +356,6 @@ class _StudentDetailScreenState extends State<StudentDetailScreen> {
               }),
         ],
       ),
-    );
+    ));
   }
 }

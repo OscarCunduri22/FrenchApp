@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:frenc_app/view/button.dart';
-import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
 import 'package:frenc_app/utils/user_tracking.dart';
@@ -11,6 +10,9 @@ import 'package:frenc_app/view/game_selection.dart';
 import 'package:frenc_app/widgets/confetti_animation.dart';
 import 'package:frenc_app/widgets/replay_popup.dart';
 import 'package:frenc_app/repository/global.repository.dart';
+import 'package:frenc_app/utils/audio_manager.dart';
+import 'package:frenc_app/utils/reward_manager.dart';
+import 'package:frenc_app/widgets/progress_bar.dart';
 
 class VocalGame extends StatefulWidget {
   const VocalGame({Key? key}) : super(key: key);
@@ -36,11 +38,21 @@ class _VocalGameState extends State<VocalGame> {
     'assets/images/vocals/vocal/y.png',
   ];
 
+  final List<String> vocalAudios = [
+    'sound/vocals/a.mp3',
+    'sound/vocals/e.mp3',
+    'sound/vocals/i.mp3',
+    'sound/vocals/o.mp3',
+    'sound/vocals/u.mp3',
+    'sound/vocals/y.mp3',
+  ];
+
   int foundVowels = 0;
   String currentBackground = "";
   double vowelPositionX = 0;
   double vowelPositionY = 0;
   bool _showConfetti = false;
+  bool _isPlayingSound = false;
 
   final databaseRepository = DatabaseRepository();
 
@@ -49,12 +61,19 @@ class _VocalGameState extends State<VocalGame> {
     super.initState();
     _incrementTimesPlayed();
     _loadNewScene();
+    _playInstructionSound();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _loadNewScene();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    AudioManager.background().stop();
   }
 
   void _incrementTimesPlayed() {
@@ -83,6 +102,9 @@ class _VocalGameState extends State<VocalGame> {
       await databaseRepository.updateGameCompletionStatus(studentId, 'Voyelles',
           [true, false, false]); // Actualizar estado de juego
       _incrementTimesCompleted(); // Incrementar contador de juegos completados
+
+      // Unlock the reward using RewardManager
+      Provider.of<RewardManager>(context, listen: false).unlockReward(0); // Unlocks Voyelles_reward_1.pdf
     }
 
     Navigator.push(
@@ -109,7 +131,38 @@ class _VocalGameState extends State<VocalGame> {
     });
   }
 
-  void _onVowelTapped() {
+  Future<void> _playInstructionSound() async {
+    await AudioManager.playBackground('sound/vocals/esgame1.m4a');
+  }
+
+  Future<void> playSound(String soundPath) async {
+    await AudioManager.effects().play(soundPath);
+  }
+
+  Future<void> _playVowelSound(int index) async {
+    setState(() {
+      _isPlayingSound = true;
+    });
+
+    await AudioManager.effects().play('sound/numbers/yeahf.mp3');
+    await Future.delayed(const Duration(seconds: 2));
+    await playSound(vocalAudios[index]);
+    await Future.delayed(const Duration(seconds: 3));
+    await playSound(vocalAudios[index]);
+    await Future.delayed(const Duration(seconds: 7));
+
+    setState(() {
+      _isPlayingSound = false;
+    });
+  }
+
+  void _onVowelTapped() async {
+    setState(() {
+      _isPlayingSound = true;
+    });
+
+    await _playVowelSound(foundVowels);
+
     setState(() {
       foundVowels++;
       if (foundVowels >= 6) {
@@ -160,8 +213,7 @@ class _VocalGameState extends State<VocalGame> {
               ProgressBar(
                 backgroundColor: const Color(0xFF424141),
                 progressBarColor: const Color(0xFFD67171),
-                headerText:
-                    'Sélectionnez l\'image qui ressemble à celle ci-dessus',
+                headerText: 'Encuentra la vocal',
                 progressValue: foundVowels / 6,
                 onBack: () {
                   Navigator.pop(context);
@@ -195,12 +247,23 @@ class _VocalGameState extends State<VocalGame> {
               ),
             ],
           ),
+          if (_isPlayingSound)
+            Container(
+              color: Colors.black.withOpacity(0.8),
+              child: const Center(
+                child: Icon(
+                  Icons.volume_up,
+                  size: 100,
+                  color: Colors.white,
+                ),
+              ),
+            ),
           const Positioned(
             bottom: 10,
             right: 10,
             child: MovableButtonScreen(
-              spanishAudio: 'sound/family/instruccionGame1.m4a',
-              frenchAudio: 'sound/family/instruccionGame1.m4a',
+              spanishAudio: 'sound/vocals/esgame1.m4a',
+              frenchAudio: 'sound/vocals/frgame1.m4a',
               rivePath: 'assets/RiveAssets/vocalsgame1.riv',
             ),
           ),

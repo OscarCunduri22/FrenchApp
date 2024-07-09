@@ -1,4 +1,3 @@
-//MAIN
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +6,7 @@ import 'package:frenc_app/firebase_options.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/utils/user_tracking.dart';
 import 'package:frenc_app/view/start_screen.dart';
+import 'package:frenc_app/utils/reward_manager.dart';
 
 import 'package:provider/provider.dart';
 
@@ -22,6 +22,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (context) => UserProvider()),
         ChangeNotifierProvider(create: (context) => UserTracking()),
+        ChangeNotifierProvider(create: (context) => RewardManager()),
       ],
       child: const MyApp(),
     ),

@@ -12,7 +12,8 @@ import 'package:frenc_app/widgets/replay_popup.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
-import 'package:frenc_app/utils/user_tracking.dart'; // Importar UserTracking
+import 'package:frenc_app/utils/user_tracking.dart';
+import 'package:frenc_app/utils/reward_manager.dart'; // Importar RewardManager
 
 class VocalMemoryPage extends StatefulWidget {
   const VocalMemoryPage({Key? key}) : super(key: key);
@@ -25,6 +26,7 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
     with TickerProviderStateMixin {
   bool _showConfetti = false;
   bool isBusy = false;
+  bool _isPlayingSound = false;
 
   List<String> allImages = [
     'assets/images/vocals/vocal/a.png',
@@ -106,6 +108,9 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
       await databaseRepository.updateGameCompletionStatus(studentId, 'Voyelles',
           [true, true, false]); // Actualizar estado de juego
       _incrementTimesCompleted(); // Incrementar contador de juegos completados
+
+      // Unlock the reward using RewardManager
+      Provider.of<RewardManager>(context, listen: false).unlockReward(1); // Unlocks Voyelles_reward_2.pdf
     }
 
     Navigator.push(
@@ -121,22 +126,22 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
     String soundPath;
     switch (card) {
       case 'assets/images/vocals/vocal/a.png':
-        soundPath = 'sound/family/mere.m4a';
+        soundPath = 'sound/vocals/a.mp3';
         break;
       case 'assets/images/vocals/vocal/e.png':
-        soundPath = 'sound/family/mere.m4a';
+        soundPath = 'sound/vocals/e.mp3';
         break;
       case 'assets/images/vocals/vocal/i.png':
-        soundPath = 'sound/family/mere.m4a';
+        soundPath = 'sound/vocals/i.mp3';
         break;
       case 'assets/images/vocals/vocal/o.png':
-        soundPath = 'sound/family/mere.m4a';
+        soundPath = 'sound/vocals/o.mp3';
         break;
       case 'assets/images/vocals/vocal/u.png':
-        soundPath = 'sound/family/mere.m4a';
+        soundPath = 'sound/vocals/u.mp3';
         break;
       case 'assets/images/vocals/vocal/y.png':
-        soundPath = 'sound/family/mere.m4a';
+        soundPath = 'sound/vocals/y.mp3';
         break;
       default:
         soundPath = 'sound/correct.mp3';
@@ -226,11 +231,8 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
             });
           });
         } else {
-          playSound(cardImages[flippedIndices[0]]);
-          Future.delayed(const Duration(seconds: 2), () {
-            AudioManager.effects().stop();
-            isBusy = false;
-          });
+          _playCorrectAnswerSounds(cardImages[flippedIndices[0]]);
+          isBusy = false;
           flippedIndices.clear();
         }
       }
@@ -241,6 +243,21 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
           _newGame();
         });
       }
+    });
+  }
+
+  Future<void> _playCorrectAnswerSounds(String audioFileName) async {
+    setState(() {
+      _isPlayingSound = true;
+    });
+
+    await AudioManager.effects().play('sound/numbers/yeahf.mp3');
+    await Future.delayed(const Duration(seconds: 2));
+    await playSound(audioFileName);
+    await Future.delayed(const Duration(seconds: 9));
+
+    setState(() {
+      _isPlayingSound = false;
     });
   }
 
@@ -264,7 +281,7 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
                 ProgressBar(
                   backgroundColor: const Color(0xFF424141),
                   progressBarColor: const Color(0xFF8DB270),
-                  headerText: 'Retournez les cartes et trouvez les paires',
+                  headerText: 'Encuentra los pares de vocales',
                   progressValue: round / totalRounds,
                   onBack: () {
                     Navigator.pop(context);
@@ -335,12 +352,23 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
               ],
             ),
           ),
+          if (_isPlayingSound)
+            Container(
+              color: Colors.black.withOpacity(0.8),
+              child: const Center(
+                child: Icon(
+                  Icons.volume_up,
+                  size: 100,
+                  color: Colors.white,
+                ),
+              ),
+            ),
           const Positioned(
             bottom: 10,
             right: 10,
             child: MovableButtonScreen(
-              spanishAudio: 'sound/family/instruccionGame1.m4a',
-              frenchAudio: 'sound/family/instruccionGame1.m4a',
+              spanishAudio: 'sound/vocals/esgame2.m4a',
+              frenchAudio: 'sound/vocals/frgame2.m4a',
               rivePath: 'assets/RiveAssets/vocalsgame2.riv',
             ),
           ),
