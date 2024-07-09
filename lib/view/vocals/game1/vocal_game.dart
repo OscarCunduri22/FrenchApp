@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:frenc_app/view/button.dart';
-import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
 import 'package:frenc_app/utils/user_tracking.dart';
@@ -12,6 +11,8 @@ import 'package:frenc_app/widgets/confetti_animation.dart';
 import 'package:frenc_app/widgets/replay_popup.dart';
 import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/audio_manager.dart';
+import 'package:frenc_app/utils/reward_manager.dart';
+import 'package:frenc_app/widgets/progress_bar.dart';
 
 class VocalGame extends StatefulWidget {
   const VocalGame({Key? key}) : super(key: key);
@@ -101,6 +102,9 @@ class _VocalGameState extends State<VocalGame> {
       await databaseRepository.updateGameCompletionStatus(studentId, 'Voyelles',
           [true, false, false]); // Actualizar estado de juego
       _incrementTimesCompleted(); // Incrementar contador de juegos completados
+
+      // Unlock the reward using RewardManager
+      Provider.of<RewardManager>(context, listen: false).unlockReward(0); // Unlocks Voyelles_reward_1.pdf
     }
 
     Navigator.push(

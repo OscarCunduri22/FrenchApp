@@ -12,7 +12,8 @@ import 'package:frenc_app/widgets/replay_popup.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
-import 'package:frenc_app/utils/user_tracking.dart'; // Importar UserTracking
+import 'package:frenc_app/utils/user_tracking.dart';
+import 'package:frenc_app/utils/reward_manager.dart'; // Importar RewardManager
 
 class VocalMemoryPage extends StatefulWidget {
   const VocalMemoryPage({Key? key}) : super(key: key);
@@ -107,6 +108,9 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
       await databaseRepository.updateGameCompletionStatus(studentId, 'Voyelles',
           [true, true, false]); // Actualizar estado de juego
       _incrementTimesCompleted(); // Incrementar contador de juegos completados
+
+      // Unlock the reward using RewardManager
+      Provider.of<RewardManager>(context, listen: false).unlockReward(1); // Unlocks Voyelles_reward_2.pdf
     }
 
     Navigator.push(

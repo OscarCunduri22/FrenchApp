@@ -12,6 +12,7 @@ import 'package:frenc_app/widgets/confetti_animation.dart';
 import 'package:frenc_app/widgets/replay_popup.dart';
 import 'package:frenc_app/view/button.dart';
 import 'package:frenc_app/utils/audio_manager.dart';
+import 'package:frenc_app/utils/reward_manager.dart'; // Importar RewardManager
 
 class AnimalNameGame extends StatefulWidget {
   const AnimalNameGame({Key? key}) : super(key: key);
@@ -82,6 +83,9 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
       await databaseRepository.updateGameCompletionStatus(
           studentId, 'Voyelles', [true, true, true]);
       _incrementTimesCompleted();
+
+      // Unlock the reward using RewardManager
+      Provider.of<RewardManager>(context, listen: false).unlockReward(2); // Unlocks Voyelles_reward_3.pdf
     }
 
     Navigator.push(

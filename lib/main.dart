@@ -1,4 +1,3 @@
-//MAIN
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -6,11 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:frenc_app/firebase_options.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/utils/user_tracking.dart';
+import 'package:frenc_app/utils/reward_manager.dart';
 import 'package:frenc_app/view/start_screen.dart';
-import 'package:frenc_app/view/vocals/game1/vocal_game.dart';
-import 'package:frenc_app/view/vocals/game2/vocal_card_game.dart';
-import 'package:frenc_app/view/vocals/game3/animal_name_game.dart';
-
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -25,6 +21,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (context) => UserProvider()),
         ChangeNotifierProvider(create: (context) => UserTracking()),
+        ChangeNotifierProvider(create: (context) => RewardManager()),
       ],
       child: const MyApp(),
     ),
@@ -42,7 +39,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.teal,
       ),
-      home: const AnimalNameGame(),
+      home: const StartScreen(),
     );
   }
 }
