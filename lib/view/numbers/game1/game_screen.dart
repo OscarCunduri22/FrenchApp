@@ -1,12 +1,14 @@
-// ignore_for_file: library_private_types_in_public_api, deprecated_member_use
+// ignore_for_file: library_private_types_in_public_api, deprecated_member_use, use_build_context_synchronously
 
 import 'package:confetti/confetti.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:frenc_app/repository/global.repository.dart';
+import 'package:frenc_app/utils/audio_manager.dart';
 import 'package:frenc_app/utils/dialog_manager.dart';
 import 'package:frenc_app/view/button.dart';
 import 'package:frenc_app/view/game_selection.dart';
+import 'package:frenc_app/widgets/numbers/completition.dart';
 import 'package:frenc_app/widgets/numbers/game1/character_box_widget.dart';
 import 'package:frenc_app/widgets/numbers/game1/disordered_characters_widget.dart';
 import 'package:frenc_app/widgets/numbers/game1/number_image_widget.dart';
@@ -30,8 +32,10 @@ class _BubbleNumbersGameState extends State<BubbleNumbersGame>
   late AnimationController _characterBoxController;
   late AnimationController _disorderedCharactersController;
   late AnimationController _wordChangeController;
+  final DatabaseRepository databaseRepository = DatabaseRepository();
 
   bool _animationsInitialized = false;
+  bool showCompletionPopup = false;
 
   @override
   void initState() {
@@ -82,9 +86,37 @@ class _BubbleNumbersGameState extends State<BubbleNumbersGame>
   }
 
   void _onGameComplete() async {
+    AudioManager.effects().play('sound/level_win.mp3');
     String? studentId =
         Provider.of<UserProvider>(context, listen: false).currentStudentId;
-    if (studentId != null) {}
+
+    if (studentId != null) {
+      await databaseRepository
+          .updateGameCompletionStatus(studentId, 'Nombres', [true, true, true]);
+    }
+    if (mounted) {
+      setState(() {
+        showCompletionPopup = true;
+      });
+    }
+  }
+
+  void _onQuit() async {
+    String? studentId =
+        Provider.of<UserProvider>(context, listen: false).currentStudentId;
+
+    if (studentId != null) {
+      await databaseRepository
+          .updateGameCompletionStatus(studentId, 'Nombres', [true, true, true]);
+    }
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const GameSelectionScreen(
+          category: 'Nombres',
+        ),
+      ),
+    );
   }
 
   @override
@@ -145,13 +177,14 @@ class _BubbleNumbersGameState extends State<BubbleNumbersGame>
                               backgroundColor:
                                   const Color(0xF2005BA7).withOpacity(0.8),
                               progressBarColor: const Color(0xFF0BCC6C),
-                              headerText: 'Completa la secuencia de números',
+                              headerText:
+                                  'Ordena las letras para formar el numero',
                               progressValue: viewModel.currentIndex /
                                   viewModel.totalLevels,
                               onBack: () {
                                 Navigator.pop(context);
                               },
-                              backgroundMusic: 'sound/start_page.mp3',
+                              backgroundMusic: 'sound/family/song3.mp3',
                             ),
                             if (viewModel.currentIndex < viewModel.totalLevels)
                               ScaleTransition(
@@ -214,6 +247,15 @@ class _BubbleNumbersGameState extends State<BubbleNumbersGame>
                           spanishAudio: 'sound/numbers/esgame3.m4a',
                           frenchAudio: 'sound/numbers/frgame3.m4a',
                           rivePath: 'assets/RiveAssets/nombresgame1.riv',
+                        ),
+                      ),
+                    if (showCompletionPopup)
+                      Container(
+                        color: Colors.black.withOpacity(0.8),
+                        child: CompletionPopup(
+                          score: viewModel.currentIndex + 1,
+                          overScore: viewModel.totalLevels,
+                          onQuit: _onQuit,
                         ),
                       ),
                   ],

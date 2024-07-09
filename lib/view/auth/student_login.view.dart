@@ -55,7 +55,6 @@ class _FruitGameScreenState extends State<FruitGameScreen>
       duration: const Duration(seconds: 1),
       vsync: this,
     )..repeat(reverse: true);
-    AudioManager.background().setVolume(0.2);
     AudioManager.background().play('sound/family/song1.mp3');
   }
 
