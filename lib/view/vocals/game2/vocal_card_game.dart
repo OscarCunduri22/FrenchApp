@@ -313,7 +313,7 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
             Container(
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/images/family/game3/Verde.png'),
+                  image: AssetImage('assets/images/vocals/card_bg.jpg'),
                   fit: BoxFit.cover,
                 ),
               ),
