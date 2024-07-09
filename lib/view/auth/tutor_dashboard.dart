@@ -112,6 +112,10 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     Tutor? currentUser = Provider.of<UserProvider>(context).currentUser;
     String? tutorId = Provider.of<UserProvider>(context).currentUserId;
     if (currentUser == null) {
@@ -335,7 +339,7 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                                         onTap: (id) {
                                           Provider.of<UserProvider>(context, listen: false).clearStudent();
                                           Provider.of<UserProvider>(context, listen: false).setCurrentStudent(studentId, student);
-                                          Navigator.push(
+                                          Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
