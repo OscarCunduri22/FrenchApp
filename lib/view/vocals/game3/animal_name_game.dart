@@ -126,6 +126,7 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
       });
     }
 
+    await AudioManager.effects().stop();
     await AudioManager.effects().play('sound/vocals/$animalAudio');
     await Future.delayed(const Duration(seconds: 9));
 
@@ -342,7 +343,7 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
           children: [
             ReplayPopup(
               score: currentAnimalIndex + 1,
-              overScore: 5,
+              overScore: 6,
               onReplay: () {
                 if (mounted) {
                   setState(() {

@@ -147,6 +147,7 @@ class _VocalGameState extends State<VocalGame> {
       });
     }
 
+    await AudioManager.effects().stop();
     await AudioManager.effects().play('sound/numbers/yeahf.mp3');
     await Future.delayed(const Duration(seconds: 2));
     await playSound(vocalAudios[index]);
