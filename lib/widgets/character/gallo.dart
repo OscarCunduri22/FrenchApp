@@ -136,10 +136,10 @@ class _GalloComponentState extends State<GalloComponent> {
   @override
   void initState() {
     super.initState();
-    rootBundle.load('assets/RiveAssets/gallindoFinal.riv').then(
+    rootBundle.load('assets/RiveAssets/gallindoUpdate.riv').then(
       (data) async {
         final file =
-            await RiveFile.asset('assets/RiveAssets/gallindoFinal.riv');
+            await RiveFile.asset('assets/RiveAssets/gallindoUpdate.riv');
         final artboard = file.mainArtboard;
         var controller =
             StateMachineController.fromArtboard(artboard, 'State Machine 1');

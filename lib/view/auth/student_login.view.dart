@@ -101,17 +101,23 @@ class _FruitGameScreenState extends State<FruitGameScreen>
                         return WillPopScope(
                           onWillPop: () async => false,
                           child: AlertDialog(
-                            backgroundColor: Colors.black.withOpacity(0.8),
+                            backgroundColor:
+                                const Color.fromARGB(255, 255, 255, 255),
                             content: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 const ConfettiAnimation(animate: true),
-                                const Text(
-                                  '¡Felicidades!',
-                                  style: TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                                const CustomTextWidget(
+                                  text: 'Felicidades',
+                                  type: TextType.Title,
+                                  fontSize: 44,
+                                  fontWeight: FontWeight.w200,
+                                  letterSpacing: 1.0,
+                                ),
+                                Expanded(
+                                  child: Center(
+                                    child: Container(
+                                        child: GalloComponent.dancing()),
                                   ),
                                 ),
                                 const SizedBox(height: 20),
@@ -119,7 +125,7 @@ class _FruitGameScreenState extends State<FruitGameScreen>
                                   'Has completado el juego con éxito.',
                                   style: TextStyle(
                                     fontSize: 18,
-                                    color: Colors.white,
+                                    color: Colors.black,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
@@ -152,9 +158,15 @@ class _FruitGameScreenState extends State<FruitGameScreen>
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.green,
+                                    backgroundColor: const Color(0xFF016171),
                                   ),
-                                  child: const Text('Continuar'),
+                                  child: const Text(
+                                    'Continuar',
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
                               ],
                             ),
@@ -313,7 +325,7 @@ class _FruitGameScreenState extends State<FruitGameScreen>
                                   child: Stack(
                                     children: [
                                       GalloComponent.speaking(
-                                          audioPath: 'silueta'),
+                                          audioPath: 'codigofrutasES'),
                                       Positioned(
                                         left: 0,
                                         right: 0,
