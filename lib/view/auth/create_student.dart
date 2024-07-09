@@ -194,6 +194,7 @@ class _CreateStudentScreenHorizontalState
                                       child: const Icon(Icons.image, size: 100),
                                     ),
                               const SizedBox(height: 32),
+                              const Text('Foto obligatoria'),
                               ElevatedButton(
                                 onPressed: _pickImage,
                                 style: ElevatedButton.styleFrom(
