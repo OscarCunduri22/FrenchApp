@@ -12,7 +12,8 @@ import 'package:frenc_app/widgets/confetti_animation.dart';
 import 'package:frenc_app/widgets/replay_popup.dart';
 import 'package:frenc_app/view/button.dart';
 import 'package:frenc_app/utils/audio_manager.dart';
-import 'package:frenc_app/utils/reward_manager.dart'; // Importar RewardManager
+import 'package:frenc_app/utils/reward_manager.dart';
+import 'package:frenc_app/utils/dialog_manager.dart';
 
 class AnimalNameGame extends StatefulWidget {
   const AnimalNameGame({Key? key}) : super(key: key);
@@ -84,17 +85,18 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
           studentId, 'Voyelles', [true, true, true]);
       _incrementTimesCompleted();
 
-      // Unlock the reward using RewardManager
-      Provider.of<RewardManager>(context, listen: false).unlockReward(2); // Unlocks Voyelles_reward_3.pdf
+      RewardManager().unlockReward(2); // Unlocks Voyelles_reward_3.pdf
     }
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => const GameSelectionScreen(
-                category: 'Voyelles',
-              )),
-    );
+    if (mounted) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const GameSelectionScreen(
+                  category: 'Voyelles',
+                )),
+      );
+    }
   }
 
   void _loadNewVowelChoices() {
@@ -118,16 +120,30 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
   }
 
   Future<void> _playAnimalSound(String animalAudio) async {
-    setState(() {
-      _isPlayingSound = true;
-    });
+    if (mounted) {
+      setState(() {
+        _isPlayingSound = true;
+      });
+    }
 
     await AudioManager.effects().play('sound/vocals/$animalAudio');
     await Future.delayed(const Duration(seconds: 9));
 
-    setState(() {
-      _isPlayingSound = false;
-    });
+    if (mounted) {
+      setState(() {
+        _isPlayingSound = false;
+      });
+    }
+  }
+
+  Future<bool> _onWillPop() async {
+    AudioManager.stopBackground();
+    AudioManager.stopEffect();
+    DialogManager.showExitGameDialog(
+      context,
+      const GameSelectionScreen(category: 'Voyelles'),
+    );
+    return false;
   }
 
   @override
@@ -138,135 +154,142 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
     final targetVowel = currentAnimal['targetVowel']!;
     final animalAudio = currentAnimal['audio']!;
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              ProgressBar(
-                backgroundColor: const Color(0xF2005BA7).withOpacity(0.8),
-                progressBarColor: const Color(0xFF0BCC6C),
-                headerText: "Completa el juego",
-                progressValue: (currentAnimalIndex + 1) / animals.length,
-                onBack: () {
-                  Navigator.pop(context);
-                },
-                backgroundMusic: 'sound/start_page.mp3',
-              ),
-              Expanded(
-                child: Stack(
-                  children: [
-                    Positioned.fill(
-                      child: Image.asset(
-                        'assets/images/vocals/game3/background/bg_game3.png',
-                        fit: BoxFit.cover,
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        body: Stack(
+          children: [
+            Column(
+              children: [
+                ProgressBar(
+                  backgroundColor: const Color(0xF2005BA7).withOpacity(0.8),
+                  progressBarColor: const Color(0xFF0BCC6C),
+                  headerText: "Completa el juego",
+                  progressValue: (currentAnimalIndex + 1) / animals.length,
+                  onBack: () {
+                    Navigator.pop(context);
+                  },
+                  backgroundMusic: 'sound/start_page.mp3',
+                ),
+                Expanded(
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: Image.asset(
+                          'assets/images/vocals/game3/background/bg_game3.png',
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                    ),
-                    Center(
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 20),
-                          Container(
-                            width: 90,
-                            height: 110,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage(
-                                    'assets/images/vocals/game3/animals/$animalImage'),
-                                fit: BoxFit.cover,
+                      Center(
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 20),
+                            Container(
+                              width: 90,
+                              height: 110,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage(
+                                      'assets/images/vocals/game3/animals/$animalImage'),
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              _buildOutlinedText(animalName.split('_')[0]),
-                              DragTarget<String>(
-                                builder:
-                                    (context, candidateData, rejectedData) {
-                                  return Container(
-                                    width: 40,
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      color:
-                                          isCorrect ? Colors.green : Colors.red,
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: _buildOutlinedText(missingVowel),
-                                  );
-                                },
-                                onWillAccept: (data) => true,
-                                onAccept: (data) async {
-                                  setState(() {
-                                    missingVowel = data;
-                                    isCorrect = (data == targetVowel);
-                                  });
-                                  if (isCorrect) {
-                                    await _playAnimalSound(animalAudio);
-                                    Future.delayed(const Duration(seconds: 1),
-                                        () {
+                            const SizedBox(height: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                _buildOutlinedText(animalName.split('_')[0]),
+                                DragTarget<String>(
+                                  builder:
+                                      (context, candidateData, rejectedData) {
+                                    return Container(
+                                      width: 40,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        color:
+                                            isCorrect ? Colors.green : Colors.red,
+                                      ),
+                                      alignment: Alignment.center,
+                                      child: _buildOutlinedText(missingVowel),
+                                    );
+                                  },
+                                  onWillAccept: (data) => true,
+                                  onAccept: (data) async {
+                                    if (mounted) {
                                       setState(() {
-                                        if (currentAnimalIndex <
-                                            animals.length - 1) {
-                                          currentAnimalIndex++;
-                                          missingVowel = "_";
-                                          isCorrect = false;
-                                          _loadNewVowelChoices();
-                                        } else {
-                                          _showWinDialog();
+                                        missingVowel = data;
+                                        isCorrect = (data == targetVowel);
+                                      });
+                                    }
+                                    if (isCorrect) {
+                                      await _playAnimalSound(animalAudio);
+                                      Future.delayed(const Duration(seconds: 1),
+                                          () {
+                                        if (mounted) {
+                                          setState(() {
+                                            if (currentAnimalIndex <
+                                                animals.length - 1) {
+                                              currentAnimalIndex++;
+                                              missingVowel = "_";
+                                              isCorrect = false;
+                                              _loadNewVowelChoices();
+                                            } else {
+                                              _showWinDialog();
+                                            }
+                                          });
                                         }
                                       });
-                                    });
-                                  }
-                                },
-                              ),
-                              _buildOutlinedText(animalName.split('_')[1]),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          Wrap(
-                            spacing: 30,
-                            alignment: WrapAlignment.center,
-                            children: currentVowelChoices.map((vowel) {
-                              final vowelImage =
-                                  vowelImages[vowels.indexOf(vowel)];
-                              return VowelTile(
-                                letter: vowel,
-                                imagePath: vowelImage,
-                              );
-                            }).toList(),
-                          ),
-                        ],
+                                    }
+                                  },
+                                ),
+                                _buildOutlinedText(animalName.split('_')[1]),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            Wrap(
+                              spacing: 30,
+                              alignment: WrapAlignment.center,
+                              children: currentVowelChoices.map((vowel) {
+                                final vowelImage =
+                                    vowelImages[vowels.indexOf(vowel)];
+                                return VowelTile(
+                                  letter: vowel,
+                                  imagePath: vowelImage,
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            if (_isPlayingSound)
+              Container(
+                color: Colors.black.withOpacity(0.8),
+                child: const Center(
+                  child: Icon(
+                    Icons.volume_up,
+                    size: 100,
+                    color: Colors.white,
+                  ),
                 ),
               ),
-            ],
-          ),
-          if (_isPlayingSound)
-            Container(
-              color: Colors.black.withOpacity(0.8),
-              child: const Center(
-                child: Icon(
-                  Icons.volume_up,
-                  size: 100,
-                  color: Colors.white,
-                ),
+            const Positioned(
+              bottom: 10,
+              right: 10,
+              child: MovableButtonScreen(
+                spanishAudio: 'sound/vocals/frgame3.m4a',
+                frenchAudio: 'sound/vocals/esgame3.m4a',
+                rivePath: 'assets/RiveAssets/vocalsgame3.riv',
               ),
             ),
-          const Positioned(
-            bottom: 10,
-            right: 10,
-            child: MovableButtonScreen(
-              spanishAudio: 'sound/vocals/frgame3.m4a',
-              frenchAudio: 'sound/vocals/esgame3.m4a',
-              rivePath: 'assets/RiveAssets/vocalsgame3.riv',
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -309,34 +332,42 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
   }
 
   void _showWinDialog() {
-    setState(() {
-      _showConfetti = true;
-    });
-    showDialog(
-      context: context,
-      builder: (context) => Stack(
-        children: [
-          ReplayPopup(
-            score: currentAnimalIndex + 1,
-            overScore: 5,
-            onReplay: () {
-              setState(() {
-                currentAnimalIndex = 0;
-                missingVowel = "_";
-                isCorrect = false;
-                _loadNewVowelChoices();
-                Navigator.of(context).pop();
-              });
-            },
-            onQuit: () {
-              currentAnimalIndex = 0;
-              _onGameComplete();
-            },
-          ),
-          if (_showConfetti) ConfettiAnimation(animate: _showConfetti),
-        ],
-      ),
-    );
+    if (mounted) {
+      setState(() {
+        _showConfetti = true;
+      });
+      showDialog(
+        context: context,
+        builder: (context) => Stack(
+          children: [
+            ReplayPopup(
+              score: currentAnimalIndex + 1,
+              overScore: 5,
+              onReplay: () {
+                if (mounted) {
+                  setState(() {
+                    currentAnimalIndex = 0;
+                    missingVowel = "_";
+                    isCorrect = false;
+                    _loadNewVowelChoices();
+                    Navigator.of(context).pop();
+                  });
+                }
+              },
+              onQuit: () {
+                if (mounted) {
+                  setState(() {
+                    currentAnimalIndex = 0;
+                  });
+                  _onGameComplete();
+                }
+              },
+            ),
+            if (_showConfetti) ConfettiAnimation(animate: _showConfetti),
+          ],
+        ),
+      );
+    }
   }
 }
 

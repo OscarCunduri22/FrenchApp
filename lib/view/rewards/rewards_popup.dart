@@ -1,30 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-import 'package:frenc_app/utils/reward_manager.dart';
-import 'package:flutter_file_dialog/flutter_file_dialog.dart';
-import 'package:path_provider/path_provider.dart';
-import 'dart:io';
+import 'package:frenc_app/utils/reward_service.dart';
 
-class RewardsPopup extends StatelessWidget {
-  const RewardsPopup({Key? key}) : super(key: key);
+class RewardsScreen extends StatelessWidget {
+  const RewardsScreen({Key? key}) : super(key: key);
 
   Future<void> _saveFile(BuildContext context, String assetPath) async {
     try {
-      final byteData = await rootBundle.load(assetPath);
-      final fileName = assetPath.split('/').last;
-      final tempDir = await getTemporaryDirectory();
-      final tempPath = '${tempDir.path}/$fileName';
-
-      final file = File(tempPath);
-      await file.writeAsBytes(byteData.buffer.asUint8List());
-
-      final params = SaveFileDialogParams(sourceFilePath: tempPath);
-      await FlutterFileDialog.saveFile(params: params);
-
+      await RewardService().saveFile(assetPath);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Descargando $fileName...'),
+          content: Text('Descargando ${assetPath.split('/').last}...'),
         ),
       );
     } catch (e) {
@@ -38,38 +23,71 @@ class RewardsPopup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Recompensas'),
-      content: Consumer<RewardManager>(
-        builder: (context, rewardManager, child) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: List.generate(RewardManager.totalRewards, (index) {
-              bool isUnlocked = rewardManager.isRewardUnlocked(index);
-              return ListTile(
-                title: Text('Recompensa ${index + 1}'),
-                trailing: isUnlocked
-                    ? IconButton(
-                        icon: const Icon(Icons.download),
-                        onPressed: () {
-                          String path = rewardManager.getRewardPath(index);
-                          _saveFile(context, path);
-                        },
-                      )
-                    : const Icon(Icons.lock),
-              );
-            }),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Recompensas'),
+      ),
+      body: FutureBuilder(
+        future: RewardService().initialize(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Error al cargar las recompensas'),
+                  Text('${snapshot.error}'),
+                  TextButton(
+                    child: const Text('Cerrar'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return Container(
+            padding: const EdgeInsets.all(10.0),
+            width: double.maxFinite,
+            child: GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3, // Número de columnas
+                crossAxisSpacing: 10.0, // Espacio entre columnas
+                mainAxisSpacing: 10.0, // Espacio entre filas
+                childAspectRatio: 1, // Proporción del tamaño de los hijos
+              ),
+              itemCount: RewardService.totalRewards,
+              itemBuilder: (context, index) {
+                bool isUnlocked = RewardService().isRewardUnlocked('reward_$index');
+                return Card(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Recompensa ${index + 1}'),
+                      const SizedBox(height: 10),
+                      isUnlocked
+                          ? IconButton(
+                              icon: const Icon(Icons.download),
+                              onPressed: () {
+                                String path = RewardService().getRewardPath(index);
+                                _saveFile(context, path);
+                              },
+                            )
+                          : const Icon(Icons.lock),
+                    ],
+                  ),
+                );
+              },
+            ),
           );
         },
       ),
-      actions: <Widget>[
-        TextButton(
-          child: const Text('Cerrar'),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-      ],
     );
   }
 }

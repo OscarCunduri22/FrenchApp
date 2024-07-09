@@ -6,9 +6,9 @@ import 'package:frenc_app/firebase_options.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/utils/user_tracking.dart';
 import 'package:frenc_app/view/start_screen.dart';
-import 'package:frenc_app/utils/reward_manager.dart';
-
+import 'package:frenc_app/view/vocals/game1/vocal_game.dart';
 import 'package:provider/provider.dart';
+import 'package:frenc_app/utils/reward_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,7 +22,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (context) => UserProvider()),
         ChangeNotifierProvider(create: (context) => UserTracking()),
-        ChangeNotifierProvider(create: (context) => RewardManager()),
+        ChangeNotifierProvider(create: (context) => RewardManager()), // Added RewardManager here
       ],
       child: const MyApp(),
     ),
