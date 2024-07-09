@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frenc_app/utils/dialog_manager.dart';
@@ -14,7 +16,8 @@ class StudentDetailScreen extends StatefulWidget {
   final Student student;
   final String studentId;
 
-  const StudentDetailScreen({super.key, required this.student, required this.studentId});
+  const StudentDetailScreen(
+      {super.key, required this.student, required this.studentId});
 
   @override
   _StudentDetailScreenState createState() => _StudentDetailScreenState();
@@ -43,319 +46,373 @@ class _StudentDetailScreenState extends State<StudentDetailScreen> {
   }
 
   Future<void> _loadStudentData() async {
-    await Provider.of<UserTracking>(context, listen: false).loadTrackingData(widget.studentId);
+    await Provider.of<UserTracking>(context, listen: false)
+        .loadTrackingData(widget.studentId);
   }
 
   @override
   Widget build(BuildContext context) {
-    return  WillPopScope(
+    return WillPopScope(
         onWillPop: () async {
           DialogManager.showExitConfirmationDialog(context);
           return false;
         },
-    child: Scaffold(
-      body: Stack(
-        children: [
-          // Background image
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/background_student_detail.png'),
-                fit: BoxFit.cover,
+        child: Scaffold(
+          body: Stack(
+            children: [
+              // Background image
+              Container(
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                        'assets/images/background_student_detail.png'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
-            ),
-          ),
-          // Content
-          FutureBuilder(
-              future: Provider.of<UserTracking>(context, listen: false).loadTrackingData(widget.studentId),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else {
-                  return SingleChildScrollView(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        Card(
-                          elevation: 4,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Row(
-                              children: [
-                                CircleAvatar(
-                                  backgroundImage: NetworkImage(widget.student.imageUrl),
-                                  radius: 40,
-                                ),
-                                const SizedBox(width: 16),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      widget.student.name,
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        const CustomTextWidget(
-                          text: 'Juegos',
-                          type: TextType.Subtitle,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: ColorType.Primary,
-                        ),
-                        const SizedBox(height: 10),
-                        ElevatedButton(
-                          onPressed: () {
-                            Provider.of<UserProvider>(context, listen: false).setCurrentStudent(widget.studentId, widget.student);
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => FruitGameScreen(studentId: widget.studentId),
+              // Content
+              FutureBuilder(
+                  future: Provider.of<UserTracking>(context, listen: false)
+                      .loadTrackingData(widget.studentId),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else {
+                      return SingleChildScrollView(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            Card(
+                              elevation: 4,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                            );
-                          },
-                          style: CommonButtonStyles.primaryButtonStyle,
-                          child: const Text(
-                            'Jugar',
-                            style: TextStyle(color: Colors.white, fontSize: 16),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        const CustomTextWidget(
-                          text: 'Progreso del Estudiante',
-                          type: TextType.Subtitle,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: ColorType.Secondary,
-                        ),
-                        const SizedBox(height: 10),
-                        Consumer<UserTracking>(
-                          builder: (context, userTracking, child) {
-                            final totalGamesPlayed = userTracking.getTotalGamesPlayed();
-                            final mostPlayedCategory = userTracking.getMostPlayedCategory();
-                            final gamesPlayedPerCategory = userTracking.getGamesPlayedPerCategory();
-                            final topThreeGames = userTracking.getTopThreeGames();
-                            return Column(
-                              children: [
-                                Row(
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Row(
                                   children: [
-                                    Expanded(
-                                      child: Card(
-                                        color: const Color(0xFFDBD8FF),
-                                        elevation: 4,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(10),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(16.0),
-                                          child: Column(
-                                            children: [
-                                              const Text(
-                                                'Total de Juegos Completados',
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                                textAlign: TextAlign.center,
-                                              ),
-                                              const SizedBox(height: 10),
-                                              Text(
-                                                '$totalGamesPlayed',
-                                                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
+                                    CircleAvatar(
+                                      backgroundImage:
+                                          NetworkImage(widget.student.imageUrl),
+                                      radius: 40,
                                     ),
-                                    const SizedBox(width: 10),
-                                    Expanded(
-                                      child: Card(
-                                        color: const Color(0xFFD8FFF1),
-                                        elevation: 4,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(10),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(16.0),
-                                          child: Column(
-                                            children: [
-                                              const Text(
-                                                'Categoría Más Jugada',
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                                textAlign: TextAlign.center,
-                                              ),
-                                              const SizedBox(height: 10),
-                                              Padding(
-                                                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                                child: Text(
-                                                  mostPlayedCategory,
-                                                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 5),
-                                              Text(
-                                                'Esta es la categoría que ${widget.student.name} ha jugado más',
-                                                style: const TextStyle(fontSize: 14),
-                                                textAlign: TextAlign.center,
-                                              ),
-                                            ],
+                                    const SizedBox(width: 16),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          widget.student.name,
+                                          style: const TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                      ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 20),
-                                const CustomTextWidget(
-                                  text: 'Juegos por Categoría',
-                                  type: TextType.Subtitle,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: ColorType.Secondary,
-                                ),
-                                const SizedBox(height: 10),
-                                Container(
-                                  color: Colors.white,
-                                  child: Table(
-                                    border: TableBorder.all(),
-                                    children: [
-                                      const TableRow(
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            const CustomTextWidget(
+                              text: 'Juegos',
+                              type: TextType.Subtitle,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: ColorType.Primary,
+                            ),
+                            const SizedBox(height: 10),
+                            ElevatedButton(
+                              onPressed: () {
+                                Provider.of<UserProvider>(context,
+                                        listen: false)
+                                    .setCurrentStudent(
+                                        widget.studentId, widget.student);
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => FruitGameScreen(
+                                        studentId: widget.studentId),
+                                  ),
+                                );
+                              },
+                              style: CommonButtonStyles.primaryButtonStyle,
+                              child: const Text(
+                                'Jugar',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            const CustomTextWidget(
+                              text: 'Progreso del Estudiante',
+                              type: TextType.Subtitle,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: ColorType.Secondary,
+                            ),
+                            const SizedBox(height: 10),
+                            Consumer<UserTracking>(
+                              builder: (context, userTracking, child) {
+                                final totalGamesPlayed =
+                                    userTracking.getTotalGamesPlayed();
+                                final mostPlayedCategory =
+                                    userTracking.getMostPlayedCategory();
+                                final gamesPlayedPerCategory =
+                                    userTracking.getGamesPlayedPerCategory();
+                                final topThreeGames =
+                                    userTracking.getTopThreeGames();
+                                return Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Card(
+                                            color: const Color(0xFFDBD8FF),
+                                            elevation: 4,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(16.0),
+                                              child: Column(
+                                                children: [
+                                                  const Text(
+                                                    'Total de Juegos Completados',
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                  const SizedBox(height: 10),
+                                                  Text(
+                                                    '$totalGamesPlayed',
+                                                    style: const TextStyle(
+                                                        fontSize: 24,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                          child: Card(
+                                            color: const Color(0xFFD8FFF1),
+                                            elevation: 4,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(16.0),
+                                              child: Column(
+                                                children: [
+                                                  const Text(
+                                                    'Categoría Más Jugada',
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                  const SizedBox(height: 10),
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 16.0),
+                                                    child: Text(
+                                                      mostPlayedCategory,
+                                                      style: const TextStyle(
+                                                          fontSize: 18,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 5),
+                                                  Text(
+                                                    'Esta es la categoría que ${widget.student.name} ha jugado más',
+                                                    style: const TextStyle(
+                                                        fontSize: 14),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 20),
+                                    const CustomTextWidget(
+                                      text: 'Juegos por Categoría',
+                                      type: TextType.Subtitle,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: ColorType.Secondary,
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Container(
+                                      color: Colors.white,
+                                      child: Table(
+                                        border: TableBorder.all(),
                                         children: [
-                                          Padding(
-                                            padding: EdgeInsets.all(8.0),
-                                            child: Text(
-                                              'Categoría',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
+                                          const TableRow(
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  'Categoría',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.all(8.0),
-                                            child: Text(
-                                              'Juegos Jugados',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
+                                              Padding(
+                                                padding: EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  'Juegos Jugados',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
+                                            ],
                                           ),
+                                          ...gamesPlayedPerCategory.entries
+                                              .map((entry) {
+                                            return TableRow(
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Text(entry.key),
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Text('${entry.value}'),
+                                                ),
+                                              ],
+                                            );
+                                          }).toList(),
                                         ],
                                       ),
-                                      ...gamesPlayedPerCategory.entries.map((entry) {
-                                        return TableRow(
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Text(entry.key),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Text('${entry.value}'),
-                                            ),
-                                          ],
-                                        );
-                                      }).toList(),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                                const CustomTextWidget(
-                                  text: 'Top 3 Juegos Más Jugados',
-                                  type: TextType.Subtitle,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: ColorType.Secondary,
-                                ),
-                                const SizedBox(height: 10),
-                                SizedBox(
-                                  height: 200,
-                                  child: BarChart(
-                                    BarChartData(
-                                      alignment: BarChartAlignment.spaceAround,
-                                      barGroups: topThreeGames.map((entry) {
-                                        return BarChartGroupData(
-                                          x: entry.key.hashCode,
-                                          barRods: [
-                                            BarChartRodData(
-                                              toY: entry.value.toDouble(),
-                                              color: Colors.blue,
-                                              width: 30, // Adjust the width here to make bars wider or narrower
-                                            ),
-                                          ],
-                                          showingTooltipIndicators: [],
-                                        );
-                                      }).toList(),
-                                      titlesData: FlTitlesData(
-                                        bottomTitles: AxisTitles(
-                                          sideTitles: SideTitles(
-                                            showTitles: true,
-                                            getTitlesWidget: (value, meta) {
-                                              final game = topThreeGames.firstWhere((entry) => entry.key.hashCode == value.toInt()).key;
-                                              return Padding(
-                                                padding: const EdgeInsets.symmetric(horizontal: 4.0), // Adjust horizontal padding to space out bars
-                                                child: Text(game, style: const TextStyle(fontSize: 10), textAlign: TextAlign.center),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                        leftTitles: const AxisTitles(
-                                          sideTitles: SideTitles(showTitles: true),
-                                        ),
-                                        topTitles: const AxisTitles(
-                                          sideTitles: SideTitles(showTitles: false),
-                                        ),
-                                        rightTitles: const AxisTitles(
-                                          sideTitles: SideTitles(showTitles: false),
-                                        ),
-                                      ),
-                                      borderData: FlBorderData(show: false),
-                                      gridData: const FlGridData(show: false),
-                                      barTouchData: BarTouchData(
-                                        touchTooltipData: BarTouchTooltipData(
-                                          tooltipPadding: const EdgeInsets.all(8.0),
-                                          tooltipRoundedRadius: 4,
-                                          getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                                            return BarTooltipItem(
-                                              rod.toY.toString(),
-                                              const TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                      groupsSpace: 10, // Adjust group space to bring bars closer together
                                     ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
+                                    const SizedBox(height: 20),
+                                    const CustomTextWidget(
+                                      text: 'Top 3 Juegos Más Jugados',
+                                      type: TextType.Subtitle,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: ColorType.Secondary,
+                                    ),
+                                    const SizedBox(height: 10),
+                                    SizedBox(
+                                      height: 200,
+                                      child: BarChart(
+                                        BarChartData(
+                                          alignment:
+                                              BarChartAlignment.spaceAround,
+                                          barGroups: topThreeGames.map((entry) {
+                                            return BarChartGroupData(
+                                              x: entry.key.hashCode,
+                                              barRods: [
+                                                BarChartRodData(
+                                                  toY: entry.value.toDouble(),
+                                                  color: Colors.blue,
+                                                  width:
+                                                      30, // Adjust the width here to make bars wider or narrower
+                                                ),
+                                              ],
+                                              showingTooltipIndicators: [],
+                                            );
+                                          }).toList(),
+                                          titlesData: FlTitlesData(
+                                            bottomTitles: AxisTitles(
+                                              sideTitles: SideTitles(
+                                                showTitles: true,
+                                                getTitlesWidget: (value, meta) {
+                                                  final game = topThreeGames
+                                                      .firstWhere((entry) =>
+                                                          entry.key.hashCode ==
+                                                          value.toInt())
+                                                      .key;
+                                                  return Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal:
+                                                            4.0), // Adjust horizontal padding to space out bars
+                                                    child: Text(game,
+                                                        style: const TextStyle(
+                                                            fontSize: 10),
+                                                        textAlign:
+                                                            TextAlign.center),
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                            leftTitles: const AxisTitles(
+                                              sideTitles:
+                                                  SideTitles(showTitles: true),
+                                            ),
+                                            topTitles: const AxisTitles(
+                                              sideTitles:
+                                                  SideTitles(showTitles: false),
+                                            ),
+                                            rightTitles: const AxisTitles(
+                                              sideTitles:
+                                                  SideTitles(showTitles: false),
+                                            ),
+                                          ),
+                                          borderData: FlBorderData(show: false),
+                                          gridData:
+                                              const FlGridData(show: false),
+                                          barTouchData: BarTouchData(
+                                            touchTooltipData:
+                                                BarTouchTooltipData(
+                                              tooltipPadding:
+                                                  const EdgeInsets.all(8.0),
+                                              tooltipRoundedRadius: 4,
+                                              getTooltipItem: (group,
+                                                  groupIndex, rod, rodIndex) {
+                                                return BarTooltipItem(
+                                                  rod.toY.toString(),
+                                                  const TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                          groupsSpace:
+                                              10, // Adjust group space to bring bars closer together
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  );
-                }
-              }),
-        ],
-      ),
-    ));
+                      );
+                    }
+                  }),
+            ],
+          ),
+        ));
   }
 }

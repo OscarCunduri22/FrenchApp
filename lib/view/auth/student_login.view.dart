@@ -222,7 +222,7 @@ class _FruitGameScreenState extends State<FruitGameScreen>
                                 if (receivedFruit.name == fruit.name) {
                                   viewModel.setCorrectAnswer(fruit.name);
                                   AudioManager.effects()
-                                      .play('sound/correct.mp3');
+                                      .play('sound/correct1.mp3');
                                 } else {
                                   AudioManager.effects()
                                       .play('sound/error.mp3');
