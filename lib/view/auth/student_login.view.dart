@@ -1,26 +1,27 @@
-// ignore_for_file: deprecated_member_use, use_build_context_synchronously, prefer_const_constructors_in_immutables, library_private_types_in_public_api
+// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api, deprecated_member_use
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:frenc_app/utils/audio_manager.dart';
-import 'package:provider/provider.dart';
-import 'package:frenc_app/model/fruit.dart';
 import 'package:frenc_app/model/tutor.dart';
 import 'package:frenc_app/repository/global.repository.dart';
+import 'package:frenc_app/view/auth/tutor_dashboard.dart';
+import 'package:frenc_app/view_model/auth/student_login.dart';
+import 'package:provider/provider.dart';
+import 'package:frenc_app/model/fruit.dart';
+import 'package:frenc_app/utils/audio_manager.dart';
 import 'package:frenc_app/utils/dialog_manager.dart';
 import 'package:frenc_app/utils/user_provider.dart';
-import 'package:frenc_app/view/auth/tutor_dashboard.dart';
 import 'package:frenc_app/view/category_selection.dart';
-import 'package:frenc_app/view_model/auth/student_login.dart';
 import 'package:frenc_app/widgets/animations/shake.dart';
 import 'package:frenc_app/widgets/character/gallo.dart';
 import 'package:frenc_app/widgets/custom_theme_text.dart';
-import 'package:frenc_app/widgets/confetti_animation.dart'; // Import the ConfettiAnimation widget
+import 'package:frenc_app/widgets/confetti_animation.dart';
 import 'dart:math';
 
 class FruitGameScreen extends StatefulWidget {
   final String studentId;
 
+  // ignore: prefer_const_constructors_in_immutables
   FruitGameScreen({Key? key, required this.studentId}) : super(key: key);
 
   @override
@@ -54,11 +55,14 @@ class _FruitGameScreenState extends State<FruitGameScreen>
       duration: const Duration(seconds: 1),
       vsync: this,
     )..repeat(reverse: true);
+    AudioManager.background().play('sound/family/song1.mp3');
   }
 
   @override
   void dispose() {
     _animationController.dispose();
+    AudioManager.background().stop();
+    AudioManager.effects().stop();
     super.dispose();
   }
 
@@ -89,7 +93,7 @@ class _FruitGameScreenState extends State<FruitGameScreen>
               builder: (context, viewModel, child) {
                 if (viewModel.isAllCorrect()) {
                   Future.delayed(Duration.zero, () {
-                    AudioManager.effects().play('sound/numbers/yeahf.mp3');
+                    AudioManager.playEffect('sound/numbers/yeahf.mp3');
                     showDialog(
                       context: context,
                       barrierDismissible: false,
@@ -97,17 +101,23 @@ class _FruitGameScreenState extends State<FruitGameScreen>
                         return WillPopScope(
                           onWillPop: () async => false,
                           child: AlertDialog(
-                            backgroundColor: Colors.black.withOpacity(0.8),
+                            backgroundColor:
+                                const Color.fromARGB(255, 255, 255, 255),
                             content: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 const ConfettiAnimation(animate: true),
-                                const Text(
-                                  '¡Felicidades!',
-                                  style: TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                                const CustomTextWidget(
+                                  text: 'Felicidades',
+                                  type: TextType.Title,
+                                  fontSize: 44,
+                                  fontWeight: FontWeight.w200,
+                                  letterSpacing: 1.0,
+                                ),
+                                Expanded(
+                                  child: Center(
+                                    child: Container(
+                                        child: GalloComponent.dancing()),
                                   ),
                                 ),
                                 const SizedBox(height: 20),
@@ -115,7 +125,7 @@ class _FruitGameScreenState extends State<FruitGameScreen>
                                   'Has completado el juego con éxito.',
                                   style: TextStyle(
                                     fontSize: 18,
-                                    color: Colors.white,
+                                    color: Colors.black,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
@@ -137,11 +147,6 @@ class _FruitGameScreenState extends State<FruitGameScreen>
                                             opacity: TweenSequence([
                                               TweenSequenceItem(
                                                 tween:
-                                                    Tween(begin: 1.0, end: 0.0),
-                                                weight: 50.0,
-                                              ),
-                                              TweenSequenceItem(
-                                                tween:
                                                     Tween(begin: 0.0, end: 1.0),
                                                 weight: 50.0,
                                               ),
@@ -153,9 +158,15 @@ class _FruitGameScreenState extends State<FruitGameScreen>
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.green,
+                                    backgroundColor: const Color(0xFF016171),
                                   ),
-                                  child: const Text('Continuar'),
+                                  child: const Text(
+                                    'Continuar',
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
                               ],
                             ),
@@ -222,6 +233,11 @@ class _FruitGameScreenState extends State<FruitGameScreen>
                               onAccept: (receivedFruit) {
                                 if (receivedFruit.name == fruit.name) {
                                   viewModel.setCorrectAnswer(fruit.name);
+                                  AudioManager.effects()
+                                      .play('sound/correct1.mp3');
+                                } else {
+                                  AudioManager.effects()
+                                      .play('sound/error.mp3');
                                 }
                               },
                               builder: (context, candidateData, rejectedData) {
@@ -309,8 +325,7 @@ class _FruitGameScreenState extends State<FruitGameScreen>
                                   child: Stack(
                                     children: [
                                       GalloComponent.speaking(
-                                          audioPath:
-                                              'sound/numbers/silueta.m4a'),
+                                          audioPath: 'codigofrutasES'),
                                       Positioned(
                                         left: 0,
                                         right: 0,

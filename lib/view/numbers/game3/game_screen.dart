@@ -1,11 +1,13 @@
-// ignore_for_file: library_private_types_in_public_api, sized_box_for_whitespace, deprecated_member_use
+// ignore_for_file: deprecated_member_use, sized_box_for_whitespace, use_build_context_synchronously, unused_element
 
 import 'dart:async';
 import 'dart:math';
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:frenc_app/utils/dialog_manager.dart';
 import 'package:frenc_app/utils/user_tracking.dart';
 import 'package:frenc_app/view/button.dart';
+import 'package:frenc_app/widgets/custom_theme_text.dart';
 import 'package:provider/provider.dart';
 import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/audio_manager.dart';
@@ -13,7 +15,6 @@ import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/game_selection.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:frenc_app/widgets/confetti_animation.dart';
-import 'package:frenc_app/widgets/replay_popup.dart';
 
 class MemoryNumbersGame extends StatefulWidget {
   const MemoryNumbersGame({super.key});
@@ -34,6 +35,7 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame>
   int maxLevel = 3;
   bool _showConfetti = false;
   bool _isPlayingSound = false;
+  bool showReplayPopup = false;
   final databaseRepository = DatabaseRepository();
   late List<AnimationController> _controllers;
   late List<Animation<double>> _animations;
@@ -75,19 +77,36 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame>
   }
 
   void _onGameComplete() async {
+    await Future.delayed(const Duration(seconds: 6));
+    setState(() {
+      showReplayPopup = true;
+    });
+  }
+
+  void _replayGame() {
+    setState(() {
+      showReplayPopup = false;
+      level = 1;
+      startLevel();
+    });
+  }
+
+  void _onQuit() async {
     String? studentId =
         Provider.of<UserProvider>(context, listen: false).currentStudentId;
 
     if (studentId != null) {
-      _incrementTimesCompleted();
+      await databaseRepository.updateGameCompletionStatus(
+          studentId, 'Nombres', [true, true, false]);
+      _incrementTimesPlayed();
     }
-
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-          builder: (context) => const GameSelectionScreen(
-                category: 'Nombres',
-              )),
+        builder: (context) => const GameSelectionScreen(
+          category: 'Nombres',
+        ),
+      ),
     );
   }
 
@@ -191,18 +210,10 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame>
       context: context,
       builder: (context) => Stack(
         children: [
-          ReplayPopup(
+          ReplayPopupForThreeLevels(
             score: level,
-            overScore: 5,
-            onReplay: () {
-              setState(() {
-                level = 1;
-                startLevel();
-              });
-            },
-            onQuit: () {
-              _onGameComplete();
-            },
+            onReplay: _replayGame,
+            onQuit: _onQuit,
           ),
           if (_showConfetti) ConfettiAnimation(animate: _showConfetti),
         ],
@@ -338,7 +349,7 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame>
                             onBack: () {
                               Navigator.pop(context);
                             },
-                            backgroundMusic: 'sound/start_page.mp3',
+                            backgroundMusic: 'sound/family/song1.mp3',
                           ),
                           ...buildRows(),
                         ],
@@ -371,8 +382,185 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame>
                     ),
                   ),
                 ),
+              if (showReplayPopup)
+                Container(
+                  color: Colors.black.withOpacity(0.8),
+                  child: ReplayPopupForThreeLevels(
+                    score: level,
+                    onReplay: _replayGame,
+                    onQuit: _onQuit,
+                  ),
+                ),
             ],
           ),
         ));
+  }
+}
+
+class ReplayPopupForThreeLevels extends StatelessWidget {
+  final int score;
+  final VoidCallback onReplay;
+  final VoidCallback onQuit;
+
+  const ReplayPopupForThreeLevels({
+    Key? key,
+    required this.score,
+    required this.onReplay,
+    required this.onQuit,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        contentPadding: const EdgeInsets.all(24).copyWith(right: 40),
+        content: ConstrainedBox(
+          constraints: const BoxConstraints(maxHeight: 300),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 200,
+                height: 200,
+                child: Image.asset(
+                  'assets/images/gallo.png',
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const SizedBox(width: 20),
+              Expanded(
+                flex: 1,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Center(
+                      child: CustomTextWidget(
+                        text: 'Puntaje final',
+                        type: TextType.Title,
+                        fontSize: 44,
+                        fontWeight: FontWeight.w200,
+                        letterSpacing: 1.0,
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(3, (index) {
+                        return ShakeY(
+                          from: 10,
+                          infinite: true,
+                          child: Star(
+                            filled: index < score,
+                          ),
+                        );
+                      }),
+                    ),
+                    const SizedBox(height: 30),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: LinearProgressIndicator(
+                              value: score / 3,
+                              backgroundColor: Colors.grey[300],
+                              color: Colors.blue,
+                              minHeight: 20,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          '$score/3',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(255, 54, 54, 54),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            onReplay();
+                            Navigator.of(context).pop();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF016171),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 14, horizontal: 36),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+                          child: const Text(
+                            'Repetir',
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        ElevatedButton(
+                          onPressed: () async {
+                            onQuit();
+                            Navigator.of(context).pop();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFF15E2F),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 14, horizontal: 36),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+                          child: const Text(
+                            'Salir',
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class Star extends StatelessWidget {
+  final bool filled;
+
+  const Star({Key? key, required this.filled}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        const Icon(
+          Icons.star_border,
+          color: Colors.black12,
+          size: 60,
+        ),
+        Positioned(
+          top: 0,
+          left: 0,
+          child: Icon(
+            Icons.star,
+            color: filled ? Colors.yellow[600] : Colors.grey[300],
+            size: 58,
+          ),
+        ),
+      ],
+    );
   }
 }

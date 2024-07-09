@@ -72,10 +72,11 @@ class _CreateStudentScreenHorizontalState
         _imageFile == null ||
         _selectedGroup == null) {
       showSnackBar(
-          context,
-          'Error',
-          'Please fill all the fields and select an image.',
-          ContentType.failure);
+        context,
+        'Error',
+        'Completa todos los campos y agrega una imagen para crear un estudiante.',
+        ContentType.failure,
+      );
       return;
     }
 
@@ -89,7 +90,7 @@ class _CreateStudentScreenHorizontalState
         isLoading = false;
       });
       showSnackBar(
-          context, 'Error', 'Failed to upload image.', ContentType.failure);
+          context, 'Error', 'Error en carga de imagen', ContentType.failure);
       return;
     }
 
@@ -108,10 +109,10 @@ class _CreateStudentScreenHorizontalState
       isLoading = false;
     });
 
-    showSnackBar(context, 'Success', 'Student created successfully.',
+    showSnackBar(context, 'Exito', 'Estudiante creado exitosamente',
         ContentType.success);
     await Future.delayed(const Duration(seconds: 2));
-    Navigator.pop(context, student); // Pasar el nuevo estudiante de regreso
+    Navigator.pop(context, student);
   }
 
   void showSnackBar(
