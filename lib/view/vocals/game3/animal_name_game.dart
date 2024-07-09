@@ -126,6 +126,7 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
       });
     }
 
+    await AudioManager.effects().stop();
     await AudioManager.effects().play('sound/vocals/$animalAudio');
     await Future.delayed(const Duration(seconds: 9));
 
