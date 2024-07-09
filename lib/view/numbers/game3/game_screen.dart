@@ -229,6 +229,7 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame>
     String number =
         imagePath.split('/').last.replaceAll(RegExp(r'number|-pair|\.png'), '');
 
+    await AudioManager.effects().stop();
     await AudioManager.effects().play('sound/numbers/yeahf.mp3');
     await Future.delayed(const Duration(seconds: 1));
     await AudioManager.effects().play('sound/numbers/repetir.m4a');

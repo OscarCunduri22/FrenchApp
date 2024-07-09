@@ -135,25 +135,9 @@ class _FruitGameScreenState extends State<FruitGameScreen>
                                     Navigator.of(context).pop();
                                     Navigator.pushReplacement(
                                       context,
-                                      PageRouteBuilder(
-                                        transitionDuration:
-                                            const Duration(seconds: 1),
-                                        pageBuilder: (context, animation,
-                                                secondaryAnimation) =>
+                                      MaterialPageRoute(
+                                        builder: (context) =>
                                             const CategorySelectionScreen(),
-                                        transitionsBuilder: (context, animation,
-                                            secondaryAnimation, child) {
-                                          return FadeTransition(
-                                            opacity: TweenSequence([
-                                              TweenSequenceItem(
-                                                tween:
-                                                    Tween(begin: 0.0, end: 1.0),
-                                                weight: 50.0,
-                                              ),
-                                            ]).animate(animation),
-                                            child: child,
-                                          );
-                                        },
                                       ),
                                     );
                                   },
@@ -163,7 +147,7 @@ class _FruitGameScreenState extends State<FruitGameScreen>
                                   child: const Text(
                                     'Continuar',
                                     style: TextStyle(
-                                        color: Colors.black,
+                                        color: Colors.white,
                                         fontSize: 24,
                                         fontWeight: FontWeight.bold),
                                   ),
