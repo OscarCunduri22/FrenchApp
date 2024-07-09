@@ -1,5 +1,3 @@
-// ignore_for_file: unused_element
-
 import 'package:flutter/material.dart';
 import 'package:frenc_app/model/tutor.dart';
 import 'package:frenc_app/model/student.dart';

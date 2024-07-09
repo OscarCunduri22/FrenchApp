@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_types_as_parameter_names
-
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,9 +10,7 @@ class UserTracking extends ChangeNotifier {
   Map<String, int> get timesPlayed => _timesPlayed;
   Map<String, int> get timesCompleted => _timesCompleted;
 
-  UserTracking() {
-    // _init() is removed since student-specific data should be loaded separately
-  }
+  UserTracking();
 
   Future<void> loadTrackingData(String studentId) async {
     await _loadFromPrefs(studentId);
@@ -32,8 +28,7 @@ class UserTracking extends ChangeNotifier {
       _timesPlayed = Map<String, int>.from(json.decode(timesPlayedString));
     }
     if (timesCompletedString != null) {
-      _timesCompleted =
-          Map<String, int>.from(json.decode(timesCompletedString));
+      _timesCompleted = Map<String, int>.from(json.decode(timesCompletedString));
     }
   }
 
@@ -73,6 +68,7 @@ class UserTracking extends ChangeNotifier {
 
   void incrementTimesCompleted(String studentId, String game) {
     _timesCompleted[game] = (_timesCompleted[game] ?? 0) + 1;
+    _timesPlayed[game] = (_timesPlayed[game] ?? 0) + 1;
     _saveToPrefs(studentId);
     _saveToFirestore(studentId);
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -81,7 +77,7 @@ class UserTracking extends ChangeNotifier {
   }
 
   int getTotalGamesPlayed() {
-    return _timesPlayed.values.fold(0, (sum, value) => sum + value);
+    return _timesCompleted.values.fold(0, (suma, value) => suma + value);
   }
 
   String getMostPlayedCategory() {
@@ -101,10 +97,10 @@ class UserTracking extends ChangeNotifier {
 
     final Map<String, int> categoryCount = {};
 
-    _timesPlayed.forEach((game, count) {
+    _timesPlayed.forEach((game, countg) {
       categoryMap.forEach((category, games) {
         if (games.contains(game)) {
-          categoryCount[category] = (categoryCount[category] ?? 0) + count;
+          categoryCount[category] = (categoryCount[category] ?? 0) + countg;
         }
       });
     });
@@ -139,10 +135,10 @@ class UserTracking extends ChangeNotifier {
       'famille': 0,
     };
 
-    _timesPlayed.forEach((game, count) {
+    _timesPlayed.forEach((game, countg) {
       categoryMap.forEach((category, games) {
         if (games.contains(game)) {
-          categoryCount[category] = (categoryCount[category] ?? 0) + 1;
+          categoryCount[category] = (categoryCount[category] ?? 0) + countg;
         }
       });
     });
@@ -153,6 +149,6 @@ class UserTracking extends ChangeNotifier {
   List<MapEntry<String, int>> getTopThreeGames() {
     return _timesPlayed.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value))
-      ..sublist(0, _timesPlayed.length < 3 ? _timesPlayed.length : 3);
+      ..take(3).toList();
   }
 }

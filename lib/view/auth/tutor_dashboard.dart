@@ -1,10 +1,11 @@
-// ignore_for_file: deprecated_member_use, prefer_const_constructors_in_immutables, library_private_types_in_public_api, sized_box_for_whitespace
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frenc_app/model/tutor.dart';
 import 'package:frenc_app/repository/global.repository.dart';
+import 'package:frenc_app/utils/audio_manager.dart';
 import 'package:frenc_app/utils/user_provider.dart';
+import 'package:frenc_app/view/auth/login_tutor_screen.dart';
+import 'package:frenc_app/widgets/custom_theme_text.dart';
 import 'package:provider/provider.dart';
 import 'package:frenc_app/utils/dialog_manager.dart';
 import 'dart:ui';
@@ -18,7 +19,7 @@ import 'package:frenc_app/widgets/auth/common_button_styles.dart'; // Importar e
 class TutorDashboardScreen extends StatefulWidget {
   final String tutorName;
 
-  TutorDashboardScreen({super.key, required this.tutorName});
+  const TutorDashboardScreen({super.key, required this.tutorName});
 
   @override
   _TutorDashboardScreenState createState() => _TutorDashboardScreenState();
@@ -37,11 +38,14 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
       DeviceOrientation.portraitDown,
     ]);
     _loadStudentCount();
+    AudioManager.playEffect('sound/instruccionalumnos.m4a');
   }
 
   @override
   void dispose() {
     SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
@@ -133,7 +137,7 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
               Container(
                 decoration: const BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/images/montessoribg.jpg'),
+                    image: AssetImage('assets/images/fondo_tutor_dashboard.png'),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -147,9 +151,18 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: 32),
+                    const CustomTextWidget(
+                      text: 'Tutor',
+                      type: TextType.Subtitle,
+                      color: ColorType.Primary,
+                      fontSize: 44,
+                      fontWeight: FontWeight.w200,
+                      letterSpacing: 1.0,
+                    ),
+                    const SizedBox(height: 20),
                     Card(
                       elevation: 4,
                       shape: RoundedRectangleBorder(
@@ -192,7 +205,7 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                             ),
                             Column(
                               children: [
-                                Container(
+                                SizedBox(
                                   width: 77.6,
                                   child: ElevatedButton(
                                     onPressed: () {
@@ -223,17 +236,19 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    const Text(
-                      'Alumnos',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 0, 0, 0),
+                    const Center(
+                      child: CustomTextWidget(
+                        text: 'Alumnos',
+                        type: TextType.Subtitle,
+                        color: ColorType.Primary,
+                        fontSize: 44,
+                        fontWeight: FontWeight.w200,
+                        letterSpacing: 1.0,
                       ),
                     ),
                     const SizedBox(height: 10),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ElevatedButton(
                           onPressed: () async {
@@ -318,6 +333,8 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                                         student: student,
                                         studentId: studentId,
                                         onTap: (id) {
+                                          Provider.of<UserProvider>(context, listen: false).clearStudent();
+                                          Provider.of<UserProvider>(context, listen: false).setCurrentStudent(studentId, student);
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
@@ -342,9 +359,8 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                                           height: 32,
                                         ),
                                         onPressed: () {
-                                          DialogManager
-                                              .showExitConfirmationDialog(
-                                                  context);
+                                          confirmDeleteStudent(
+                                              studentId, student.name);
                                         },
                                       ),
                                     ),
@@ -353,6 +369,33 @@ class _TutorDashboardScreenState extends State<TutorDashboardScreen> {
                             },
                           );
                         },
+                      ),
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Provider.of<UserProvider>(context, listen: false).clearUser();
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TutorLoginScreen(),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: const Text(
+                          'Cerrar Sesión',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
                       ),
                     ),
                   ],

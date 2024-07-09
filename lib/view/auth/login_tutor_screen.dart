@@ -1,7 +1,9 @@
 // ignore_for_file: use_build_context_synchronously, prefer_const_constructors_in_immutables, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:frenc_app/repository/global.repository.dart';
+import 'package:frenc_app/utils/audio_manager.dart';
 import 'package:frenc_app/utils/dialog_manager.dart';
 import 'package:frenc_app/utils/validator.dart';
 import 'package:frenc_app/view/auth/register_tutor.view.dart';
@@ -26,6 +28,16 @@ class _TutorLoginScreenState extends State<TutorLoginScreen> {
   final TextEditingController passwordController = TextEditingController();
   final DatabaseRepository databaseRepository = DatabaseRepository();
   bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+    AudioManager.playEffect('sound/bienvenida.m4a');
+  }
 
   Future<void> signIn() async {
     try {
@@ -67,7 +79,7 @@ class _TutorLoginScreenState extends State<TutorLoginScreen> {
             decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('assets/images/global/clouds-creditsbg.png'),
-                fit: BoxFit.cover,
+                fit: BoxFit.fill,
               ),
             ),
             child: SafeArea(
@@ -112,9 +124,11 @@ class _TutorLoginScreenState extends State<TutorLoginScreen> {
                         ),
                         Expanded(
                           child: Center(
-                            child: Padding(
+                            child: Container(
+                                margin: const EdgeInsets.only(left: 120),
                                 padding: const EdgeInsets.all(32),
-                                child: GalloComponent.dancing()),
+                                child: GalloComponent.speaking(
+                                    audioPath: 'bienvenida')),
                           ),
                         ),
                       ],

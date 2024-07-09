@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:frenc_app/widgets/character/gallo.dart';
 import 'package:frenc_app/widgets/custom_theme_text.dart';
 
 class ReplayPopup extends StatefulWidget {
+  final int score;
+  final int overScore;
+  final VoidCallback onReplay;
+  final VoidCallback onQuit;
+
   const ReplayPopup({
     Key? key,
     required this.score,
     required this.onReplay,
     required this.onQuit,
+    required this.overScore,
   }) : super(key: key);
-
-  final int score;
-  final VoidCallback onReplay;
-  final VoidCallback onQuit;
 
   @override
   State<ReplayPopup> createState() => _ReplayPopupState();
@@ -26,6 +29,8 @@ class _ReplayPopupState extends State<ReplayPopup> {
 
   @override
   Widget build(BuildContext context) {
+    int filledStars = (widget.score / widget.overScore * 5).ceil();
+
     return Scaffold(
       backgroundColor: Colors.black12,
       body: Center(
@@ -39,13 +44,9 @@ class _ReplayPopupState extends State<ReplayPopup> {
             child: Row(
               children: [
                 SizedBox(
-                  width: 200,
-                  height: 200,
-                  child: Image.asset(
-                    'assets/images/gallo.png',
-                    fit: BoxFit.cover,
-                  ),
-                ),
+                    width: 200,
+                    height: 200,
+                    child: GalloComponent.speakingwithoutsound()),
                 const SizedBox(width: 20),
                 Expanded(
                   flex: 1,
@@ -70,7 +71,7 @@ class _ReplayPopupState extends State<ReplayPopup> {
                             from: 10,
                             infinite: true,
                             child: Star(
-                              filled: index < (widget.score / 2).ceil(),
+                              filled: index < filledStars,
                             ),
                           );
                         }),
@@ -82,7 +83,7 @@ class _ReplayPopupState extends State<ReplayPopup> {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(10),
                               child: LinearProgressIndicator(
-                                value: widget.score / 10,
+                                value: widget.score / widget.overScore,
                                 backgroundColor: Colors.grey[300],
                                 color: Colors.blue,
                                 minHeight: 20,
@@ -91,7 +92,7 @@ class _ReplayPopupState extends State<ReplayPopup> {
                           ),
                           const SizedBox(width: 10),
                           Text(
-                            '${widget.score}/10',
+                            '${widget.score}/${widget.overScore}',
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,

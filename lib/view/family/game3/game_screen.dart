@@ -1,9 +1,10 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, deprecated_member_use
 
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/utils/audio_manager.dart';
+import 'package:frenc_app/utils/dialog_manager.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/view/game_selection.dart';
 import 'package:frenc_app/view/button.dart';
@@ -65,16 +66,6 @@ class _MemoryGamePageState extends State<MemoryGamePage>
     }).toList();
 
     _loadGame();
-    _incrementTimesPlayed(); // Incrementar contador de juegos jugados
-  }
-
-  void _incrementTimesPlayed() {
-    String? studentId =
-        Provider.of<UserProvider>(context, listen: false).currentStudentId;
-    if (studentId != null) {
-      Provider.of<UserTracking>(context, listen: false)
-          .incrementTimesPlayed(studentId, 'memory_game');
-    }
   }
 
   void _incrementTimesCompleted() {
@@ -90,7 +81,7 @@ class _MemoryGamePageState extends State<MemoryGamePage>
     setState(() {
       _isLoading = false;
     });
-    _newGame();
+    newGame();
     AudioManager.playBackground('sound/family/song320.mp3');
     AudioManager.playEffect('sound/family/instruccionJuego3.m4a');
   }
@@ -100,8 +91,9 @@ class _MemoryGamePageState extends State<MemoryGamePage>
     for (var controller in _controllers) {
       controller.dispose();
     }
+    AudioManager.stopBackground();
+    AudioManager.stopEffect();
     super.dispose();
-    AudioManager.background().stop();
   }
 
   void _onGameComplete() async {
@@ -114,13 +106,15 @@ class _MemoryGamePageState extends State<MemoryGamePage>
       _incrementTimesCompleted(); // Incrementar contador de juegos completados
     }
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => const GameSelectionScreen(
-                category: 'Famille',
-              )),
-    );
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const GameSelectionScreen(
+                  category: 'Famille',
+                )),
+      );
+    }
   }
 
   Future<void> playSound(String card) async {
@@ -165,14 +159,18 @@ class _MemoryGamePageState extends State<MemoryGamePage>
     await AudioManager.effects().play(soundPath);
   }
 
-  void _newGame() {
+  void newGame() {
     setState(() {
-      cardImages = (allImages..shuffle()).take(4).toList();
+      cardImages = (allImages..shuffle()).take(3).toList();
       cardImages = List.from(cardImages)..addAll(cardImages);
       cardImages.shuffle();
       cardsFlipped = List<bool>.filled(cardImages.length, false);
       flippedIndices = [];
-      _showConfetti = false;
+      if (mounted) {
+        setState(() {
+          _showConfetti = false;
+        });
+      }
       isBusy = false;
       for (var controller in _controllers) {
         controller.reset();
@@ -181,31 +179,41 @@ class _MemoryGamePageState extends State<MemoryGamePage>
   }
 
   void _showWinDialog() {
-    setState(() {
-      _showConfetti = true;
-      AudioManager.effects().play('sound/family/level_win.mp3');
-    });
-    showDialog(
-      context: context,
-      builder: (context) => Stack(
-        children: [
-          ReplayPopup(
-            score: score,
-            onReplay: () {
-              setState(() {
-                _newGame();
+    if (mounted) {
+      setState(() {
+        _showConfetti = true;
+        AudioManager.effects().play('sound/family/level_win.mp3');
+      });
+      showDialog(
+        context: context,
+        builder: (context) => Stack(
+          children: [
+            ReplayPopup(
+              score: score,
+              overScore: 5,
+              onReplay: () {
+                if (mounted) {
+                  setState(() {
+                    newGame();
+                    score = 0;
+                    AudioManager.playBackground('sound/family/song320.mp3');
+                    AudioManager.playEffect(
+                        'sound/family/instruccionJuego3.m4a');
+                  });
+                }
+              },
+              onQuit: () {
                 score = 0;
-              });
-            },
-            onQuit: () {
-              score = 0;
-              _onGameComplete();
-            },
-          ),
-          if (_showConfetti) ConfettiAnimation(animate: _showConfetti),
-        ],
-      ),
-    );
+                AudioManager.stopBackground();
+                AudioManager.stopEffect();
+                _onGameComplete();
+              },
+            ),
+            if (_showConfetti) ConfettiAnimation(animate: _showConfetti),
+          ],
+        ),
+      );
+    }
   }
 
   void onCardTap(int index) {
@@ -234,37 +242,43 @@ class _MemoryGamePageState extends State<MemoryGamePage>
             });
           });
         } else {
-          // playSound(cardImages[flippedIndices[0]]);
           _playCorrectAnswerSounds(cardImages[flippedIndices[0]]);
           isBusy = false;
           flippedIndices.clear();
         }
       }
-
-      if (cardsFlipped.every((flipped) => flipped)) {
-        score += 1;
-        Future.delayed(const Duration(seconds: 2), () {
-          if (score >= 1) {
-            Future.delayed(const Duration(seconds: 8), () {
-              _showWinDialog();
-            });
-          } else {
-            Future.delayed(const Duration(seconds: 2), () {
-              _newGame();
-            });
-          }
-        });
+      if (mounted) {
+        if (cardsFlipped.every((flipped) => flipped)) {
+          score += 1;
+          Future.delayed(const Duration(seconds: 2), () {
+            if (score >= 5) {
+              Future.delayed(const Duration(seconds: 8), () {
+                if (mounted) {
+                  _showWinDialog();
+                }
+              });
+            } else {
+              Future.delayed(const Duration(seconds: 2), () {
+                if (mounted) {
+                  newGame();
+                }
+              });
+            }
+          });
+        }
       }
     });
   }
 
   Future<void> _playCorrectAnswerSounds(String audioFileName) async {
-    setState(() {
-      _isPlayingSound = true;
-    });
+    if (mounted) {
+      setState(() {
+        _isPlayingSound = true;
+      });
+    }
 
     await AudioManager.effects().play('sound/numbers/yeahf.mp3');
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 2));
     await AudioManager.effects().play('sound/numbers/repetir.m4a');
     await Future.delayed(const Duration(seconds: 3));
     await playSound(audioFileName);
@@ -272,9 +286,11 @@ class _MemoryGamePageState extends State<MemoryGamePage>
     await playSound(audioFileName);
     await Future.delayed(const Duration(seconds: 3));
 
-    setState(() {
-      _isPlayingSound = false;
-    });
+    if (mounted) {
+      setState(() {
+        _isPlayingSound = false;
+      });
+    }
   }
 
   @override
@@ -282,118 +298,122 @@ class _MemoryGamePageState extends State<MemoryGamePage>
     final size = MediaQuery.of(context).size;
     final widthPadding = size.width * 0.1;
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/family/game3/Verde.png'),
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: Column(
-              children: [
-                ProgressBar(
-                  backgroundColor: const Color(0xFF424141),
-                  progressBarColor: const Color(0xFF8DB270),
-                  headerText: 'Voltea las cartas y encuentra las parejas',
-                  progressValue: score / 10,
-                  onBack: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const GameSelectionScreen(
-                          category: 'Famille',
-                        ),
-                      ),
-                    );
-                  },
-                  onVolume: () {
-                    // Acción para activar/desactivar el sonido
-                  },
+    return WillPopScope(
+      onWillPop: () async {
+        AudioManager.stopBackground();
+        AudioManager.stopEffect();
+        DialogManager.showExitGameDialog(
+            context,
+            const GameSelectionScreen(
+              category: 'Famille',
+            ));
+        return false;
+      },
+      child: Scaffold(
+        body: Stack(
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/family/game3/Verde.png'),
+                  fit: BoxFit.cover,
                 ),
-                _isLoading
-                    ? const Expanded(
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      )
-                    : Expanded(
-                        child: Center(
-                          child: GridView.builder(
-                            shrinkWrap: true,
-                            padding: EdgeInsets.only(
-                                left: widthPadding, right: widthPadding),
-                            itemCount: cardImages.length,
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 4,
-                              crossAxisSpacing: 10,
-                              mainAxisSpacing: 10,
-                              mainAxisExtent: size.height * 0.30,
-                            ),
-                            itemBuilder: (context, index) {
-                              return FadeInUp(
-                                duration: const Duration(milliseconds: 500),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                  child: GestureDetector(
-                                    onTap: () => onCardTap(index),
-                                    child: AnimatedBuilder(
-                                      animation: _animations[index],
-                                      builder: (context, child) {
-                                        final angle = _animations[index].value *
-                                            3.141592653589793;
-                                        final isFlipped =
-                                            angle >= 3.141592653589793 / 2;
-                                        final transform =
-                                            Matrix4.rotationY(angle);
-                                        return Transform(
-                                          transform: transform,
-                                          alignment: Alignment.center,
-                                          child: isFlipped
-                                              ? Image.asset(
-                                                  cardImages[index],
-                                                  key: ValueKey<int>(index),
-                                                  fit: BoxFit.fill,
-                                                )
-                                              : Image.asset(
-                                                  'assets/images/family/game3/Card.png',
-                                                  key: ValueKey<int>(
-                                                      index + 100),
-                                                  fit: BoxFit.fill,
-                                                ),
-                                        );
-                                      },
+              ),
+              child: Column(
+                children: [
+                  ProgressBar(
+                    backgroundColor: const Color(0xFF424141),
+                    progressBarColor: const Color(0xFF8DB270),
+                    headerText: 'Voltea las cartas y encuentra las parejas',
+                    progressValue: score / 5,
+                    onBack: () {
+                      Navigator.pop(context);
+                    },
+                    backgroundMusic: 'sound/family/song320.mp3',
+                  ),
+                  _isLoading
+                      ? const Expanded(
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        )
+                      : Expanded(
+                          child: Center(
+                            child: GridView.builder(
+                              shrinkWrap: true,
+                              padding: EdgeInsets.only(
+                                  left: widthPadding, right: widthPadding),
+                              itemCount: cardImages.length,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                                mainAxisExtent: size.height * 0.30,
+                              ),
+                              itemBuilder: (context, index) {
+                                return FadeInUp(
+                                  duration: const Duration(milliseconds: 500),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                    child: GestureDetector(
+                                      onTap: () => onCardTap(index),
+                                      child: AnimatedBuilder(
+                                        animation: _animations[index],
+                                        builder: (context, child) {
+                                          final angle =
+                                              _animations[index].value *
+                                                  3.141592653589793;
+                                          final isFlipped =
+                                              angle >= 3.141592653589793 / 2;
+                                          final transform =
+                                              Matrix4.rotationY(angle);
+                                          return Transform(
+                                            transform: transform,
+                                            alignment: Alignment.center,
+                                            child: isFlipped
+                                                ? Image.asset(
+                                                    cardImages[index],
+                                                    key: ValueKey<int>(index),
+                                                    fit: BoxFit.fill,
+                                                  )
+                                                : Image.asset(
+                                                    'assets/images/family/game3/Card.png',
+                                                    key: ValueKey<int>(
+                                                        index + 100),
+                                                    fit: BoxFit.fill,
+                                                  ),
+                                          );
+                                        },
+                                      ),
                                     ),
                                   ),
-                                ),
-                              );
-                            },
+                                );
+                              },
+                            ),
                           ),
                         ),
-                      ),
-              ],
-            ),
-          ),
-          if (_isPlayingSound)
-            Container(
-              color: Colors.black.withOpacity(0.8),
-              child: const Center(
-                child: Icon(
-                  Icons.volume_up,
-                  size: 100,
-                  color: Colors.white,
-                ),
+                ],
               ),
             ),
-          const MovableButtonScreen(
-            spanishAudio: 'sound/family/instruccionJuego3.m4a',
-            frenchAudio: 'sound/family/instruccionGame3.m4a',
-            rivePath: 'assets/RiveAssets/familygame3.riv',
-          )
-        ],
+            if (_isPlayingSound)
+              Container(
+                color: Colors.black.withOpacity(0.8),
+                child: const Center(
+                  child: Icon(
+                    Icons.volume_up,
+                    size: 100,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            const MovableButtonScreen(
+              spanishAudio: 'sound/family/instruccionJuego3.m4a',
+              frenchAudio: 'sound/family/instruccionGame3.m4a',
+              rivePath: 'assets/RiveAssets/familygame3.riv',
+            )
+          ],
+        ),
       ),
     );
   }
