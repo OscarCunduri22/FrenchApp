@@ -51,8 +51,8 @@ class _TutorLoginScreenState extends State<TutorLoginScreen> {
       });
       final snackBar = SnackBar(
         content: AwesomeSnackbarContent(
-          title: 'Login Failed',
-          message: e.message ?? 'Unknown error',
+          title: 'Login Invalido',
+          message: e.message ?? 'Error ',
           contentType: ContentType.failure,
           messageFontSize: 10,
           titleFontSize: 12,
@@ -244,8 +244,9 @@ class _TutorLoginScreenState extends State<TutorLoginScreen> {
 
                 final snackBar = SnackBar(
                   content: AwesomeSnackbarContent(
-                    title: 'Login Successful',
-                    message: 'You have successfully logged in! Redirecting...',
+                    title: 'Login exitoso',
+                    message:
+                        'Has iniciado sesión correctamente. Redirigiendo..',
                     contentType: ContentType.success,
                     messageFontSize: 10,
                     titleFontSize: 12,
@@ -281,8 +282,8 @@ class _TutorLoginScreenState extends State<TutorLoginScreen> {
 
                 final snackBar = SnackBar(
                   content: AwesomeSnackbarContent(
-                    title: 'Login Failed',
-                    message: 'Invalid credentials!',
+                    title: 'Login fallido',
+                    message: 'Correo o contraseña incorrectos!',
                     contentType: ContentType.failure,
                     messageFontSize: 10,
                     titleFontSize: 12,
@@ -302,8 +303,8 @@ class _TutorLoginScreenState extends State<TutorLoginScreen> {
 
               final snackBar = SnackBar(
                 content: AwesomeSnackbarContent(
-                  title: 'Login Failed',
-                  message: 'An error occurred!',
+                  title: 'Login invalido',
+                  message: 'Un error ha ocurrido. Intenta nuevamente.',
                   contentType: ContentType.failure,
                   messageFontSize: 10,
                   titleFontSize: 12,
