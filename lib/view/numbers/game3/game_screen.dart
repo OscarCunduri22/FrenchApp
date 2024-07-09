@@ -35,7 +35,7 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame>
   int maxLevel = 3;
   bool _showConfetti = false;
   bool _isPlayingSound = false;
-  bool showReplayPopup = false; // Added state variable
+  bool showReplayPopup = false;
   final databaseRepository = DatabaseRepository();
   late List<AnimationController> _controllers;
   late List<Animation<double>> _animations;
