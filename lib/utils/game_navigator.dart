@@ -16,21 +16,21 @@ Widget getGameScreen(String category, int gameNumber) {
       switch (gameNumber) {
         case 1:
           return StartGame(
-            title: 'Trouvez votre famille',
+            title: 'Vagones numéricos',
             buttons: [
               ButtonData(text: 'Jugar', widget: const TrainWagonNumbersGame()),
             ],
           );
         case 2:
           return StartGame(
-            title: 'Trouvez votre famille',
+            title: 'Juego de memoria',
             buttons: [
               ButtonData(text: 'Jugar', widget: const MemoryNumbersGame()),
             ],
           );
         case 3:
           return StartGame(
-            title: 'Trouvez votre famille',
+            title: 'Burburjas numéricas',
             buttons: [
               ButtonData(text: 'Jugar', widget: const BubbleNumbersGame()),
             ],

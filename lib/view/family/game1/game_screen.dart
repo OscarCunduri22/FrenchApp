@@ -243,6 +243,7 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
       });
     }
 
+    await AudioManager.effects().stop();
     await AudioManager.effects().play('sound/numbers/yeahf.mp3');
     await Future.delayed(const Duration(seconds: 2));
     await AudioManager.effects().play('sound/numbers/repetir.m4a');
