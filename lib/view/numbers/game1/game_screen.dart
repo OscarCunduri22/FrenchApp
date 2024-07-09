@@ -151,7 +151,7 @@ class _BubbleNumbersGameState extends State<BubbleNumbersGame>
                               onBack: () {
                                 Navigator.pop(context);
                               },
-                              onVolume: () {},
+                              backgroundMusic: 'sound/start_page.mp3',
                             ),
                             if (viewModel.currentIndex < viewModel.totalLevels)
                               ScaleTransition(

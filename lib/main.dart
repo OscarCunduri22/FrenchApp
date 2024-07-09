@@ -6,8 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:frenc_app/firebase_options.dart';
 import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/utils/user_tracking.dart';
+import 'package:frenc_app/view/family/game3/game_screen.dart';
 import 'package:frenc_app/view/start_screen.dart';
-import 'package:frenc_app/view/vocals/game1/vocal_game.dart';
 
 import 'package:provider/provider.dart';
 
@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.teal,
       ),
-      home: const StartScreen(),
+      home: const MemoryGamePage(),
     );
   }
 }

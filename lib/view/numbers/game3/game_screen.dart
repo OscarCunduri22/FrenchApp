@@ -193,6 +193,7 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame>
         children: [
           ReplayPopup(
             score: level,
+            overScore: 5,
             onReplay: () {
               setState(() {
                 level = 1;
@@ -337,7 +338,7 @@ class _MemoryNumbersGameState extends State<MemoryNumbersGame>
                             onBack: () {
                               Navigator.pop(context);
                             },
-                            onVolume: () {},
+                            backgroundMusic: 'sound/start_page.mp3',
                           ),
                           ...buildRows(),
                         ],

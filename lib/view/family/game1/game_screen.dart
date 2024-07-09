@@ -123,7 +123,7 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
         if (mounted) {
           setState(() {
             score++;
-            if (score >= 1) {
+            if (score >= 5) {
               Future.delayed(const Duration(seconds: 8), () {
                 if (mounted) {
                   _showWinDialog();
@@ -210,16 +210,22 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
           children: [
             ReplayPopup(
               score: score,
+              overScore: 5,
               onReplay: () {
                 if (mounted) {
                   setState(() {
                     newGame();
                     score = 0;
+                    AudioManager.playBackground('sound/family/song120.mp3');
+                    AudioManager.playEffect(
+                        'sound/family/instruccionJuego1.m4a');
                   });
                 }
               },
               onQuit: () {
                 score = 0;
+                AudioManager.stopBackground();
+                AudioManager.stopEffect();
                 _onGameComplete();
               },
             ),
@@ -283,13 +289,11 @@ class _FindFamilyGameState extends State<FindFamilyGame> {
                     progressBarColor: const Color.fromARGB(255, 90, 65, 156),
                     headerText:
                         'Selecciona la foto familiar igual a la de arriba',
-                    progressValue: score / 10,
+                    progressValue: score / 5,
                     onBack: () {
                       Navigator.pop(context);
                     },
-                    onVolume: () {
-                      // Acción para controlar el volumen
-                    },
+                    backgroundMusic: 'sound/family/song120.mp3',
                   ),
                   const SizedBox(height: 20),
                   Row(

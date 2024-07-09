@@ -107,7 +107,7 @@ class GalloComponent extends StatefulWidget {
                 ),
               ),
               Positioned(
-                left: 400,
+                left: 360,
                 top: 90,
                 child: Image.asset(
                   'assets/images/gallo.png',

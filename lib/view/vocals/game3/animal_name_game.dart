@@ -126,7 +126,7 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
                 onBack: () {
                   Navigator.pop(context);
                 },
-                onVolume: () {},
+                backgroundMusic: 'sound/start_page.mp3',
               ),
               Expanded(
                 child: Stack(
@@ -281,6 +281,7 @@ class _AnimalNameGameState extends State<AnimalNameGame> {
         children: [
           ReplayPopup(
             score: currentAnimalIndex + 1,
+            overScore: 5,
             onReplay: () {
               setState(() {
                 currentAnimalIndex = 0;
