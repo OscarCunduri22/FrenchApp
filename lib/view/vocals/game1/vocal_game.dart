@@ -1,18 +1,16 @@
-// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
-
-import 'package:flutter/material.dart';
-import 'package:frenc_app/view/button.dart';
-import 'package:provider/provider.dart';
 import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:frenc_app/utils/user_tracking.dart';
 import 'package:frenc_app/utils/user_provider.dart';
+import 'package:frenc_app/repository/global.repository.dart';
 import 'package:frenc_app/view/game_selection.dart';
 import 'package:frenc_app/widgets/confetti_animation.dart';
 import 'package:frenc_app/widgets/replay_popup.dart';
-import 'package:frenc_app/repository/global.repository.dart';
+import 'package:frenc_app/view/button.dart';
 import 'package:frenc_app/utils/audio_manager.dart';
 import 'package:frenc_app/utils/reward_manager.dart';
-import 'package:frenc_app/widgets/progress_bar.dart';
 
 class VocalGame extends StatefulWidget {
   const VocalGame({Key? key}) : super(key: key);
@@ -107,13 +105,14 @@ class _VocalGameState extends State<VocalGame> {
       Provider.of<RewardManager>(context, listen: false).unlockReward(0); // Unlocks Voyelles_reward_1.pdf
     }
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => const GameSelectionScreen(
-                category: 'Voyelles',
-              )),
-    );
+    if (mounted) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const GameSelectionScreen(category: 'Voyelles'),
+        ),
+      );
+    }
   }
 
   void _loadNewScene() {
@@ -124,10 +123,12 @@ class _VocalGameState extends State<VocalGame> {
       final screenHeight = MediaQuery.of(context).size.height;
       const vocalSize = 100.0;
 
-      setState(() {
-        vowelPositionX = random.nextDouble() * (screenWidth - vocalSize);
-        vowelPositionY = random.nextDouble() * (screenHeight - vocalSize - 100);
-      });
+      if (mounted) {
+        setState(() {
+          vowelPositionX = random.nextDouble() * (screenWidth - vocalSize);
+          vowelPositionY = random.nextDouble() * (screenHeight - vocalSize - 100);
+        });
+      }
     });
   }
 
@@ -140,9 +141,11 @@ class _VocalGameState extends State<VocalGame> {
   }
 
   Future<void> _playVowelSound(int index) async {
-    setState(() {
-      _isPlayingSound = true;
-    });
+    if (mounted) {
+      setState(() {
+        _isPlayingSound = true;
+      });
+    }
 
     await AudioManager.effects().play('sound/numbers/yeahf.mp3');
     await Future.delayed(const Duration(seconds: 2));
@@ -151,56 +154,65 @@ class _VocalGameState extends State<VocalGame> {
     await playSound(vocalAudios[index]);
     await Future.delayed(const Duration(seconds: 7));
 
-    setState(() {
-      _isPlayingSound = false;
-    });
+    if (mounted) {
+      setState(() {
+        _isPlayingSound = false;
+      });
+    }
   }
 
   void _onVowelTapped() async {
-    setState(() {
-      _isPlayingSound = true;
-    });
+    if (mounted) {
+      setState(() {
+        _isPlayingSound = true;
+      });
+    }
 
     await _playVowelSound(foundVowels);
 
-    setState(() {
-      foundVowels++;
-      if (foundVowels >= 6) {
-        _incrementTimesCompleted();
-        _showWinDialog();
-      } else {
-        _loadNewScene();
-      }
-    });
+    if (mounted) {
+      setState(() {
+        foundVowels++;
+        if (foundVowels >= 6) {
+          _incrementTimesCompleted();
+          _showWinDialog();
+        } else {
+          _loadNewScene();
+        }
+      });
+    }
   }
 
   void _showWinDialog() {
-    setState(() {
-      _showConfetti = true;
-    });
-    showDialog(
-      context: context,
-      builder: (context) => Stack(
-        children: [
-          ReplayPopup(
-            score: foundVowels,
-            overScore: 5,
-            onReplay: () {
-              setState(() {
+    if (mounted) {
+      setState(() {
+        _showConfetti = true;
+      });
+      showDialog(
+        context: context,
+        builder: (context) => Stack(
+          children: [
+            ReplayPopup(
+              score: foundVowels,
+              onReplay: () {
+                if (mounted) {
+                  setState(() {
+                    foundVowels = 0;
+                    _loadNewScene();
+                    Navigator.of(context).pop();
+                  });
+                }
+              },
+              onQuit: () {
                 foundVowels = 0;
-                _loadNewScene();
-                Navigator.of(context).pop();
-              });
-            },
-            onQuit: () {
-              foundVowels = 0;
-              _onGameComplete();
-            },
-          ),
-          if (_showConfetti) ConfettiAnimation(animate: _showConfetti),
-        ],
-      ),
-    );
+                _onGameComplete();
+              }, overScore: 6,
+            ),
+            if (_showConfetti) ConfettiAnimation(animate: _showConfetti),
+          ],
+        ),
+      );
+    }
   }
 
   @override

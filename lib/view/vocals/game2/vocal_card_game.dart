@@ -1,5 +1,6 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
 
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:frenc_app/repository/global.repository.dart';
@@ -11,9 +12,9 @@ import 'package:frenc_app/widgets/confetti_animation.dart';
 import 'package:frenc_app/widgets/replay_popup.dart';
 import 'package:frenc_app/widgets/progress_bar.dart';
 import 'package:provider/provider.dart';
-import 'dart:math';
 import 'package:frenc_app/utils/user_tracking.dart';
-import 'package:frenc_app/utils/reward_manager.dart'; // Importar RewardManager
+import 'package:frenc_app/utils/reward_manager.dart';
+import 'package:frenc_app/utils/dialog_manager.dart';
 
 class VocalMemoryPage extends StatefulWidget {
   const VocalMemoryPage({Key? key}) : super(key: key);
@@ -52,6 +53,7 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
   @override
   void initState() {
     super.initState();
+    _playInstructionSound();
     _controllers = List.generate(8, (index) {
       return AnimationController(
         duration: const Duration(seconds: 1),
@@ -63,15 +65,17 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
       return Tween<double>(begin: 0, end: 1).animate(controller);
     }).toList();
 
-    _incrementTimesPlayed(); // Incrementar contador de juegos jugados
+    _incrementTimesPlayed();
     _loadGame();
   }
 
   Future<void> _loadGame() async {
     _newGame();
-    setState(() {
-      _isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -81,6 +85,10 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
     }
     super.dispose();
     AudioManager.background().stop();
+  }
+
+  Future<void> _playInstructionSound() async {
+    await AudioManager.playBackground('sound/vocals/esgame2.m4a');
   }
 
   void _incrementTimesPlayed() {
@@ -106,20 +114,21 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
         Provider.of<UserProvider>(context, listen: false).currentStudentId;
     if (studentId != null) {
       await databaseRepository.updateGameCompletionStatus(studentId, 'Voyelles',
-          [true, true, false]); // Actualizar estado de juego
-      _incrementTimesCompleted(); // Incrementar contador de juegos completados
+          [true, true, true]);
+      _incrementTimesCompleted();
 
-      // Unlock the reward using RewardManager
-      Provider.of<RewardManager>(context, listen: false).unlockReward(1); // Unlocks Voyelles_reward_2.pdf
+      RewardManager().unlockReward(1);
     }
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => const GameSelectionScreen(
-                category: 'Voyelles',
-              )),
-    );
+    if (mounted) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const GameSelectionScreen(
+                  category: 'Voyelles',
+                )),
+      );
+    }
   }
 
   Future<void> playSound(String card) async {
@@ -176,33 +185,42 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
   }
 
   void _showWinDialog() {
-    setState(() {
-      _showConfetti = true;
-      AudioManager.effects().play('sound/vocals/level_win.mp3');
-    });
-    showDialog(
-      context: context,
-      builder: (context) => Stack(
-        children: [
-          ReplayPopup(
-            score: score,
-            overScore: 5,
-            onReplay: () {
-              setState(() {
-                round = 0;
-                score = 0;
-                _newGame();
-              });
-            },
-            onQuit: () {
-              score = 0;
-              _onGameComplete();
-            },
-          ),
-          if (_showConfetti) ConfettiAnimation(animate: _showConfetti),
-        ],
-      ),
-    );
+    if (mounted) {
+      setState(() {
+        _showConfetti = true;
+        AudioManager.effects().play('sound/vocals/level_win.mp3');
+      });
+      showDialog(
+        context: context,
+        builder: (context) => Stack(
+          children: [
+            ReplayPopup(
+              score: score,
+              overScore: 4,
+              onReplay: () {
+                if (mounted) {
+                  setState(() {
+                    round = 0;
+                    score = 0;
+                    _newGame();
+                  });
+                }
+              },
+              onQuit: () {
+                if (mounted) {
+                  setState(() {
+                    score = 0;
+                    round = 0;
+                  });
+                  _onGameComplete();
+                }
+              },
+            ),
+            if (_showConfetti) ConfettiAnimation(animate: _showConfetti),
+          ],
+        ),
+      );
+    }
   }
 
   void onCardTap(int index) {
@@ -217,18 +235,22 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
         isBusy = true;
         if (cardImages[flippedIndices[0]] != cardImages[flippedIndices[1]]) {
           Future.delayed(const Duration(seconds: 2), () {
-            setState(() {
-              cardsFlipped[flippedIndices[0]] = false;
-              cardsFlipped[flippedIndices[1]] = false;
-              _controllers[flippedIndices[0]].reverse();
-              _controllers[flippedIndices[1]].reverse();
-              flippedIndices.clear();
-              AudioManager.effects().play('sound/incorrect.mp3');
-              isBusy = false;
-              Future.delayed(const Duration(seconds: 2), () {
-                AudioManager.effects().stop();
+            if (mounted) {
+              setState(() {
+                cardsFlipped[flippedIndices[0]] = false;
+                cardsFlipped[flippedIndices[1]] = false;
+                _controllers[flippedIndices[0]].reverse();
+                _controllers[flippedIndices[1]].reverse();
+                flippedIndices.clear();
+                AudioManager.effects().play('sound/incorrect.mp3');
+                isBusy = false;
+                Future.delayed(const Duration(seconds: 2), () {
+                  if (mounted) {
+                    AudioManager.effects().stop();
+                  }
+                });
               });
-            });
+            }
           });
         } else {
           _playCorrectAnswerSounds(cardImages[flippedIndices[0]]);
@@ -240,25 +262,41 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
       if (cardsFlipped.every((flipped) => flipped)) {
         score += 1;
         Future.delayed(const Duration(seconds: 2), () {
-          _newGame();
+          if (mounted) {
+            _newGame();
+          }
         });
       }
     });
   }
 
   Future<void> _playCorrectAnswerSounds(String audioFileName) async {
-    setState(() {
-      _isPlayingSound = true;
-    });
+    if (mounted) {
+      setState(() {
+        _isPlayingSound = true;
+      });
+    }
 
     await AudioManager.effects().play('sound/numbers/yeahf.mp3');
     await Future.delayed(const Duration(seconds: 2));
     await playSound(audioFileName);
     await Future.delayed(const Duration(seconds: 9));
 
-    setState(() {
-      _isPlayingSound = false;
-    });
+    if (mounted) {
+      setState(() {
+        _isPlayingSound = false;
+      });
+    }
+  }
+
+  Future<bool> _onWillPop() async {
+    AudioManager.stopBackground();
+    AudioManager.stopEffect();
+    DialogManager.showExitGameDialog(
+      context,
+      const GameSelectionScreen(category: 'Voyelles'),
+    );
+    return false;
   }
 
   @override
@@ -266,114 +304,139 @@ class _VocalMemoryPageState extends State<VocalMemoryPage>
     final size = MediaQuery.of(context).size;
     final widthPadding = size.width * 0.1;
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/family/game3/Verde.png'),
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: Column(
-              children: [
-                ProgressBar(
-                  backgroundColor: const Color(0xFF424141),
-                  progressBarColor: const Color(0xFF8DB270),
-                  headerText: 'Encuentra los pares de vocales',
-                  progressValue: round / totalRounds,
-                  onBack: () {
-                    Navigator.pop(context);
-                  },
-                  backgroundMusic: 'sound/start_page.mp3',
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        body: Stack(
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/family/game3/Verde.png'),
+                  fit: BoxFit.cover,
                 ),
-                _isLoading
-                    ? const Expanded(
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      )
-                    : Expanded(
-                        child: Center(
-                          child: GridView.builder(
-                            shrinkWrap: true,
-                            padding: EdgeInsets.only(
-                                left: widthPadding, right: widthPadding),
-                            itemCount: cardImages.length,
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 4,
-                              crossAxisSpacing: 10,
-                              mainAxisSpacing: 10,
-                              mainAxisExtent: size.height * 0.30,
-                            ),
-                            itemBuilder: (context, index) {
-                              return FadeInUp(
-                                duration: const Duration(milliseconds: 500),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                  child: GestureDetector(
-                                    onTap: () => onCardTap(index),
-                                    child: AnimatedBuilder(
-                                      animation: _animations[index],
-                                      builder: (context, child) {
-                                        final angle = _animations[index].value *
-                                            3.141592653589793;
-                                        final isFlipped =
-                                            angle >= 3.141592653589793 / 2;
-                                        final transform =
-                                            Matrix4.rotationY(angle);
-                                        return Transform(
-                                          transform: transform,
-                                          alignment: Alignment.center,
-                                          child: isFlipped
-                                              ? Image.asset(
-                                                  cardImages[index],
-                                                  key: ValueKey<int>(index),
-                                                  fit: BoxFit.fill,
-                                                )
-                                              : Image.asset(
-                                                  'assets/images/family/game3/Card.png',
-                                                  key: ValueKey<int>(
-                                                      index + 100),
-                                                  fit: BoxFit.fill,
-                                                ),
-                                        );
-                                      },
+              ),
+              child: Column(
+                children: [
+                  ProgressBar(
+                    backgroundColor: const Color(0xFF424141),
+                    progressBarColor: const Color(0xFF8DB270),
+                    headerText: 'Encuentra los pares de vocales',
+                    progressValue: round / totalRounds,
+                    onBack: () {
+                      Navigator.pop(context);
+                    },
+                    backgroundMusic: 'sound/start_page.mp3',
+                  ),
+                  _isLoading
+                      ? const Expanded(
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        )
+                      : Expanded(
+                          child: Center(
+                            child: GridView.builder(
+                              shrinkWrap: true,
+                              padding: EdgeInsets.only(
+                                  left: widthPadding, right: widthPadding),
+                              itemCount: cardImages.length,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 4,
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                                mainAxisExtent: size.height * 0.30,
+                              ),
+                              itemBuilder: (context, index) {
+                                return FadeInUp(
+                                  duration: const Duration(milliseconds: 500),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                    child: GestureDetector(
+                                      onTap: () => onCardTap(index),
+                                      child: AnimatedBuilder(
+                                        animation: _animations[index],
+                                        builder: (context, child) {
+                                          final angle = _animations[index]
+                                                  .value *
+                                              3.141592653589793;
+                                          final isFlipped =
+                                              angle >= 3.141592653589793 / 2;
+                                          final transform =
+                                              Matrix4.rotationY(isFlipped
+                                                  ? 3.141592653589793
+                                                  : angle);
+                                          return Transform(
+                                            transform: transform,
+                                            alignment: Alignment.center,
+                                            child: isFlipped
+                                                ? _buildCardImage(index)
+                                                : Image.asset(
+                                                    'assets/images/family/game3/Card.png',
+                                                    key: ValueKey<int>(
+                                                        index + 100),
+                                                    fit: BoxFit.fill,
+                                                  ),
+                                          );
+                                        },
+                                      ),
                                     ),
                                   ),
-                                ),
-                              );
-                            },
+                                );
+                              },
+                            ),
                           ),
                         ),
-                      ),
-              ],
-            ),
-          ),
-          if (_isPlayingSound)
-            Container(
-              color: Colors.black.withOpacity(0.8),
-              child: const Center(
-                child: Icon(
-                  Icons.volume_up,
-                  size: 100,
-                  color: Colors.white,
-                ),
+                ],
               ),
             ),
-          const Positioned(
-            bottom: 10,
-            right: 10,
-            child: MovableButtonScreen(
-              spanishAudio: 'sound/vocals/esgame2.m4a',
-              frenchAudio: 'sound/vocals/frgame2.m4a',
-              rivePath: 'assets/RiveAssets/vocalsgame2.riv',
+            if (_isPlayingSound)
+              Container(
+                color: Colors.black.withOpacity(0.8),
+                child: const Center(
+                  child: Icon(
+                    Icons.volume_up,
+                    size: 100,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            const Positioned(
+              bottom: 10,
+              right: 10,
+              child: MovableButtonScreen(
+                spanishAudio: 'sound/vocals/esgame2.m4a',
+                frenchAudio: 'sound/vocals/frgame2.m4a',
+                rivePath: 'assets/RiveAssets/vocalsgame2.riv',
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
+  }
+
+  Widget _buildCardImage(int index) {
+    final image = cardImages[index];
+    if (image == 'assets/images/vocals/vocal/e.png') {
+      return Image.asset(
+        image,
+        fit: BoxFit.fill,
+      );
+    } else if (image == 'assets/images/vocals/vocal/i.png') {
+      return Transform.scale(
+        scaleX: 0.7, // Adjust the scale factor as needed
+        child: Image.asset(
+          image,
+          fit: BoxFit.fill,
+        ),
+      );
+    } else {
+      return Image.asset(
+        image,
+        fit: BoxFit.fill,
+      );
+    }
   }
 }
