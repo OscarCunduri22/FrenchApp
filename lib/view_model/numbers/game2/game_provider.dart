@@ -11,6 +11,7 @@ class GameProvider with ChangeNotifier {
   int correctAnswer = 0;
   int? selectedOption;
   bool isCompleted = false;
+  bool isPlayingSound = false; // Added this
   int currentLevel = 0;
   final int totalLevels = 5;
 
@@ -18,7 +19,7 @@ class GameProvider with ChangeNotifier {
   final String studentId;
 
   GameProvider(this.userTracking, this.studentId) {
-    _incrementTimesPlayed(); // Incrementar contador de juegos jugados
+    _incrementTimesPlayed();
     generateNewLevel();
   }
 
@@ -63,6 +64,9 @@ class GameProvider with ChangeNotifier {
   double get progressValue => currentLevel / totalLevels;
 
   void _playCorrectAnswerSounds(VoidCallback onComplete) async {
+    isPlayingSound = true;
+    notifyListeners();
+
     await AudioManager.effects().play('sound/numbers/yeahf.mp3');
     await Future.delayed(const Duration(seconds: 1));
     await AudioManager.effects().play('sound/numbers/repetir.m4a');
@@ -72,6 +76,7 @@ class GameProvider with ChangeNotifier {
     await AudioManager.effects().play('sound/numbers/$correctAnswer.m4a');
     await Future.delayed(const Duration(seconds: 1));
 
+    isPlayingSound = false;
     isCompleted = false;
     notifyListeners();
 
@@ -81,15 +86,15 @@ class GameProvider with ChangeNotifier {
       generateNewLevel();
     } else {
       onComplete();
-      _incrementTimesCompleted(); // Incrementar contador de juegos completados
+      _incrementTimesCompleted();
     }
   }
 
   void _incrementTimesPlayed() {
-    userTracking.incrementTimesPlayed(studentId, 'train_wagon_numbers_game'); // Reemplaza 'train_wagon_numbers_game' con el nombre específico del juego
+    userTracking.incrementTimesPlayed(studentId, 'train_wagon_numbers_game');
   }
 
   void _incrementTimesCompleted() {
-    userTracking.incrementTimesCompleted(studentId, 'train_wagon_numbers_game'); // Reemplaza 'train_wagon_numbers_game' con el nombre específico del juego
+    userTracking.incrementTimesCompleted(studentId, 'train_wagon_numbers_game');
   }
 }

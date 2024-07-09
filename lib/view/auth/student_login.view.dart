@@ -309,8 +309,7 @@ class _FruitGameScreenState extends State<FruitGameScreen>
                                   child: Stack(
                                     children: [
                                       GalloComponent.speaking(
-                                          audioPath:
-                                              'sound/numbers/silueta.m4a'),
+                                          audioPath: 'silueta'),
                                       Positioned(
                                         left: 0,
                                         right: 0,
