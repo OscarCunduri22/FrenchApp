@@ -7,6 +7,7 @@ import 'package:frenc_app/utils/user_provider.dart';
 import 'package:frenc_app/utils/user_tracking.dart';
 import 'package:frenc_app/view/family/game3/game_screen.dart';
 import 'package:frenc_app/view/start_screen.dart';
+import 'package:frenc_app/utils/reward_manager.dart';
 
 import 'package:provider/provider.dart';
 
